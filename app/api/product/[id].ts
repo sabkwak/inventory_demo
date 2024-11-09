@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const product = await prisma.product.findUnique({
       where: { id: parseInt(id as string, 10) },
       include: {
-        grower: true,
+        brand: true,
         category: true,
       },
     });

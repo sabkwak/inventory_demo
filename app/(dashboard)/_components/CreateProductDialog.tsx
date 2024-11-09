@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 // import IngredientPicker from "@/app/(dashboard)/_components/IngredientPicker";
-import GrowerPicker from "@/app/(dashboard)/_components/GrowerPicker";
+import BrandPicker from "@/app/(dashboard)/_components/BrandPicker";
 import CategoryPicker from "@/app/(dashboard)/_components/CategoryPicker";
 
 import {
@@ -93,9 +93,9 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
   //   [form]
   // );
 
-  const handleGrowerChange = useCallback(
+  const handleBrandChange = useCallback(
     (value: string) => {
-      form.setValue("grower", value);
+      form.setValue("brand", value);
     },
     [form]
   );
@@ -123,7 +123,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         quantity: 0,
         // icon: "",
         // ingredient: undefined,
-        grower: undefined,
+        brand: undefined,
         category: undefined,
       });
 
@@ -189,7 +189,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
             new Ingredient
           </DialogTitle>
           <DialogDescription>
-            Name a new Ingredient and assign a Grower and Category
+            Name a new Ingredient and assign a Brand and Category
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -263,15 +263,15 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
             />
             <FormField
               control={form.control}
-              name="grower"
+              name="brand"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Grower</FormLabel>
+                  <FormLabel>Brand</FormLabel>
                   <FormControl>
-                    <GrowerPicker growerName="" onChange={handleGrowerChange} />
+                    <BrandPicker brandName="" onChange={handleBrandChange} />
                   </FormControl>
                   <FormDescription>
-                    Select a grower for this Ingredient (required)
+                    Select a brand for this Ingredient (required)
                   </FormDescription>
                 </FormItem>
               )}

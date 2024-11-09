@@ -116,7 +116,7 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
   
         // Check if inventory is sufficient
         if (inventory <= 0) {
-          toast.error("Inventory is insufficient. No more orders can be placed for this ingredient and grower.");
+          toast.error("Inventory is insufficient. No more orders can be placed for this ingredient and brand.");
           return;
         }
   

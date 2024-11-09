@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
         const ingredient = await prisma.product.findUnique({
             where: { id: Number(id) },
             include: {
-                grower: true,
+                brand: true,
                 category: true,
             },
         });

@@ -38,7 +38,7 @@ export type GetTransactionHistoryResponseType = Awaited<
   ReturnType<typeof getTransactionsHistory>
 >;
 
-// Function to fetch the transaction history with grower, ingredient, category, and client included
+// Function to fetch the transaction history with brand, ingredient, category, and client included
 async function getTransactionsHistory(userId: string, from: Date, to: Date) {
   const userSettings = await prisma.userSettings.findUnique({
     where: {
@@ -51,7 +51,7 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
 
   // const formatter = GetFormatterForWeight(userSettings.weight);
 
-  // Fetch transactions including product's grower, category, and client
+  // Fetch transactions including product's brand, category, and client
   const transactions = await prisma.transaction.findMany({
     where: {
       date: {
@@ -71,9 +71,9 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
               name: true, // Include category name
             },
           },
-          grower: {
+          brand: {
             select: {
-              name: true, // Include grower name
+              name: true, // Include brand name
             },
           },
         },
@@ -89,7 +89,7 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
   return transactions.map((transaction) => ({
     ...transaction,
     productName: transaction.product?.product || "---",  // Add product name
-    growerName: transaction.product?.grower?.name || "---",  // Add grower name
+    brandName: transaction.product?.brand?.name || "---",  // Add brand name
     categoryName: transaction.product?.category?.name || "---",  // Add category name
     clientName: transaction.client?.name || "",  // Add client name
     amount: transaction.amount,  // Format the amount based on user weight

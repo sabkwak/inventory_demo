@@ -73,7 +73,7 @@ async function getProductsHistory(
           name: true,
         },
       },
-      grower: {
+      brand: {
         select: {
           name: true,
         },
@@ -84,7 +84,7 @@ async function getProductsHistory(
   return products.map((product) => ({
     ...product,
     productName: product.product || "---",
-    growerName: product.grower?.name || "---",
+    brandName: product.brand?.name || "---",
     categoryName: product.category?.name || "---",
     // date: product.createdAt,
   }));

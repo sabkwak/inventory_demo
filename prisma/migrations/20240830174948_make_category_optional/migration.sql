@@ -17,12 +17,12 @@ CREATE TABLE "Category" (
 );
 
 -- CreateTable
-CREATE TABLE "Grower" (
+CREATE TABLE "Brand" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
 
-    CONSTRAINT "Grower_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Brand_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -31,7 +31,7 @@ CREATE TABLE "Product" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "product" TEXT NOT NULL,
-    "growerId" INTEGER NOT NULL,
+    "brandId" INTEGER NOT NULL,
     "categoryId" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 0,
 
@@ -79,13 +79,13 @@ CREATE TABLE "YearHistory" (
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Grower_name_key" ON "Grower"("name");
+CREATE UNIQUE INDEX "Brand_name_key" ON "Brand"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Product_product_growerId_key" ON "Product"("product", "growerId");
+CREATE UNIQUE INDEX "Product_product_brandId_key" ON "Product"("product", "brandId");
 
 -- AddForeignKey
-ALTER TABLE "Product" ADD CONSTRAINT "Product_growerId_fkey" FOREIGN KEY ("growerId") REFERENCES "Grower"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Product" ADD CONSTRAINT "Product_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "Brand"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

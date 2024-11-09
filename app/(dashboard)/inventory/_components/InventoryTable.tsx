@@ -55,12 +55,12 @@ interface Props {
   to: Date;
 }
 
-function generateQrCodeUrl(ingredientName: string, quantity: number, category: string, grower: string): string {
+function generateQrCodeUrl(ingredientName: string, quantity: number, category: string, brand: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL; // Use your app's URL
   const url = new URL(`${baseUrl}/ingredient/${encodeURIComponent(ingredientName)}`);
   url.searchParams.append('quantity', quantity.toString());
   url.searchParams.append('category', category);
-  url.searchParams.append('grower', grower);
+  url.searchParams.append('brand', brand);
   return url.toString();
 }
 
@@ -104,17 +104,17 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     enableHiding: false, // Amount is visible by default
   },
   {
-    accessorKey: "grower",
+    accessorKey: "brand",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Grower" />
+      <DataTableColumnHeader column={column} title="Brand" />
     ),
     filterFn: (row, id, value) => {
-      const growerName = row.original.growerName;
-      return value.includes(growerName);
+      const brandName = row.original.brandName;
+      return value.includes(brandName);
     },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.growerName || "No Grower"}
+        {row.original.brandName || "No Brand"}
       </div>
     ),
     enableHiding: false, // Amount is visible by default
@@ -307,16 +307,16 @@ const [pagination, setPagination] = useState({
     });
     return Array.from(categoriesMap.values());
   }, [history.data]);
-  const growersOptions = useMemo(() => {
-    const growersMap = new Map();
+  const brandsOptions = useMemo(() => {
+    const brandsMap = new Map();
     history.data?.forEach((inventory) => {
-      growersMap.set(inventory.growerName, {
-        value: inventory.growerName,
-        label: `${inventory.growerName}`,
+      brandsMap.set(inventory.brandName, {
+        value: inventory.brandName,
+        label: `${inventory.brandName}`,
       });
     });
-    const uniqueGrowers = new Set(growersMap.values());
-    return Array.from(uniqueGrowers);
+    const uniqueBrands = new Set(brandsMap.values());
+    return Array.from(uniqueBrands);
   }, [history.data]);
   const productsOptions = useMemo(() => {
     const productsMap = new Map<string, { value: string; label: string }>();
@@ -343,11 +343,11 @@ const [pagination, setPagination] = useState({
               options={categoriesOptions}
             />
           )}
-                    {table.getColumn("grower") && (
+                    {table.getColumn("brand") && (
             <DataTableFacetedFilter
-              title="Grower"
-              column={table.getColumn("grower")}
-              options={growersOptions}
+              title="Brand"
+              column={table.getColumn("brand")}
+              options={brandsOptions}
             />
           )}
           {table.getColumn("product") && (
@@ -387,7 +387,7 @@ const [pagination, setPagination] = useState({
            return { 
             Quantity: row.original.quantity,
                 Ingredient: row.original.productName,
-                Grower: row.original.growerName,
+                Brand: row.original.brandName,
                 Category: row.original.categoryName,
                 Description: row.original.description,
                 Date_Dropped: formattedDateTime,
@@ -468,7 +468,7 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
   };
   
 // Create a string with all the product details
-const qrCodeUrl = generateQrCodeUrl(product.productName, product.quantity, product.categoryName, product.growerName);
+const qrCodeUrl = generateQrCodeUrl(product.productName, product.quantity, product.categoryName, product.brandName);
 
   return (
     <>

@@ -28,9 +28,9 @@ import {
 import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
-  CreateGrowerSchema,
-  CreateGrowerSchemaType,
-} from "@/schema/growers";
+  CreateBrandSchema,
+  CreateBrandSchemaType,
+} from "@/schema/brands";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleOff, Loader2, PlusSquare } from "lucide-react";
 import React, { ReactNode, useCallback, useState } from "react";
@@ -38,20 +38,20 @@ import { useForm } from "react-hook-form";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CreateGrower } from "@/app/(dashboard)/_actions/growers";
-import { Grower } from "@prisma/client";
+import { CreateBrand } from "@/app/(dashboard)/_actions/brands";
+import { Brand } from "@prisma/client";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 
 interface Props {
-  successCallback: (grower: Grower) => void;
+  successCallback: (brand: Brand) => void;
   trigger?: ReactNode;
 }
 
-function CreateGrowerDialog({  successCallback, trigger }: Props) {
+function CreateBrandDialog({  successCallback, trigger }: Props) {
   const [open, setOpen] = useState(false);
-  const form = useForm<CreateGrowerSchemaType>({
-    resolver: zodResolver(CreateGrowerSchema),
+  const form = useForm<CreateBrandSchemaType>({
+    resolver: zodResolver(CreateBrandSchema),
     defaultValues: {
     
     },
@@ -61,37 +61,37 @@ function CreateGrowerDialog({  successCallback, trigger }: Props) {
   const theme = useTheme();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: CreateGrower,
-    onSuccess: async (data: Grower) => {
+    mutationFn: CreateBrand,
+    onSuccess: async (data: Brand) => {
       form.reset({
         name: "",
         // icon: "",
       
       });
 
-      toast.success(`Grower ${data.name} created successfully 🎉`, {
-        id: "create-grower",
+      toast.success(`Brand ${data.name} created successfully 🎉`, {
+        id: "create-brand",
       });
 
       successCallback(data);
 
       await queryClient.invalidateQueries({
-        queryKey: ["growers"],
+        queryKey: ["brands"],
       });
 
       setOpen((prev) => !prev);
     },
     onError: () => {
       toast.error("Something went wrong", {
-        id: "create-grower",
+        id: "create-brand",
       });
     },
   });
 
   const onSubmit = useCallback(
-    (values: CreateGrowerSchemaType) => {
-      toast.loading("Creating grower...", {
-        id: "create-grower",
+    (values: CreateBrandSchemaType) => {
+      toast.loading("Creating brand...", {
+        id: "create-brand",
       });
       mutate(values);
     },
@@ -124,10 +124,10 @@ function CreateGrowerDialog({  successCallback, trigger }: Props) {
               )}
             >
             </span>
-            grower
+            brand
           </DialogTitle>
           <DialogDescription>
-            Growers are used to group your transactions
+            Brands are used to group your transactions
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -139,10 +139,10 @@ function CreateGrowerDialog({  successCallback, trigger }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Grower" {...field} />
+                    <Input placeholder="Brand" {...field} />
                   </FormControl>
                   <FormDescription>
-                    This is how your grower will appear in the app
+                    This is how your brand will appear in the app
                   </FormDescription>
                 </FormItem>
               )}
@@ -192,7 +192,7 @@ function CreateGrowerDialog({  successCallback, trigger }: Props) {
                     </Popover>
                   </FormControl>
                   <FormDescription>
-                    This is how your grower will appear in the app
+                    This is how your brand will appear in the app
                   </FormDescription>
                 </FormItem>
               )}
@@ -221,4 +221,4 @@ function CreateGrowerDialog({  successCallback, trigger }: Props) {
   );
 }
 
-export default CreateGrowerDialog;
+export default CreateBrandDialog;

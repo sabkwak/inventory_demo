@@ -80,7 +80,7 @@ export async function EditTransaction({
       data: {
         amount,
         price,
-        ...(clientConnect && { client: clientConnect }),   // Only connect if grower is valid
+        ...(clientConnect && { client: clientConnect }),   // Only connect if brand is valid
 
         date: new Date(date),
         description: description || "",

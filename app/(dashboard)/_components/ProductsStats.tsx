@@ -73,7 +73,7 @@ function ProductsCard({
     <Card className="h-80 w-full col-span-6">
       <CardHeader>
         <CardTitle className="grid grid-flow-row justify-between gap-2 text-muted-foreground md:grid-flow-col">
-          {type === "order" ? "orders" : "returns"} by grower
+          {type === "order" ? "orders" : "returns"} by brand
         </CardTitle>
       </CardHeader>
 

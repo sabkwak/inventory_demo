@@ -27,7 +27,7 @@ interface Props {
 
 function ProductPicker({ onChange }: Props) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<{ productId: number; growerId: number } | null>(null);
+  const [value, setValue] = useState<{ productId: number; brandId: number } | null>(null);
 
   useEffect(() => {
     if (value) {
@@ -40,32 +40,32 @@ function ProductPicker({ onChange }: Props) {
     queryFn: () => fetch(`/api/products`).then((res) => res.json()),
   });
 
-  const growersQuery = useQuery({
-    queryKey: ["growers"],
-    queryFn: () => fetch(`/api/growers`).then((res) => res.json()),
+  const brandsQuery = useQuery({
+    queryKey: ["brands"],
+    queryFn: () => fetch(`/api/brands`).then((res) => res.json()),
   });
 
   const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
-  const growers = Array.isArray(growersQuery.data) ? growersQuery.data : [];
+  const brands = Array.isArray(brandsQuery.data) ? brandsQuery.data : [];
 
   const selectedProduct = products.find(
-    (product: Product) => product.id === value?.productId && product.growerId === value?.growerId
+    (product: Product) => product.id === value?.productId && product.brandId === value?.brandId
   );
 
   const successCallback = useCallback(
     (product: Product) => {
-      setValue({ productId: product.id, growerId: product.growerId });
+      setValue({ productId: product.id, brandId: product.brandId });
       setOpen(false);
     },
     []
   );
 
-  if (growersQuery.isLoading) {
+  if (brandsQuery.isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (growersQuery.isError) {
-    return <div>Error: {(growersQuery.error as Error).message}</div>;
+  if (brandsQuery.isError) {
+    return <div>Error: {(brandsQuery.error as Error).message}</div>;
   }
 
   return (
@@ -78,7 +78,7 @@ function ProductPicker({ onChange }: Props) {
           className="w-[200px] justify-between"
         >
           {selectedProduct ? (
-            <ProductRow product={selectedProduct} growers={growers} />
+            <ProductRow product={selectedProduct} brands={brands} />
           ) : (
             "Select ingredient"
           )}
@@ -97,18 +97,18 @@ function ProductPicker({ onChange }: Props) {
             <CommandList>
               {products.map((product: Product) => (
                 <CommandItem
-                  key={`${product.product}-${product.growerId}`} // Use a composite key to account for multiple growers
+                  key={`${product.product}-${product.brandId}`} // Use a composite key to account for multiple brands
                   onSelect={() => {
-                    setValue({ productId: product.id, growerId: product.growerId });
+                    setValue({ productId: product.id, brandId: product.brandId });
                     setOpen(false); // Close only the ProductPicker, not the entire dialog
                   }}
                   
                 >
-                  <ProductRow product={product} growers={growers} />
+                  <ProductRow product={product} brands={brands} />
                   <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
-                      value?.productId === product.id && value?.growerId === product.growerId && "opacity-100"
+                      value?.productId === product.id && value?.brandId === product.brandId && "opacity-100"
                     )}
                   />
                 </CommandItem>
@@ -125,19 +125,19 @@ export default ProductPicker;
 
 function ProductRow({
   product,
-  growers,
+  brands,
 }: {
   product: Product;
-  growers: any[];
+  brands: any[];
 }) {
-  const growerName = growers.find(
-    (grower) => grower.id === product.growerId
+  const brandName = brands.find(
+    (brand) => brand.id === product.brandId
   )?.name;
 
   return (
     <div className="flex items-center gap-2">
       <span>{product.product}</span>
-      <span> - {growerName}</span>
+      <span> - {brandName}</span>
     </div>
   );
 }

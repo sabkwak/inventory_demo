@@ -2,16 +2,16 @@
 
 import prisma from "@/lib/prisma";
 import {
-  CreateGrowerSchema,
-  CreateGrowerSchemaType,
-  DeleteGrowerSchema,
-  DeleteGrowerSchemaType,
-} from "@/schema/growers";
+  CreateBrandSchema,
+  CreateBrandSchemaType,
+  DeleteBrandSchema,
+  DeleteBrandSchemaType,
+} from "@/schema/brands";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-export async function CreateGrower(form: CreateGrowerSchemaType) {
-  const parsedBody = CreateGrowerSchema.safeParse(form);
+export async function CreateBrand(form: CreateBrandSchemaType) {
+  const parsedBody = CreateBrandSchema.safeParse(form);
   if (!parsedBody.success) {
     throw new Error("bad request");
   }
@@ -22,7 +22,7 @@ export async function CreateGrower(form: CreateGrowerSchemaType) {
   }
 
   const { name} = parsedBody.data;
-  return await prisma.grower.create({
+  return await prisma.brand.create({
     data: {
       name,
       // icon,
@@ -30,8 +30,8 @@ export async function CreateGrower(form: CreateGrowerSchemaType) {
   });
 }
 
-export async function DeleteGrower(form: DeleteGrowerSchemaType) {
-  const parsedBody = DeleteGrowerSchema.safeParse(form);
+export async function DeleteBrand(form: DeleteBrandSchemaType) {
+  const parsedBody = DeleteBrandSchema.safeParse(form);
   if (!parsedBody.success) {
     throw new Error("bad request");
   }
@@ -41,7 +41,7 @@ export async function DeleteGrower(form: DeleteGrowerSchemaType) {
     redirect("/sign-in");
   }
 
-  return await prisma.grower.delete({
+  return await prisma.brand.delete({
     where: {
      
        

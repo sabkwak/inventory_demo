@@ -62,13 +62,13 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       amount: amount,
       price: price || undefined,
       client: {
-        connect: { id: clientRow.id },    // Connect to an existing grower by ID
+        connect: { id: clientRow.id },    // Connect to an existing brand by ID
       },      
       description: description || "", // Set to empty string if not provided
       date: date,
       type: type,
       product: {
-        connect: { id: productRow.id },    // Connect to an existing grower by ID
+        connect: { id: productRow.id },    // Connect to an existing brand by ID
       },        },
   });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { DeleteGrower } from "@/app/(dashboard)/_actions/growers";
+import { DeleteBrand } from "@/app/(dashboard)/_actions/brands";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,34 +13,34 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { TransactionType } from "@/lib/types";
-import { Grower } from "@prisma/client";
+import { Brand } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { ReactNode } from "react";
 import { toast } from "sonner";
 
 interface Props {
   trigger: ReactNode;
-  grower: Grower;
+  brand: Brand;
 }
 
-function DeleteGrowerDialog({ grower, trigger }: Props) {
-  const growerIdentifier = `${grower.name}`;
+function DeleteBrandDialog({ brand, trigger }: Props) {
+  const brandIdentifier = `${brand.name}`;
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: DeleteGrower,
+    mutationFn: DeleteBrand,
     onSuccess: async () => {
-      toast.success("Grower deleted successfully", {
-        id: growerIdentifier,
+      toast.success("Brand deleted successfully", {
+        id: brandIdentifier,
       });
 
       await queryClient.invalidateQueries({
-        queryKey: ["growers"],
+        queryKey: ["brands"],
       });
     },
     onError: () => {
-      toast.error("Please delete all Products assigned to this Grower under the Inventory tab first.", {
-        id: growerIdentifier,
+      toast.error("Please delete all Products assigned to this Brand under the Inventory tab first.", {
+        id: brandIdentifier,
       });
     },
   });
@@ -52,19 +52,19 @@ function DeleteGrowerDialog({ grower, trigger }: Props) {
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete your
-            grower
+            brand
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              toast.loading("Deleting grower...", {
-                id: growerIdentifier,
+              toast.loading("Deleting brand...", {
+                id: brandIdentifier,
               });
               deleteMutation.mutate({
-                name: grower.name,
-                // icon: grower.icon
+                name: brand.name,
+                // icon: brand.icon
 
               });
             }}
@@ -77,4 +77,4 @@ function DeleteGrowerDialog({ grower, trigger }: Props) {
   );
 }
 
-export default DeleteGrowerDialog;
+export default DeleteBrandDialog;

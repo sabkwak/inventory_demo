@@ -29,7 +29,7 @@ model Category {
 
 }
 
-model Grower {
+model Brand {
    id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
   name      String    @unique
@@ -49,8 +49,8 @@ model Product {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   product     String    
-  growerId    Int
-  grower      Grower    @relation(fields: [growerId], references: [id])
+  brandId    Int
+  brand      Brand    @relation(fields: [brandId], references: [id])
   categoryId  Int?
   category    Category?  @relation(fields: [categoryId], references: [id])
   transactions Transaction[]  // No @relation attribute needed here
@@ -58,7 +58,7 @@ model Product {
   value    Int?       @default(0)
   description String?
 
-  @@unique([product, growerId])  // Enforce unique combination of product, grower, and category
+  @@unique([product, brandId])  // Enforce unique combination of product, brand, and category
 }
 
 model Transaction {

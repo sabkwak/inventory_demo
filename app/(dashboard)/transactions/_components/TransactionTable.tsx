@@ -88,20 +88,20 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     enableHiding: false, // Ingredient is visible by default
   },
   {
-    accessorKey: "grower",
+    accessorKey: "brand",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Grower" />
+      <DataTableColumnHeader column={column} title="Brand" />
     ),
     filterFn: (row, id, value) => {
-      const growerName = row.original.growerName;
-      return value.includes(growerName);
+      const brandName = row.original.brandName;
+      return value.includes(brandName);
     },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.growerName}
+        {row.original.brandName}
       </div>
     ),
-    enableHiding: false, // Grower is visible by default
+    enableHiding: false, // Brand is visible by default
   },
   {
     accessorKey: "description",
@@ -187,7 +187,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         {row.original.clientName}
       </div>
     ),
-    enableHiding: true, // Grower is visible by default
+    enableHiding: true, // Brand is visible by default
   },
   {
     accessorKey: "type",
@@ -347,19 +347,19 @@ useEffect(() => {
         label: `${transaction.clientName}`,
       });
     });
-    const uniqueGrowers = new Set(clientsMap.values());
-    return Array.from(uniqueGrowers);
+    const uniqueBrands = new Set(clientsMap.values());
+    return Array.from(uniqueBrands);
   }, [history.data]);
-  const growersOptions = useMemo(() => {
-    const growersMap = new Map();
+  const brandsOptions = useMemo(() => {
+    const brandsMap = new Map();
     history.data?.forEach((transaction) => {
-      growersMap.set(transaction.growerName, {
-        value: transaction.growerName,
-        label: `${transaction.growerName}`,
+      brandsMap.set(transaction.brandName, {
+        value: transaction.brandName,
+        label: `${transaction.brandName}`,
       });
     });
-    const uniqueGrowers = new Set(growersMap.values());
-    return Array.from(uniqueGrowers);
+    const uniqueBrands = new Set(brandsMap.values());
+    return Array.from(uniqueBrands);
   }, [history.data]);
   const productsOptions = useMemo(() => {
     const productsMap = new Map<string, { value: string; label: string }>();
@@ -390,11 +390,11 @@ useEffect(() => {
               options={categoriesOptions}
             />
           )}
-          {table.getColumn("grower") && (
+          {table.getColumn("brand") && (
             <DataTableFacetedFilter
-              title="Grower"
-              column={table.getColumn("grower")}
-              options={growersOptions}
+              title="Brand"
+              column={table.getColumn("brand")}
+              options={brandsOptions}
             />
           )}
           {table.getColumn("product") && (
@@ -451,7 +451,7 @@ useEffect(() => {
                 return {
                   Amount: row.original.amount, // Assuming this is numeric, no formatting required
                   Ingredient: row.original.productName,
-                  Grower: row.original.growerName,
+                  Brand: row.original.brandName,
                   Category: row.original.categoryName,
                   Client: row.original.clientName,
                   Description: row.original.description,

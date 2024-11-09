@@ -22,7 +22,7 @@ import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import GrowerPicker from "@/app/(dashboard)/_components/GrowerPicker";
+import BrandPicker from "@/app/(dashboard)/_components/BrandPicker";
 import CategoryPicker from "@/app/(dashboard)/_components/CategoryPicker";
 import {
   EditProductSchema,
@@ -46,7 +46,7 @@ interface Props {
     createdAt: Date;
     updatedAt: Date;
     product: string;
-    growerId: number;
+    brandId: number;
     categoryId: number | null;
     quantity: number | 0;
     value: number | 0;
@@ -62,7 +62,7 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
   const [showCategoryPicker, setShowCategoryPicker] = useState(false); 
 
   const [categoryName, setCategoryName] = useState<string>("");
-  const [growerName, setGrowerName] = useState<string>("");
+  const [brandName, setBrandName] = useState<string>("");
   // const [open, setOpen] = useState(false);
 
 
@@ -74,7 +74,7 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
       product: product.product,
       quantity: product.quantity || 0,
       value: product.value || 0,
-      grower: growerName,
+      brand: brandName,
       category: categoryName,
       description: product.description || "",
       createdAt: new Date(product.createdAt),
@@ -83,30 +83,30 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
 
   const queryClient = useQueryClient();
   useEffect(() => {
-    async function fetchCategoryAndGrower() {
+    async function fetchCategoryAndBrand() {
       try {
         const categoryResponse = await fetch(`/api/categories?id=${product.categoryId}`);
         const categoryData = await categoryResponse.json();
 
-        const growerResponse = await fetch(`/api/growers?id=${product.growerId}`);
-        const growerData = await growerResponse.json();
+        const brandResponse = await fetch(`/api/brands?id=${product.brandId}`);
+        const brandData = await brandResponse.json();
 
         if (categoryResponse.ok) {
           setCategoryName(categoryData.name);
         }
 
-        if (growerResponse.ok) {
-          setGrowerName(growerData.name);
+        if (brandResponse.ok) {
+          setBrandName(brandData.name);
         }
       } catch (error) {
-        toast.error("Failed to fetch category or grower information.");
+        toast.error("Failed to fetch category or brand information.");
       }
     }
 
     if (open) {
-      fetchCategoryAndGrower();
+      fetchCategoryAndBrand();
     }
-  }, [open, product.categoryId, product.growerId]);
+  }, [open, product.categoryId, product.brandId]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: EditProduct,
@@ -119,7 +119,7 @@ quantity: 0,
 value: 0,
         // icon: "",
         // ingredient: undefined,
-        grower: undefined,
+        brand: undefined,
         category: undefined,
       });
 
@@ -155,7 +155,7 @@ value: 0,
           quantity: values.quantity,
           value: values.value,
           createdAt: values.createdAt,
-          grower: values.grower,
+          brand: values.brand,
           description: values.description,
           category: values.category, // Convert category to ID if present
         },
@@ -241,13 +241,13 @@ value: 0,
         {!showCategoryPicker ? (
         <Input
           {...field} // Connects the input field to react-hook-form
-          value={field.value || categoryName} // Displays the fetched growerName
+          value={field.value || categoryName} // Displays the fetched brandName
           onFocus={() => setShowCategoryPicker(true)} // Show picker on input focus
           placeholder="Enter category name"
         />
       ) : (
         <CategoryPicker
-          categoryName={categoryName} // Pass the current grower name
+          categoryName={categoryName} // Pass the current brand name
           onChange={(value: string) => {
             field.onChange(value); // Update form value
             setShowCategoryPicker(false); // Hide picker once a value is selected
@@ -261,21 +261,21 @@ value: 0,
 /> 
 <FormField
   control={form.control}
-  name="grower"
+  name="brand"
   render={({ field }) => (
     <FormItem className="flex flex-col">
-      <FormLabel>Grower</FormLabel>
+      <FormLabel>Brand</FormLabel>
       <FormControl>
         {!showPicker ? (
         <Input
           {...field} // Connects the input field to react-hook-form
-          value={field.value || growerName} // Displays the fetched growerName
+          value={field.value || brandName} // Displays the fetched brandName
           onFocus={() => setShowPicker(true)} // Show picker on input focus
-          placeholder="Enter grower name"
+          placeholder="Enter brand name"
         />
       ) : (
-        <GrowerPicker
-          growerName={growerName} // Pass the current grower name
+        <BrandPicker
+          brandName={brandName} // Pass the current brand name
           onChange={(value: string) => {
             field.onChange(value); // Update form value
             setShowPicker(false); // Hide picker once a value is selected
@@ -283,7 +283,7 @@ value: 0,
         />
       )}
       </FormControl>
-      <FormDescription>*Warning* You will have to re-enter if you click Category or Grower</FormDescription>
+      <FormDescription>*Warning* You will have to re-enter if you click Category or Brand</FormDescription>
     </FormItem>
   )}
 /> 

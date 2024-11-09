@@ -13,7 +13,7 @@ export const CreateProductSchema = z.object({
   createdAt: z.coerce.date(),
   description: z.string().nullable().optional(),
   category: z.string().nullable().optional(),
-  grower: z.string(),
+  brand: z.string(),
 });
 
 
@@ -37,7 +37,7 @@ export const EditProductSchema = z.object({
     return Number(value);
   }, z.number().optional()),
     category: z.string().nullable().optional(), // Make description optional
-  grower: z.string(),
+  brand: z.string(),
 });
 
 export type EditProductSchemaType = z.infer<typeof EditProductSchema>;

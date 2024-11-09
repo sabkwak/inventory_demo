@@ -184,13 +184,13 @@ transaction: {
         {!showPicker ? (
         <Input
           {...field} // Connects the input field to react-hook-form
-          value={field.value || clientName} // Displays the fetched growerName
+          value={field.value || clientName} // Displays the fetched brandName
           onFocus={() => setShowPicker(true)} // Show picker on input focus
-          placeholder="Enter grower name"
+          placeholder="Enter brand name"
         />
       ) : (
         <ClientPicker
-          clientName={clientName} // Pass the current grower name
+          clientName={clientName} // Pass the current brand name
           onChange={(value: string) => {
             field.onChange(value); // Update form value
             setShowPicker(false); // Hide picker once a value is selected

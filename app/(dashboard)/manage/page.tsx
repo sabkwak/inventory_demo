@@ -2,8 +2,8 @@
 
 import CreateCategoryDialog from "@/app/(dashboard)/_components/CreateCategoryDialog";
 import DeleteCategoryDialog from "@/app/(dashboard)/_components/DeleteCategoryDialog";
-import CreateGrowerDialog from "@/app/(dashboard)/_components/CreateGrowerDialog";
-import DeleteGrowerDialog from "@/app/(dashboard)/_components/DeleteGrowerDialog";
+import CreateBrandDialog from "@/app/(dashboard)/_components/CreateBrandDialog";
+import DeleteBrandDialog from "@/app/(dashboard)/_components/DeleteBrandDialog";
 import CreateClientDialog from "@/app/(dashboard)/_components/CreateClientDialog";
 import DeleteClientDialog from "@/app/(dashboard)/_components/DeleteClientDialog";
 
@@ -24,7 +24,7 @@ import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Category, Product } from "@prisma/client";
 // import { Ingredient } from "@prisma/client";
-import { Grower } from "@prisma/client";
+import { Brand } from "@prisma/client";
 import { Client } from "@prisma/client";
 
 import { useQuery } from "@tanstack/react-query";
@@ -49,7 +49,7 @@ import { PlusSquare, TrashIcon, TrendingDown, TrendingUp } from "lucide-react";
 import { CreateProduct } from "../_actions/new-products";
 // import CreateProductDialog from "../_components/CreateProductDialog";
 import CreateProductDialog from "@/app/(dashboard)/_components/CreateProductDialog";
-// import DeleteProductDialog from "@/app/(dashboard)/_components/DeleteGrowerDialog";
+// import DeleteProductDialog from "@/app/(dashboard)/_components/DeleteBrandDialog";
 // import DeleteProductDialog from "@/app/(dashboard)/inventory/_components/DeleteProductDialog";
 //needed for deleting product (see DeleteProductDialog in dashboard/_components)
 interface Props {
@@ -125,7 +125,7 @@ function page() {
       <div className="container flex flex-col gap-4 p-4">
         <ClientList  />
         <CategoryList  />
-        <GrowerList  />
+        <BrandList  />
       </div>
     </>
   );
@@ -227,37 +227,37 @@ function CategoryCard({ category }: { category: Category }) {
   );
 }
 
-function GrowerList() {
-  const growersQuery = useQuery({
-    queryKey: ["growers"],
+function BrandList() {
+  const brandsQuery = useQuery({
+    queryKey: ["brands"],
     queryFn: () =>
-      fetch(`/api/growers`).then((res) => res.json()),
+      fetch(`/api/brands`).then((res) => res.json()),
   });
 
-  const dataAvailable = growersQuery.data && growersQuery.data.length > 0;
+  const dataAvailable = brandsQuery.data && brandsQuery.data.length > 0;
 
   return (
-    <SkeletonWrapper isLoading={growersQuery.isLoading}>
+    <SkeletonWrapper isLoading={brandsQuery.isLoading}>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
              
               <div>
-                Growers
+                Brands
                 <div className="text-sm text-muted-foreground">
                   Sorted by name
                 </div>
               </div>
             </div>
 
-            <CreateGrowerDialog
+            <CreateBrandDialog
           
-              successCallback={() => growersQuery.refetch()}
+              successCallback={() => brandsQuery.refetch()}
               trigger={
                 <Button className="gap-2 text-sm">
                   <PlusSquare className="h-4 w-4" />
-                  Create Grower
+                  Create Brand
                 </Button>
               }
             />
@@ -276,7 +276,7 @@ function GrowerList() {
               >
                 
               </span>
-              Growers yet
+              Brands yet
             </p>
 
             <p className="text-sm text-muted-foreground">
@@ -286,8 +286,8 @@ function GrowerList() {
         )}
         {dataAvailable && (
           <div className="grid grid-flow-row gap-2 p-2 sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {growersQuery.data.map((grower: Grower) => (
-              <GrowerCard grower={grower} key={grower.name} />
+            {brandsQuery.data.map((brand: Brand) => (
+              <BrandCard brand={brand} key={brand.name} />
             ))}
           </div>
         )}
@@ -296,14 +296,14 @@ function GrowerList() {
   );
 }
 
-function GrowerCard({ grower }: { grower: Grower }) {
+function BrandCard({ brand }: { brand: Brand }) {
   return (
     <div className="flex border-separate flex-col justify-between rounded-md border shadow-md shadow-black/[0.1] dark:shadow-white/[0.1]">
       <div className="flex flex-col items-center gap-2 p-4">
-        <span>{grower.name}</span>
+        <span>{brand.name}</span>
       </div>
-      <DeleteGrowerDialog
-        grower={grower}
+      <DeleteBrandDialog
+        brand={brand}
         trigger={
           <Button
             className="flex w-full border-separate items-center gap-2 rounded-t-none text-muted-foreground hover:bg-red-500/20"
@@ -391,7 +391,7 @@ function ClientCard({ client }: { client: Client }) {
     <div className="flex border-separate flex-col justify-between rounded-md border shadow-md shadow-black/[0.1] dark:shadow-white/[0.1]">
       <div className="flex flex-col items-center gap-2 p-4">
         {/* <span className="text-3xl" role="img">
-          {grower.icon}
+          {brand.icon}
         </span> */}
         <span>{client.name}</span>
       </div>

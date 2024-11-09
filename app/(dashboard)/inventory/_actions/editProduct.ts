@@ -36,7 +36,7 @@ export async function EditProduct({
     throw new Error("Invalid product form");
   }
 
-  const { product, quantity, value, category, grower, createdAt, description } = parsed.data;
+  const { product, quantity, value, category, brand, createdAt, description } = parsed.data;
 
    // Validate that the quantity is not negative
    if (quantity < 0) {
@@ -44,17 +44,17 @@ export async function EditProduct({
   }
 
 
-  // Fetch grower ID from the grower code (e.g., "EV10")
-  let growerConnect;
-  if (grower) {
-    const growerRecord = await prisma.grower.findUnique({
-      where: { name: grower }, // Assuming 'code' is the field storing values like "EV10"
+  // Fetch brand ID from the brand code (e.g., "EV10")
+  let brandConnect;
+  if (brand) {
+    const brandRecord = await prisma.brand.findUnique({
+      where: { name: brand }, // Assuming 'code' is the field storing values like "EV10"
     });
 
-    if (!growerRecord) {
-      throw new Error(`Grower with code ${grower} not found`);
+    if (!brandRecord) {
+      throw new Error(`Brand with code ${brand} not found`);
     }
-    growerConnect = { connect: { id: growerRecord.id } };
+    brandConnect = { connect: { id: brandRecord.id } };
   }
 
   // Fetch category ID from the category code (e.g., "MISC")
@@ -70,8 +70,8 @@ export async function EditProduct({
     categoryConnect = { connect: { id: categoryRecord.id } };
   }
 
-  // Log the grower and category connections before the update
-  console.log("Grower connect:", growerConnect);
+  // Log the brand and category connections before the update
+  console.log("Brand connect:", brandConnect);
   console.log("Category connect:", categoryConnect);
 
   // Update the product in the database
@@ -86,7 +86,7 @@ export async function EditProduct({
         value: value || undefined,
         createdAt: new Date(createdAt),
         description: description || "",
-        ...(growerConnect && { grower: growerConnect }),   // Only connect if grower is valid
+        ...(brandConnect && { brand: brandConnect }),   // Only connect if brand is valid
         ...(categoryConnect && { category: categoryConnect }), // Only connect if category is valid
       },
     });

@@ -21,7 +21,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     redirect("/sign-in");
   }
 
-  const { product, quantity, value, category, grower, createdAt, description } = parsedBody.data;
+  const { product, quantity, value, category, brand, createdAt, description } = parsedBody.data;
 
   // const productRow = await prisma.product.findFirst({
   //   where: {
@@ -45,15 +45,15 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     }
   }
   
-  const growerRow = await prisma.grower.findFirst({
+  const brandRow = await prisma.brand.findFirst({
     where: {
     
-      name: grower,
+      name: brand,
     },
   });
 
-  if (!growerRow) {
-    throw new Error("grower not found");
+  if (!brandRow) {
+    throw new Error("brand not found");
   }
 
   // const ingredientRow = await prisma.ingredient.findFirst({
@@ -76,8 +76,8 @@ export async function CreateProduct(form: CreateProductSchemaType) {
       description: description || "", // Set to empty string if not provided
       // icon: icon ?? "",  // Default to an empty string if icon is null
       category: categoryRow ? { connect: { id: categoryRow.id } } : undefined, // Conditionally connect to a category
-      grower: {
-        connect: { id: growerRow.id },    // Connect to an existing grower by ID
+      brand: {
+        connect: { id: brandRow.id },    // Connect to an existing brand by ID
       },
       // ingredient: {
       //   connect: { id: ingredientRow.id },    // Connect to an existing ingredient by ID

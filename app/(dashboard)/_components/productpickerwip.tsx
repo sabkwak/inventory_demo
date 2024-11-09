@@ -18,7 +18,7 @@ import {
 import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Product } from "@prisma/client";
-import { Grower, Category } from "@prisma/client";
+import { Brand, Category } from "@prisma/client";
 
 import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -58,18 +58,18 @@ const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
     [setValue, setOpen]
   );
 
-  const growersQuery = useQuery({
-    queryKey: ["growers"],
+  const brandsQuery = useQuery({
+    queryKey: ["brands"],
     queryFn: () =>
-      fetch(`/api/growers`).then((res) => res.json()),
+      fetch(`/api/brands`).then((res) => res.json()),
   });
-  if (growersQuery.isLoading) {
+  if (brandsQuery.isLoading) {
     return <div>Loading...</div>;
   }
-  if (growersQuery.isError) {
-    return <div>Error: {growersQuery.error.message}</div>;
+  if (brandsQuery.isError) {
+    return <div>Error: {brandsQuery.error.message}</div>;
   }
-  const growers=Array.isArray(growersQuery.data) ? growersQuery.data : [];
+  const brands=Array.isArray(brandsQuery.data) ? brandsQuery.data : [];
 
   
   const categoriesQuery = useQuery({
@@ -100,7 +100,7 @@ const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
           {selectedProduct ? (
             <ProductRow
     product={selectedProduct}
-    growers={growers}
+    brands={brands}
     categories={categories}
 />          ) : (
             "Select ingredient"
@@ -132,7 +132,7 @@ const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
                     setOpen((prev) => !prev);
                   }}
                 >
-              <ProductRow product={product} growers={growersQuery.data} categories={categoriesQuery.data} />
+              <ProductRow product={product} brands={brandsQuery.data} categories={categoriesQuery.data} />
               <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
@@ -151,9 +151,9 @@ const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
 
 export default ProductPicker;
 
-function ProductRow({ product, growers, categories }: { product: Product, growers: any[], categories: any[] }) {
+function ProductRow({ product, brands, categories }: { product: Product, brands: any[], categories: any[] }) {
 
-  const growerName = growers.find((grower) => grower.id === product.growerId).name;
+  const brandName = brands.find((brand) => brand.id === product.brandId).name;
 
   
   const categoryName = categories.find((category) => category.id === product.categoryId).name;
@@ -162,7 +162,7 @@ function ProductRow({ product, growers, categories }: { product: Product, grower
     <div className="flex items-center gap-2">
       {/* <span role="img">{product.icon}</span> */}
       <span>{product.product}</span>
-      <span>    -        {growerName}</span>
+      <span>    -        {brandName}</span>
       <span>    -        {categoryName}</span>
     </div>
   );
