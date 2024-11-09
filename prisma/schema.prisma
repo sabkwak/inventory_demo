@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+
+}
+
+model UserSettings {
+  userId   String @id
+  Unit     String @default("g")
+  weight String @default("g")
+}
+
+
+model Category {
+ id        Int       @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String    @unique
+  products  Product[] 
+
+}
+
+model Grower {
+   id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  name      String    @unique
+  products  Product[] 
+
+}
+
+model Client {
+   id           Int            @id @default(autoincrement())
+   createdAt    DateTime       @default(now())
+   name         String         @unique
+   transactions Transaction[]  // Relation to transactions
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  product     String    
+  growerId    Int
+  grower      Grower    @relation(fields: [growerId], references: [id])
+  categoryId  Int?
+  category    Category?  @relation(fields: [categoryId], references: [id])
+  transactions Transaction[]  // No @relation attribute needed here
+  quantity    Int       @default(0)
+  value    Int?       @default(0)
+  description String?
+
+  @@unique([product, growerId])  // Enforce unique combination of product, grower, and category
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  amount      Float
+  description String?
+  date        DateTime
+  type        String   @default("order")
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   Int
+  clientId    Int      // Foreign key reference to Client
+  client      Client   @relation(fields: [clientId], references: [id])  // Set up relation to Client
+  price    Int?       @default(0)
+
+}
+
+
+model MonthHistory {
+  userId  String
+  day     Int
+  month   Int
+  year    Int
+  order  Float
+  returns Float
+
+  @@id([day, month, year])
+}
+
+model YearHistory {
+  userId  String
+  month   Int
+  year    Int
+  order  Float
+  returns Float
+
+  @@id([month, year])
+}
