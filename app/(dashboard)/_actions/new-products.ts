@@ -56,15 +56,15 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     throw new Error("grower not found");
   }
 
-  // const strainRow = await prisma.strain.findFirst({
+  // const ingredientRow = await prisma.ingredient.findFirst({
   //   where: {
     
-  //     name: strain,
+  //     name: ingredient,
   //   },
   // });
 
-  // if (!strainRow) {
-  //   throw new Error("strain not found");
+  // if (!ingredientRow) {
+  //   throw new Error("ingredient not found");
   // }
 
 
@@ -79,10 +79,10 @@ export async function CreateProduct(form: CreateProductSchemaType) {
       grower: {
         connect: { id: growerRow.id },    // Connect to an existing grower by ID
       },
-      // strain: {
-      //   connect: { id: strainRow.id },    // Connect to an existing strain by ID
+      // ingredient: {
+      //   connect: { id: ingredientRow.id },    // Connect to an existing ingredient by ID
       // },
-      // strainIcon: strainRow.icon,
+      // ingredientIcon: ingredientRow.icon,
       // description: description || "",
       // createdAt,
       createdAt,

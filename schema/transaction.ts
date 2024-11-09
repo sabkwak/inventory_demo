@@ -14,8 +14,8 @@ export const CreateTransactionSchema = z.object({
   // category: z.string(),
   // grower: z.string(),
   // growerIcon: z.string().optional(),
-  // strain: z.string(),
-  // strainIcon: z.string().optional(),
+  // ingredient: z.string(),
+  // ingredientIcon: z.string().optional(),
   type: z.union([z.literal("order"), z.literal("returns")]),
 });
 

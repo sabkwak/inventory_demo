@@ -74,18 +74,18 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
   {
     accessorKey: "product",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Strain" />
+      <DataTableColumnHeader column={column} title="Ingredient" />
     ),
     filterFn: (row, id, value) => {
-      const strainName = row.original.productName;
-      return value.includes(strainName);
+      const ingredientName = row.original.productName;
+      return value.includes(ingredientName);
     },
     cell: ({ row }) => (
       <div className="flex gap-2">
         <div className="">{row.original.productName}</div>
       </div>
     ),
-    enableHiding: false, // Strain is visible by default
+    enableHiding: false, // Ingredient is visible by default
   },
   {
     accessorKey: "grower",
@@ -399,7 +399,7 @@ useEffect(() => {
           )}
           {table.getColumn("product") && (
             <DataTableFacetedFilter
-              title="Strain"
+              title="Ingredient"
               column={table.getColumn("product")}
               options={productsOptions}
             />
@@ -450,7 +450,7 @@ useEffect(() => {
               
                 return {
                   Amount: row.original.amount, // Assuming this is numeric, no formatting required
-                  Strain: row.original.productName,
+                  Ingredient: row.original.productName,
                   Grower: row.original.growerName,
                   Category: row.original.categoryName,
                   Client: row.original.clientName,

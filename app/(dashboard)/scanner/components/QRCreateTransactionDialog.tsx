@@ -116,7 +116,7 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
   
         // Check if inventory is sufficient
         if (inventory <= 0) {
-          toast.error("Inventory is insufficient. No more orders can be placed for this strain and grower.");
+          toast.error("Inventory is insufficient. No more orders can be placed for this ingredient and grower.");
           return;
         }
   
@@ -166,11 +166,11 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
               name="productId"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Strain</FormLabel>
+                  <FormLabel>Ingredient</FormLabel>
                   <FormControl>
                     <ProductPicker onChange={(productId: number) => form.setValue("productId", productId)} />
                   </FormControl>
-                  <FormDescription>Select a strain for this transaction (required)</FormDescription>
+                  <FormDescription>Select a ingredient for this transaction (required)</FormDescription>
                 </FormItem>
               )}
             />

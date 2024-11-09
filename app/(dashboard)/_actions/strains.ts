@@ -2,16 +2,16 @@
 
 // import prisma from "@/lib/prisma";
 // import {
-//   CreateStrainSchema,
-//   CreateStrainSchemaType,
-//   DeleteStrainSchema,
-//   DeleteStrainSchemaType,
-// } from "@/schema/strains";
+//   CreateIngredientSchema,
+//   CreateIngredientSchemaType,
+//   DeleteIngredientSchema,
+//   DeleteIngredientSchemaType,
+// } from "@/schema/ingredients";
 // import { currentUser } from "@clerk/nextjs";
 // import { redirect } from "next/navigation";
 
-// export async function CreateStrain(form: CreateStrainSchemaType) {
-//   const parsedBody = CreateStrainSchema.safeParse(form);
+// export async function CreateIngredient(form: CreateIngredientSchemaType) {
+//   const parsedBody = CreateIngredientSchema.safeParse(form);
 //   if (!parsedBody.success) {
 //     throw new Error("bad request");
 //   }
@@ -22,7 +22,7 @@
 //   }
 
 //   const { name} = parsedBody.data;
-//   return await prisma.strain.create({
+//   return await prisma.ingredient.create({
 //     data: {
 //       name,
 //       // icon,
@@ -30,8 +30,8 @@
 //   });
 // }
 
-// export async function DeleteStrain(form: DeleteStrainSchemaType) {
-//   const parsedBody = DeleteStrainSchema.safeParse(form);
+// export async function DeleteIngredient(form: DeleteIngredientSchemaType) {
+//   const parsedBody = DeleteIngredientSchema.safeParse(form);
 //   if (!parsedBody.success) {
 //     throw new Error("bad request");
 //   }
@@ -41,21 +41,21 @@
 //     redirect("/sign-in");
 //   }
 
-//   // Check if any products are referencing this strain
+//   // Check if any products are referencing this ingredient
 //   const products = await prisma.product.findMany({
 //     where: {
-//       strain: {
+//       ingredient: {
 //         name: parsedBody.data.name,
 //       },
 //     },
 //   });
 
 //   if (products.length > 0) {
-//     throw new Error("Cannot delete strain: it is being referenced by products");
+//     throw new Error("Cannot delete ingredient: it is being referenced by products");
 //   }
 
-//   // If no products reference the strain, delete it
-//   return await prisma.strain.delete({
+//   // If no products reference the ingredient, delete it
+//   return await prisma.ingredient.delete({
 //     where: {
 //       name: parsedBody.data.name,
 //     },

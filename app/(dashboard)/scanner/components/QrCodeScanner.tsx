@@ -7,7 +7,7 @@ import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransac
 
 const QrCodeScanner = () => {
   const [decodedText, setDecodedText] = useState<string | null>(null);
-  const [strainInfo, setStrainInfo] = useState<{ strainId: string, quantity: number, category: string, grower: string } | null>(null);
+  const [ingredientInfo, setIngredientInfo] = useState<{ ingredientId: string, quantity: number, category: string, grower: string } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -25,12 +25,12 @@ const QrCodeScanner = () => {
 
         // Parse the URL to extract query parameters
         const url = new URL(decodedText);
-        const strainId = decodeURIComponent(url.pathname.split('/').pop() || '');
+        const ingredientId = decodeURIComponent(url.pathname.split('/').pop() || '');
         const quantity = parseInt(url.searchParams.get('quantity') || '0', 10);
         const category = decodeURIComponent(url.searchParams.get('category') || '');
         const grower = decodeURIComponent(url.searchParams.get('grower') || '');
 
-        setStrainInfo({ strainId, quantity, category, grower });
+        setIngredientInfo({ ingredientId, quantity, category, grower });
         setIsModalOpen(true); // Open the modal when QR code is scanned
       },
       (error) => {
@@ -53,15 +53,15 @@ const QrCodeScanner = () => {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Strain Information</DialogTitle>
-            <DialogDescription> strain</DialogDescription>
+            <DialogTitle>Ingredient Information</DialogTitle>
+            <DialogDescription> ingredient</DialogDescription>
           </DialogHeader>
-          {strainInfo && (
+          {ingredientInfo && (
             <div className="space-y-4">
-              <p><strong>Strain ID:</strong> {strainInfo.strainId}</p>
-              <p><strong>Quantity:</strong> {strainInfo.quantity}</p>
-              <p><strong>Category:</strong> {strainInfo.category}</p>
-              <p><strong>Grower:</strong> {strainInfo.grower}</p>
+              <p><strong>Ingredient ID:</strong> {ingredientInfo.ingredientId}</p>
+              <p><strong>Quantity:</strong> {ingredientInfo.quantity}</p>
+              <p><strong>Category:</strong> {ingredientInfo.category}</p>
+              <p><strong>Grower:</strong> {ingredientInfo.grower}</p>
               <div>
               <CreateTransactionDialog
               trigger={

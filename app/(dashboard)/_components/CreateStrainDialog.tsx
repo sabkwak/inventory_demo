@@ -28,9 +28,9 @@
 // import { TransactionType } from "@/lib/types";
 // import { cn } from "@/lib/utils";
 // import {
-//   CreateStrainSchema,
-//   CreateStrainSchemaType,
-// } from "@/schema/strains";
+//   CreateIngredientSchema,
+//   CreateIngredientSchemaType,
+// } from "@/schema/ingredients";
 // import { zodResolver } from "@hookform/resolvers/zod";
 // import { CircleOff, Loader2, PlusSquare } from "lucide-react";
 // import React, { ReactNode, useCallback, useState } from "react";
@@ -38,20 +38,20 @@
 // import Picker from "@emoji-mart/react";
 // import data from "@emoji-mart/data";
 // import { useMutation, useQueryClient } from "@tanstack/react-query";
-// import { CreateStrain } from "@/app/(dashboard)/_actions/strains";
-// import { Strain } from "@prisma/client";
+// import { CreateIngredient } from "@/app/(dashboard)/_actions/ingredients";
+// import { Ingredient } from "@prisma/client";
 // import { toast } from "sonner";
 // import { useTheme } from "next-themes";
 
 // interface Props {
-//   successCallback: (strain: Strain) => void;
+//   successCallback: (ingredient: Ingredient) => void;
 //   trigger?: ReactNode;
 // }
 
-// function CreateStrainDialog({ successCallback, trigger }: Props) {
+// function CreateIngredientDialog({ successCallback, trigger }: Props) {
 //   const [open, setOpen] = useState(false);
-//   const form = useForm<CreateStrainSchemaType>({
-//     resolver: zodResolver(CreateStrainSchema),
+//   const form = useForm<CreateIngredientSchemaType>({
+//     resolver: zodResolver(CreateIngredientSchema),
 //     defaultValues: {
 //     },
 //   });
@@ -60,36 +60,36 @@
 //   const theme = useTheme();
 
 //   const { mutate, isPending } = useMutation({
-//     mutationFn: CreateStrain,
-//     onSuccess: async (data: Strain) => {
+//     mutationFn: CreateIngredient,
+//     onSuccess: async (data: Ingredient) => {
 //       form.reset({
 //         name: "",
 //         // icon: "",
 //       });
 
-//       toast.success(`Strain ${data.name} created successfully 🎉`, {
-//         id: "create-strain",
+//       toast.success(`Ingredient ${data.name} created successfully 🎉`, {
+//         id: "create-ingredient",
 //       });
 
 //       successCallback(data);
 
 //       await queryClient.invalidateQueries({
-//         queryKey: ["strains"],
+//         queryKey: ["ingredients"],
 //       });
 
 //       setOpen((prev) => !prev);
 //     },
 //     onError: () => {
 //       toast.error("Something went wrong", {
-//         id: "create-strain",
+//         id: "create-ingredient",
 //       });
 //     },
 //   });
 
 //   const onSubmit = useCallback(
-//     (values: CreateStrainSchemaType) => {
-//       toast.loading("Creating strain...", {
-//         id: "create-strain",
+//     (values: CreateIngredientSchemaType) => {
+//       toast.loading("Creating ingredient...", {
+//         id: "create-ingredient",
 //       });
 //       mutate(values);
 //     },
@@ -123,10 +123,10 @@
 //             >
              
 //             </span>
-//             strain
+//             ingredient
 //           </DialogTitle>
 //           <DialogDescription>
-//             Strains are used to group your transactions
+//             Ingredients are used to group your transactions
 //           </DialogDescription>
 //         </DialogHeader>
 //         <Form {...form}>
@@ -138,10 +138,10 @@
 //                 <FormItem>
 //                   <FormLabel>Name</FormLabel>
 //                   <FormControl>
-//                     <Input placeholder="Strain" {...field} />
+//                     <Input placeholder="Ingredient" {...field} />
 //                   </FormControl>
 //                   <FormDescription>
-//                     This is how your strain will appear in the app
+//                     This is how your ingredient will appear in the app
 //                   </FormDescription>
 //                 </FormItem>
 //               )}
@@ -191,7 +191,7 @@
 //                     </Popover>
 //                   </FormControl>
 //                   <FormDescription>
-//                     This is how your strain will appear in the app
+//                     This is how your ingredient will appear in the app
 //                   </FormDescription>
 //                 </FormItem>
 //               )}
@@ -220,4 +220,4 @@
 //   );
 // }
 
-// export default CreateStrainDialog;
+// export default CreateIngredientDialog;

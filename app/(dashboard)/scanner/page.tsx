@@ -8,7 +8,7 @@ import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransac
 
 const QrCodeScanner = () => {
   const [decodedText, setDecodedText] = useState<string | null>(null);
-  const [strainInfo, setStrainInfo] = useState<{ strainId: string, quantity: number, category: string, grower: string } | null>(null);
+  const [ingredientInfo, setIngredientInfo] = useState<{ ingredientId: string, quantity: number, category: string, grower: string } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scanner, setScanner] = useState<Html5QrcodeScanner | null>(null);
 
@@ -27,22 +27,22 @@ const QrCodeScanner = () => {
 
         // Parse the URL to extract query parameters
         const url = new URL(decodedText);
-        const strainId = decodeURIComponent(url.pathname.split('/').pop() || '');
+        const ingredientId = decodeURIComponent(url.pathname.split('/').pop() || '');
         const quantity = parseInt(url.searchParams.get('quantity') || '0', 10);
         const category = decodeURIComponent(url.searchParams.get('category') || '');
         const grower = decodeURIComponent(url.searchParams.get('grower') || '');
 
         try {
-          const response = await fetch(`/api/strains/${strainId}`);
+          const response = await fetch(`/api/ingredients/${ingredientId}`);
           const data = await response.json();
-          setStrainInfo({ 
-            strainId: data.name, 
+          setIngredientInfo({ 
+            ingredientId: data.name, 
             quantity, 
             category: data.category, 
             grower: data.grower 
           });
         } catch (error) {
-          console.error('Error fetching strain info:', error);
+          console.error('Error fetching ingredient info:', error);
         }
         
         setIsModalOpen(true); // Open the modal when QR code is scanned
@@ -84,13 +84,13 @@ const QrCodeScanner = () => {
 
             // Parse the URL to extract query parameters
             const url = new URL(decodedText);
-            const strainId = url.pathname.split('/').pop();
+            const ingredientId = url.pathname.split('/').pop();
             const quantity = parseInt(url.searchParams.get('quantity') || '0', 10);
             const category = url.searchParams.get('category') || '';
             const grower = url.searchParams.get('grower') || '';
 
-            setStrainInfo({ 
-              strainId: strainId || '', 
+            setIngredientInfo({ 
+              ingredientId: ingredientId || '', 
               quantity, 
               category: category || '', 
               grower: grower || '' 
@@ -114,7 +114,7 @@ const QrCodeScanner = () => {
           <div>
             <p className="text-3xl font-bold">Scanner</p>
             <p className="text-muted-foreground">
-              Scan the QR code to view the strain information
+              Scan the QR code to view the ingredient information
             </p>
           </div>
         </div>
@@ -132,15 +132,15 @@ const QrCodeScanner = () => {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Strain </DialogTitle>
-            <DialogDescription> strain</DialogDescription>
+            <DialogTitle>Ingredient </DialogTitle>
+            <DialogDescription> ingredient</DialogDescription>
           </DialogHeader>
-          {strainInfo && (
+          {ingredientInfo && (
             <div className="space-y-4">
-              <p><strong>Strain Name:</strong> {decodeURIComponent(strainInfo.strainId)}</p>
-              <p><strong>Quantity:</strong> {strainInfo.quantity}</p>
-              <p><strong>Category:</strong> {decodeURIComponent(strainInfo.category)}</p>
-              <p><strong>Grower:</strong> {decodeURIComponent(strainInfo.grower)}</p>
+              <p><strong>Ingredient Name:</strong> {decodeURIComponent(ingredientInfo.ingredientId)}</p>
+              <p><strong>Quantity:</strong> {ingredientInfo.quantity}</p>
+              <p><strong>Category:</strong> {decodeURIComponent(ingredientInfo.category)}</p>
+              <p><strong>Grower:</strong> {decodeURIComponent(ingredientInfo.grower)}</p>
               <CreateTransactionDialog
               trigger={
                 <Button

@@ -81,7 +81,7 @@ export async function EditProduct({
         id: parsedId,
       },
       data: {
-        product: parsed.data.product,  // Update strain name
+        product: parsed.data.product,  // Update ingredient name
         quantity,
         value: value || undefined,
         createdAt: new Date(createdAt),

@@ -55,9 +55,9 @@ interface Props {
   to: Date;
 }
 
-function generateQrCodeUrl(strainName: string, quantity: number, category: string, grower: string): string {
+function generateQrCodeUrl(ingredientName: string, quantity: number, category: string, grower: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL; // Use your app's URL
-  const url = new URL(`${baseUrl}/strain/${encodeURIComponent(strainName)}`);
+  const url = new URL(`${baseUrl}/ingredient/${encodeURIComponent(ingredientName)}`);
   url.searchParams.append('quantity', quantity.toString());
   url.searchParams.append('category', category);
   url.searchParams.append('grower', grower);
@@ -90,15 +90,15 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
   {
     accessorKey: "product",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Strain" />
+      <DataTableColumnHeader column={column} title="Ingredient" />
     ),
     filterFn: (row, id, value) => {
-      const strainName = row.original.productName;
-      return value.includes(strainName);
+      const ingredientName = row.original.productName;
+      return value.includes(ingredientName);
     },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.productName || "No Strain"}
+        {row.original.productName || "No Ingredient"}
       </div>
     ),
     enableHiding: false, // Amount is visible by default
@@ -352,7 +352,7 @@ const [pagination, setPagination] = useState({
           )}
           {table.getColumn("product") && (
             <DataTableFacetedFilter
-              title="Strain"
+              title="Ingredient"
               column={table.getColumn("product")}
               options={productsOptions}
             />
@@ -386,7 +386,7 @@ const [pagination, setPagination] = useState({
 
            return { 
             Quantity: row.original.quantity,
-                Strain: row.original.productName,
+                Ingredient: row.original.productName,
                 Grower: row.original.growerName,
                 Category: row.original.categoryName,
                 Description: row.original.description,
@@ -484,7 +484,7 @@ const qrCodeUrl = generateQrCodeUrl(product.productName, product.quantity, produ
           productId={product.id}
           trigger={undefined}
           successCallback={() => {
-            console.log("Strain edited successfully");
+            console.log("Ingredient edited successfully");
           }}
         />
       )}

@@ -11,8 +11,8 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        // Fetch the strain details from the database
-        const strain = await prisma.product.findUnique({
+        // Fetch the ingredient details from the database
+        const ingredient = await prisma.product.findUnique({
             where: { id: Number(id) },
             include: {
                 grower: true,
@@ -20,11 +20,11 @@ export async function GET(req: NextRequest) {
             },
         });
 
-        if (!strain) {
-            return NextResponse.json({ message: "Strain not found" }, { status: 404 });
+        if (!ingredient) {
+            return NextResponse.json({ message: "Ingredient not found" }, { status: 404 });
         }
 
-        return NextResponse.json(strain, { status: 200 });
+        return NextResponse.json(ingredient, { status: 200 });
     } catch (error) {
         return NextResponse.json({ message: "Server error", error }, { status: 500 });
     }

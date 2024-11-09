@@ -7,8 +7,8 @@ import DeleteGrowerDialog from "@/app/(dashboard)/_components/DeleteGrowerDialog
 import CreateClientDialog from "@/app/(dashboard)/_components/CreateClientDialog";
 import DeleteClientDialog from "@/app/(dashboard)/_components/DeleteClientDialog";
 
-// import CreateStrainDialog from "@/app/(dashboard)/_components/CreateStrainDialog";
-// import DeleteStrainDialog from "@/app/(dashboard)/_components/DeleteStrainDialog";
+// import CreateIngredientDialog from "@/app/(dashboard)/_components/CreateIngredientDialog";
+// import DeleteIngredientDialog from "@/app/(dashboard)/_components/DeleteIngredientDialog";
 import { WeightComboBox } from "@/components/WeightComboBox";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Category, Product } from "@prisma/client";
-// import { Strain } from "@prisma/client";
+// import { Ingredient } from "@prisma/client";
 import { Grower } from "@prisma/client";
 import { Client } from "@prisma/client";
 

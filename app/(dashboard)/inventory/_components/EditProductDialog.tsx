@@ -118,12 +118,12 @@ createdAt: new Date(),
 quantity: 0,
 value: 0,
         // icon: "",
-        // strain: undefined,
+        // ingredient: undefined,
         grower: undefined,
         category: undefined,
       });
 
-      toast.success(`Strain ${data.product} edited successfully 🎉`, {
+      toast.success(`Ingredient ${data.product} edited successfully 🎉`, {
         id: productId,
       });
 
@@ -144,7 +144,7 @@ value: 0,
 
   const onSubmit = useCallback(
     (values: EditProductSchemaType) => {
-      toast.loading("Editing strain...", {
+      toast.loading("Editing ingredient...", {
         id: productId,
       });
       mutate({
@@ -187,9 +187,9 @@ value: 0,
               name="product"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Strain Name</FormLabel>
+                  <FormLabel>Ingredient Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter strain name" {...field} />
+                    <Input placeholder="Enter ingredient name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

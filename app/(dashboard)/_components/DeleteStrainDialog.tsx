@@ -1,6 +1,6 @@
 // "use client";
 
-// import { DeleteStrain } from "@/app/(dashboard)/_actions/strains";
+// import { DeleteIngredient } from "@/app/(dashboard)/_actions/ingredients";
 // import {
 //   AlertDialog,
 //   AlertDialogAction,
@@ -13,34 +13,34 @@
 //   AlertDialogTrigger,
 // } from "@/components/ui/alert-dialog";
 // import { TransactionType } from "@/lib/types";
-// import { Strain } from "@prisma/client";
+// import { Ingredient } from "@prisma/client";
 // import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import React, { ReactNode } from "react";
 // import { toast } from "sonner";
 
 // interface Props {
 //   trigger: ReactNode;
-//   strain: Strain;
+//   ingredient: Ingredient;
 // }
 
-// function DeleteStrainDialog({ strain, trigger }: Props) {
-//   const strainIdentifier = `${strain.name}`;
+// function DeleteIngredientDialog({ ingredient, trigger }: Props) {
+//   const ingredientIdentifier = `${ingredient.name}`;
 //   const queryClient = useQueryClient();
 
 //   const deleteMutation = useMutation({
-//     mutationFn: DeleteStrain,
+//     mutationFn: DeleteIngredient,
 //     onSuccess: async () => {
-//       toast.success("Strain deleted successfully", {
-//         id: strainIdentifier,
+//       toast.success("Ingredient deleted successfully", {
+//         id: ingredientIdentifier,
 //       });
 
 //       await queryClient.invalidateQueries({
-//         queryKey: ["strains"],
+//         queryKey: ["ingredients"],
 //       });
 //     },
 //     onError: () => {
-//       toast.error("Please delete all Products assigned to this Strain under the Inventory tab first.", {
-//         id: strainIdentifier,
+//       toast.error("Please delete all Products assigned to this Ingredient under the Inventory tab first.", {
+//         id: ingredientIdentifier,
 //       });
 //     },
 //   });
@@ -52,18 +52,18 @@
 //           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 //           <AlertDialogDescription>
 //             This action cannot be undone. This will permanently delete your
-//             strain
+//             ingredient
 //           </AlertDialogDescription>
 //         </AlertDialogHeader>
 //         <AlertDialogFooter>
 //           <AlertDialogCancel>Cancel</AlertDialogCancel>
 //           <AlertDialogAction
 //             onClick={() => {
-//               toast.loading("Deleting strain...", {
-//                 id: strainIdentifier,
+//               toast.loading("Deleting ingredient...", {
+//                 id: ingredientIdentifier,
 //               });
 //               deleteMutation.mutate({
-//                 name: strain.name,
+//                 name: ingredient.name,
 //               });
 //             }}
 //           >
@@ -75,4 +75,4 @@
 //   );
 // }
 
-// export default DeleteStrainDialog;
+// export default DeleteIngredientDialog;

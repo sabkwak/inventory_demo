@@ -1,6 +1,6 @@
 // "use client";
 
-// import CreateStrainDialog from "@/app/(dashboard)/_components/CreateStrainDialog";
+// import CreateIngredientDialog from "@/app/(dashboard)/_components/CreateIngredientDialog";
 // import { Button } from "@/components/ui/button";
 // import {
 //   Command,
@@ -17,7 +17,7 @@
 // } from "@/components/ui/popover";
 // import { TransactionType } from "@/lib/types";
 // import { cn } from "@/lib/utils";
-// import { Strain } from "@prisma/client";
+// import { Ingredient } from "@prisma/client";
 // import { useQuery } from "@tanstack/react-query";
 // import { Check, ChevronsUpDown } from "lucide-react";
 // import React, { useCallback, useEffect, useState } from "react";
@@ -27,7 +27,7 @@
 //   onChange: (value: string) => void;
 // }
 
-// function StrainPicker({ onChange }: Props) {
+// function IngredientPicker({ onChange }: Props) {
 //   const [open, setOpen] = React.useState(false);
 //   const [value, setValue] = React.useState("");
 
@@ -37,22 +37,22 @@
 //     onChange(value);
 //   }, [onChange, value]);
 
-//   const strainsQuery = useQuery({
-//     queryKey: ["strains"],
+//   const ingredientsQuery = useQuery({
+//     queryKey: ["ingredients"],
 //     queryFn: () =>
-//       fetch(`/api/strains`).then((res) => res.json()),
+//       fetch(`/api/ingredients`).then((res) => res.json()),
 //   });
 
-//   // Ensure strainsQuery.data is an array
-//   const strains = Array.isArray(strainsQuery.data) ? strainsQuery.data : [];
+//   // Ensure ingredientsQuery.data is an array
+//   const ingredients = Array.isArray(ingredientsQuery.data) ? ingredientsQuery.data : [];
 
-//   const selectedStrain = strains.find(
-//     (strain: Strain) => strain.name === value
+//   const selectedIngredient = ingredients.find(
+//     (ingredient: Ingredient) => ingredient.name === value
 //   );
 
 //   const successCallback = useCallback(
-//     (strain: Strain) => {
-//       setValue(strain.name);
+//     (ingredient: Ingredient) => {
+//       setValue(ingredient.name);
 //       setOpen((prev) => !prev);
 //     },
 //     [setValue, setOpen]
@@ -67,10 +67,10 @@
 //           aria-expanded={open}
 //           className="w-[200px] justify-between"
 //         >
-//           {selectedStrain ? (
-//             <StrainRow strain={selectedStrain} />
+//           {selectedIngredient ? (
+//             <IngredientRow ingredient={selectedIngredient} />
 //           ) : (
-//             "Select strain"
+//             "Select ingredient"
 //           )}
 //           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 //         </Button>
@@ -81,29 +81,29 @@
 //             e.preventDefault();
 //           }}
 //         >
-//           <CommandInput placeholder="Search strain..." />
-//           <CreateStrainDialog successCallback={successCallback} />
+//           <CommandInput placeholder="Search ingredient..." />
+//           <CreateIngredientDialog successCallback={successCallback} />
 //           <CommandEmpty>
-//             <p>Strain not found</p>
+//             <p>Ingredient not found</p>
 //             <p className="text-xs text-muted-foreground">
-//               Tip: Create a new strain
+//               Tip: Create a new ingredient
 //             </p>
 //           </CommandEmpty>
 //           <CommandGroup>
 //             <CommandList>
-//               {strains.map((strain: Strain) => (
+//               {ingredients.map((ingredient: Ingredient) => (
 //                 <CommandItem
-//                   key={strain.name}
+//                   key={ingredient.name}
 //                   onSelect={() => {
-//                     setValue(strain.name);
+//                     setValue(ingredient.name);
 //                     setOpen((prev) => !prev);
 //                   }}
 //                 >
-//                   <StrainRow strain={strain} />
+//                   <IngredientRow ingredient={ingredient} />
 //                   <Check
 //                     className={cn(
 //                       "mr-2 w-4 h-4 opacity-0",
-//                       value === strain.name && "opacity-100"
+//                       value === ingredient.name && "opacity-100"
 //                     )}
 //                   />
 //                 </CommandItem>
@@ -116,13 +116,13 @@
 //   );
 // }
 
-// export default StrainPicker;
+// export default IngredientPicker;
 
-// function StrainRow({ strain }: { strain: Strain }) {
+// function IngredientRow({ ingredient }: { ingredient: Ingredient }) {
 //   return (
 //     <div className="flex items-center gap-2">
-//       {/* <span role="img">{strain.icon}</span> */}
-//       <span>{strain.name}</span>
+//       {/* <span role="img">{ingredient.icon}</span> */}
+//       <span>{ingredient.name}</span>
 //     </div>
 //   );
 // }

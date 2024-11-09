@@ -21,7 +21,7 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-// import StrainPicker from "@/app/(dashboard)/_components/StrainPicker";
+// import IngredientPicker from "@/app/(dashboard)/_components/IngredientPicker";
 import GrowerPicker from "@/app/(dashboard)/_components/GrowerPicker";
 import CategoryPicker from "@/app/(dashboard)/_components/CategoryPicker";
 
@@ -86,9 +86,9 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
     [form]
   );
 
-  // const handleStrainChange = useCallback(
+  // const handleIngredientChange = useCallback(
   //   (value: string) => {
-  //     form.setValue("strain", value);
+  //     form.setValue("ingredient", value);
   //   },
   //   [form]
   // );
@@ -122,12 +122,12 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         value: undefined,
         quantity: 0,
         // icon: "",
-        // strain: undefined,
+        // ingredient: undefined,
         grower: undefined,
         category: undefined,
       });
 
-      toast.success(`Strain ${data.product} created successfully 🎉`, {
+      toast.success(`Ingredient ${data.product} created successfully 🎉`, {
         id: "create-product",
       });
 
@@ -150,7 +150,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
 
   const onSubmit = useCallback(
     (values: CreateProductSchemaType) => {
-      toast.loading("Creating strain...", {
+      toast.loading("Creating ingredient...", {
         id: "create-product",
       });
       mutate(values);
@@ -186,10 +186,10 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
           <DialogTitle>
             Create
             <span className={cn("m-1", "text-emerald-500")}></span>
-            new Strain
+            new Ingredient
           </DialogTitle>
           <DialogDescription>
-            Name a new Strain and assign a Grower and Category
+            Name a new Ingredient and assign a Grower and Category
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -201,10 +201,10 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Strain" {...field} />
+                    <Input placeholder="Ingredient" {...field} />
                   </FormControl>
                   <FormDescription>
-                    This is how your strain will appear in the app (required)
+                    This is how your ingredient will appear in the app (required)
                   </FormDescription>
                 </FormItem>
               )}
@@ -220,7 +220,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                       {...field}
                       value={field.value ?? undefined} // Ensure default value is 0
                       type="number"
-                      placeholder="Enter strain value"
+                      placeholder="Enter ingredient value"
                       min={0} // Prevent negative values
                     />
                   </FormControl>
@@ -256,7 +256,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                     <CategoryPicker categoryName="" onChange={handleCategoryChange} />
                   </FormControl>
                   <FormDescription>
-                    Select a category for this Strain
+                    Select a category for this Ingredient
                   </FormDescription>
                 </FormItem>
               )}
@@ -271,7 +271,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                     <GrowerPicker growerName="" onChange={handleGrowerChange} />
                   </FormControl>
                   <FormDescription>
-                    Select a grower for this Strain (required)
+                    Select a grower for this Ingredient (required)
                   </FormDescription>
                 </FormItem>
               )}
@@ -289,7 +289,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         />
           </FormControl>
                   <FormDescription>
-                    New strain description/notes
+                    New ingredient description/notes
                   </FormDescription>
                 </FormItem>
               )}

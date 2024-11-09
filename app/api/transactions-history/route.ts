@@ -38,7 +38,7 @@ export type GetTransactionHistoryResponseType = Awaited<
   ReturnType<typeof getTransactionsHistory>
 >;
 
-// Function to fetch the transaction history with grower, strain, category, and client included
+// Function to fetch the transaction history with grower, ingredient, category, and client included
 async function getTransactionsHistory(userId: string, from: Date, to: Date) {
   const userSettings = await prisma.userSettings.findUnique({
     where: {
