@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 // import IngredientPicker from "@/app/(dashboard)/_components/IngredientPicker";
 import BrandPicker from "@/app/(dashboard)/_components/BrandPicker";
-import CategoryPicker from "@/app/(dashboard)/_components/CategoryPicker";
+import UnitPicker from "@/app/(dashboard)/_components/UnitPicker";
 
 import {
   Popover,
@@ -100,9 +100,9 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
     [form]
   );
 
-  const handleCategoryChange = useCallback(
+  const handleUnitChange = useCallback(
     (value: string) => {
-      form.setValue("category", value);
+      form.setValue("unit", value);
     },
     [form]
   );
@@ -124,7 +124,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         // icon: "",
         // ingredient: undefined,
         brand: undefined,
-        category: undefined,
+        unit: undefined,
       });
 
       toast.success(`Ingredient ${data.product} created successfully 🎉`, {
@@ -189,7 +189,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
             new Ingredient
           </DialogTitle>
           <DialogDescription>
-            Name a new Ingredient and assign a Brand and Category
+            Name a new Ingredient and assign a Brand and Unit
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -248,15 +248,15 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
             />
             <FormField
               control={form.control}
-              name="category"
+              name="unit"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>Unit</FormLabel>
                   <FormControl>
-                    <CategoryPicker categoryName="" onChange={handleCategoryChange} />
+                    <UnitPicker unitName="" onChange={handleUnitChange} />
                   </FormControl>
                   <FormDescription>
-                    Select a category for this Ingredient
+                    Select a unit for this Ingredient
                   </FormDescription>
                 </FormItem>
               )}

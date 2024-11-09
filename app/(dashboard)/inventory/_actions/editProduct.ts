@@ -36,7 +36,7 @@ export async function EditProduct({
     throw new Error("Invalid product form");
   }
 
-  const { product, quantity, value, category, brand, createdAt, description } = parsed.data;
+  const { product, quantity, value, unit, brand, createdAt, description } = parsed.data;
 
    // Validate that the quantity is not negative
    if (quantity < 0) {
@@ -57,22 +57,22 @@ export async function EditProduct({
     brandConnect = { connect: { id: brandRecord.id } };
   }
 
-  // Fetch category ID from the category code (e.g., "MISC")
-  let categoryConnect;
-  if (category) {
-    const categoryRecord = await prisma.category.findUnique({
-      where: { name: category }, // Assuming 'code' is the field storing values like "MISC"
+  // Fetch unit ID from the unit code (e.g., "MISC")
+  let unitConnect;
+  if (unit) {
+    const unitRecord = await prisma.unit.findUnique({
+      where: { name: unit }, // Assuming 'code' is the field storing values like "MISC"
     });
 
-    if (!categoryRecord) {
-      throw new Error(`Category with code ${category} not found`);
+    if (!unitRecord) {
+      throw new Error(`Unit with code ${unit} not found`);
     }
-    categoryConnect = { connect: { id: categoryRecord.id } };
+    unitConnect = { connect: { id: unitRecord.id } };
   }
 
-  // Log the brand and category connections before the update
+  // Log the brand and unit connections before the update
   console.log("Brand connect:", brandConnect);
-  console.log("Category connect:", categoryConnect);
+  console.log("Unit connect:", unitConnect);
 
   // Update the product in the database
   try {
@@ -87,7 +87,7 @@ export async function EditProduct({
         createdAt: new Date(createdAt),
         description: description || "",
         ...(brandConnect && { brand: brandConnect }),   // Only connect if brand is valid
-        ...(categoryConnect && { category: categoryConnect }), // Only connect if category is valid
+        ...(unitConnect && { unit: unitConnect }), // Only connect if unit is valid
       },
     });
 

@@ -16,7 +16,7 @@ function IngredientDetails() {
       <h1>Ingredient: {data.productName}</h1>
       <p>Quantity: {data.quantity}</p>
       <p>Brand: {data.brandName}</p>
-      <p>Category: {data.categoryName}</p>
+      <p>Unit: {data.unitName}</p>
     </div>
   );
 }

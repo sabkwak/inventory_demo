@@ -8,7 +8,7 @@ import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransac
 
 const QrCodeScanner = () => {
   const [decodedText, setDecodedText] = useState<string | null>(null);
-  const [ingredientInfo, setIngredientInfo] = useState<{ ingredientId: string, quantity: number, category: string, brand: string } | null>(null);
+  const [ingredientInfo, setIngredientInfo] = useState<{ ingredientId: string, quantity: number, unit: string, brand: string } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scanner, setScanner] = useState<Html5QrcodeScanner | null>(null);
 
@@ -29,7 +29,7 @@ const QrCodeScanner = () => {
         const url = new URL(decodedText);
         const ingredientId = decodeURIComponent(url.pathname.split('/').pop() || '');
         const quantity = parseInt(url.searchParams.get('quantity') || '0', 10);
-        const category = decodeURIComponent(url.searchParams.get('category') || '');
+        const unit = decodeURIComponent(url.searchParams.get('unit') || '');
         const brand = decodeURIComponent(url.searchParams.get('brand') || '');
 
         try {
@@ -38,7 +38,7 @@ const QrCodeScanner = () => {
           setIngredientInfo({ 
             ingredientId: data.name, 
             quantity, 
-            category: data.category, 
+            unit: data.unit, 
             brand: data.brand 
           });
         } catch (error) {
@@ -86,13 +86,13 @@ const QrCodeScanner = () => {
             const url = new URL(decodedText);
             const ingredientId = url.pathname.split('/').pop();
             const quantity = parseInt(url.searchParams.get('quantity') || '0', 10);
-            const category = url.searchParams.get('category') || '';
+            const unit = url.searchParams.get('unit') || '';
             const brand = url.searchParams.get('brand') || '';
 
             setIngredientInfo({ 
               ingredientId: ingredientId || '', 
               quantity, 
-              category: category || '', 
+              unit: unit || '', 
               brand: brand || '' 
             });
             setIsModalOpen(true); // Open the modal when QR code is scanned
@@ -139,7 +139,7 @@ const QrCodeScanner = () => {
             <div className="space-y-4">
               <p><strong>Ingredient Name:</strong> {decodeURIComponent(ingredientInfo.ingredientId)}</p>
               <p><strong>Quantity:</strong> {ingredientInfo.quantity}</p>
-              <p><strong>Category:</strong> {decodeURIComponent(ingredientInfo.category)}</p>
+              <p><strong>Unit:</strong> {decodeURIComponent(ingredientInfo.unit)}</p>
               <p><strong>Brand:</strong> {decodeURIComponent(ingredientInfo.brand)}</p>
               <CreateTransactionDialog
               trigger={

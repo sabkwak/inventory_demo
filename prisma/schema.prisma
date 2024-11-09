@@ -16,12 +16,12 @@ datasource db {
 
 model UserSettings {
   userId   String @id
-  Unit     String @default("g")
+  defaultUnit     String @default("g")
   weight String @default("g")
 }
 
 
-model Category {
+model Unit {
  id        Int       @id @default(autoincrement())
   createdAt DateTime @default(now())
   name      String    @unique
@@ -51,14 +51,14 @@ model Product {
   product     String    
   brandId    Int
   brand      Brand    @relation(fields: [brandId], references: [id])
-  categoryId  Int?
-  category    Category?  @relation(fields: [categoryId], references: [id])
+  unitId  Int?
+  unit    Unit?  @relation(fields: [unitId], references: [id])
   transactions Transaction[]  // No @relation attribute needed here
   quantity    Int       @default(0)
   value    Int?       @default(0)
   description String?
 
-  @@unique([product, brandId])  // Enforce unique combination of product, brand, and category
+  @@unique([product, brandId])  // Enforce unique combination of product, brand, and unit
 }
 
 model Transaction {

@@ -81,7 +81,7 @@ function History({ userSettings }: { userSettings: UserSettings }) {
                 <BarChart
                   height={300}
                   data={historyDataQuery.data}
-                  barCategoryGap={5}
+                  barUnitGap={5}
                 >
                   <defs>
                     <linearGradient id="orderBar" x1="0" y1="0" x2="0" y2="1">

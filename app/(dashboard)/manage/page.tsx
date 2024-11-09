@@ -1,7 +1,7 @@
 "use client";
 
-import CreateCategoryDialog from "@/app/(dashboard)/_components/CreateCategoryDialog";
-import DeleteCategoryDialog from "@/app/(dashboard)/_components/DeleteCategoryDialog";
+import CreateUnitDialog from "@/app/(dashboard)/_components/CreateUnitDialog";
+import DeleteUnitDialog from "@/app/(dashboard)/_components/DeleteUnitDialog";
 import CreateBrandDialog from "@/app/(dashboard)/_components/CreateBrandDialog";
 import DeleteBrandDialog from "@/app/(dashboard)/_components/DeleteBrandDialog";
 import CreateClientDialog from "@/app/(dashboard)/_components/CreateClientDialog";
@@ -22,7 +22,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Category, Product } from "@prisma/client";
+import { Unit, Product } from "@prisma/client";
 // import { Ingredient } from "@prisma/client";
 import { Brand } from "@prisma/client";
 import { Client } from "@prisma/client";
@@ -116,7 +116,7 @@ function page() {
           <div>
             <p className="text-3xl font-bold">Manage</p>
             <p className="text-muted-foreground">
-              Manage your account settings and categories
+              Manage your account settings and units
             </p>
           </div>
         </div>
@@ -124,7 +124,7 @@ function page() {
       {/* END HEADER */}
       <div className="container flex flex-col gap-4 p-4">
         <ClientList  />
-        <CategoryList  />
+        <UnitList  />
         <BrandList  />
       </div>
     </>
@@ -133,37 +133,37 @@ function page() {
 
 export default page;
 
-function CategoryList() {
-  const categoriesQuery = useQuery({
-    queryKey: ["categories"],
+function UnitList() {
+  const unitsQuery = useQuery({
+    queryKey: ["units"],
     queryFn: () =>
-      fetch(`/api/categories`).then((res) => res.json()),
+      fetch(`/api/units`).then((res) => res.json()),
   });
 
-  const dataAvailable = categoriesQuery.data && categoriesQuery.data.length > 0;
+  const dataAvailable = unitsQuery.data && unitsQuery.data.length > 0;
 
   return (
-    <SkeletonWrapper isLoading={categoriesQuery.isLoading}>
+    <SkeletonWrapper isLoading={unitsQuery.isLoading}>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
              
               <div>
-                 Categories
+                 Units
                 <div className="text-sm text-muted-foreground">
                   Sorted by name
                 </div>
               </div>
             </div>
 
-            <CreateCategoryDialog
+            <CreateUnitDialog
             
-              successCallback={() => categoriesQuery.refetch()}
+              successCallback={() => unitsQuery.refetch()}
               trigger={
                 <Button className="gap-2 text-sm">
                   <PlusSquare className="h-4 w-4" />
-                  Create Category
+                  Create Unit
                 </Button>
               }
             />
@@ -182,7 +182,7 @@ function CategoryList() {
               >
               
               </span>
-              Categories yet
+              Units yet
             </p>
 
             <p className="text-sm text-muted-foreground">
@@ -192,8 +192,8 @@ function CategoryList() {
         )}
         {dataAvailable && (
           <div className="grid grid-flow-row gap-2 p-2 sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {categoriesQuery.data.map((category: Category) => (
-              <CategoryCard category={category} key={category.name} />
+            {unitsQuery.data.map((unit: Unit) => (
+              <UnitCard unit={unit} key={unit.name} />
             ))}
           </div>
         )}
@@ -202,17 +202,17 @@ function CategoryList() {
   );
 }
 
-function CategoryCard({ category }: { category: Category }) {
+function UnitCard({ unit }: { unit: Unit }) {
   return (
     <div className="flex border-separate flex-col justify-between rounded-md border shadow-md shadow-black/[0.1] dark:shadow-white/[0.1]">
       <div className="flex flex-col items-center gap-2 p-4">
         {/* <span className="text-3xl" role="img">
-          {category.icon}
+          {unit.icon}
         </span> */}
-        <span>{category.name}</span>
+        <span>{unit.name}</span>
       </div>
-      <DeleteCategoryDialog
-        category={category}
+      <DeleteUnitDialog
+        unit={unit}
         trigger={
           <Button
             className="flex w-full border-separate items-center gap-2 rounded-t-none text-muted-foreground hover:bg-red-500/20"

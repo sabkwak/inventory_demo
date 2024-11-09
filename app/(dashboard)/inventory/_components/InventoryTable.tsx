@@ -55,11 +55,11 @@ interface Props {
   to: Date;
 }
 
-function generateQrCodeUrl(ingredientName: string, quantity: number, category: string, brand: string): string {
+function generateQrCodeUrl(ingredientName: string, quantity: number, unit: string, brand: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL; // Use your app's URL
   const url = new URL(`${baseUrl}/ingredient/${encodeURIComponent(ingredientName)}`);
   url.searchParams.append('quantity', quantity.toString());
-  url.searchParams.append('category', category);
+  url.searchParams.append('unit', unit);
   url.searchParams.append('brand', brand);
   return url.toString();
 }
@@ -176,17 +176,17 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     },
   },
   {
-    accessorKey: "category",
+    accessorKey: "unit",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Category" />
+      <DataTableColumnHeader column={column} title="Unit" />
     ),
     filterFn: (row, id, value) => {
-      const categoryName = row.original.categoryName;
-      return value.includes(categoryName);
+      const unitName = row.original.unitName;
+      return value.includes(unitName);
     },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.categoryName || "No Category"}
+        {row.original.unitName || "No Unit"}
       </div>
     ),
         enableHiding: true, 
@@ -230,7 +230,7 @@ function ProductTable({ from, to }: Props) {
         date: false,
         value: false,
         type: false,
-        category: false,
+        unit: false,
       };
     }
     return {
@@ -238,7 +238,7 @@ function ProductTable({ from, to }: Props) {
       date: false,
       value: false,
       type: false,
-      category: false,
+      unit: false,
     };
   });
 // Add pagination state with pageSize set to 30
@@ -296,16 +296,16 @@ const [pagination, setPagination] = useState({
     XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
     XLSX.writeFile(workbook, "Inventory.xlsx");
   };
-  const categoriesOptions = useMemo(() => {
-    const categoriesMap = new Map<string, { value: string; label: string }>();
+  const unitsOptions = useMemo(() => {
+    const unitsMap = new Map<string, { value: string; label: string }>();
     history.data?.forEach((product) => {
-      const categoryName = product.category?.name || "No Category";
-      categoriesMap.set(categoryName, {
-        value: categoryName,
-        label: `${categoryName}`,
+      const unitName = product.unit?.name || "No Unit";
+      unitsMap.set(unitName, {
+        value: unitName,
+        label: `${unitName}`,
       });
     });
-    return Array.from(categoriesMap.values());
+    return Array.from(unitsMap.values());
   }, [history.data]);
   const brandsOptions = useMemo(() => {
     const brandsMap = new Map();
@@ -336,11 +336,11 @@ const [pagination, setPagination] = useState({
     <div className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">
         <div className="flex gap-2">
-          {table.getColumn("category") && (
+          {table.getColumn("unit") && (
             <DataTableFacetedFilter
-              title="Category"
-              column={table.getColumn("category")}
-              options={categoriesOptions}
+              title="Unit"
+              column={table.getColumn("unit")}
+              options={unitsOptions}
             />
           )}
                     {table.getColumn("brand") && (
@@ -388,7 +388,7 @@ const [pagination, setPagination] = useState({
             Quantity: row.original.quantity,
                 Ingredient: row.original.productName,
                 Brand: row.original.brandName,
-                Category: row.original.categoryName,
+                Unit: row.original.unitName,
                 Description: row.original.description,
                 Date_Dropped: formattedDateTime,
                 Value: row.original.value,
@@ -468,7 +468,7 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
   };
   
 // Create a string with all the product details
-const qrCodeUrl = generateQrCodeUrl(product.productName, product.quantity, product.categoryName, product.brandName);
+const qrCodeUrl = generateQrCodeUrl(product.productName, product.quantity, product.unitName, product.brandName);
 
   return (
     <>

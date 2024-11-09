@@ -1,6 +1,6 @@
 "use client";
 
-import CreateCategoryDialog from "@/app/(dashboard)/_components/CreateCategoryDialog";
+import CreateUnitDialog from "@/app/(dashboard)/_components/CreateUnitDialog";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -17,18 +17,18 @@ import {
 } from "@/components/ui/popover";
 import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Category } from "@prisma/client";
+import { Unit } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronsUpDown } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 
 interface Props {
   onChange: (value: string) => void;
-  categoryName: string; // Add this line
+  unitName: string; // Add this line
 
 }
 
-function CategoryPicker({  onChange, categoryName }: Props) {
+function UnitPicker({  onChange, unitName }: Props) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
@@ -38,22 +38,22 @@ function CategoryPicker({  onChange, categoryName }: Props) {
     onChange(value);
   }, [onChange, value]);
 
-  const categoriesQuery = useQuery({
-    queryKey: ["categories"],
+  const unitsQuery = useQuery({
+    queryKey: ["units"],
     queryFn: () =>
-      fetch(`/api/categories`).then((res) => res.json()),
+      fetch(`/api/units`).then((res) => res.json()),
   });
 
-  // Ensure categoriesQuery.data is an array
-  const categories = Array.isArray(categoriesQuery.data) ? categoriesQuery.data : [];
+  // Ensure unitsQuery.data is an array
+  const units = Array.isArray(unitsQuery.data) ? unitsQuery.data : [];
 
-  const selectedCategory = categories.find(
-    (category: Category) => category.name === value
+  const selectedUnit = units.find(
+    (unit: Unit) => unit.name === value
   );
 
   const successCallback = useCallback(
-    (category: Category) => {
-      setValue(category.name);
+    (unit: Unit) => {
+      setValue(unit.name);
       setOpen((prev) => !prev);
     },
     [setValue, setOpen]
@@ -68,10 +68,10 @@ function CategoryPicker({  onChange, categoryName }: Props) {
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {selectedCategory ? (
-            <CategoryRow category={selectedCategory} />
+          {selectedUnit ? (
+            <UnitRow unit={selectedUnit} />
           ) : (
-            "Select category"
+            "Select unit"
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -82,29 +82,29 @@ function CategoryPicker({  onChange, categoryName }: Props) {
             e.preventDefault();
           }}
         >
-          <CommandInput placeholder="Search category..." />
-          <CreateCategoryDialog  successCallback={successCallback} />
+          <CommandInput placeholder="Search unit..." />
+          <CreateUnitDialog  successCallback={successCallback} />
           <CommandEmpty>
-            <p>Category not found</p>
+            <p>Unit not found</p>
             <p className="text-xs text-muted-foreground">
-              Tip: Create a new category
+              Tip: Create a new unit
             </p>
           </CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {categories.map((category: Category) => (
+              {units.map((unit: Unit) => (
                 <CommandItem
-                  key={category.name}
+                  key={unit.name}
                   onSelect={() => {
-                    setValue(category.name);
+                    setValue(unit.name);
                     setOpen((prev) => !prev);
                   }}
                 >
-                  <CategoryRow category={category} />
+                  <UnitRow unit={unit} />
                   <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
-                      value === category.name && "opacity-100"
+                      value === unit.name && "opacity-100"
                     )}
                   />
                 </CommandItem>
@@ -117,13 +117,13 @@ function CategoryPicker({  onChange, categoryName }: Props) {
   );
 }
 
-export default CategoryPicker;
+export default UnitPicker;
 
-function CategoryRow({ category }: { category: Category }) {
+function UnitRow({ unit }: { unit: Unit }) {
   return (
     <div className="flex items-center gap-2">
-      {/* <span role="img">{category.icon}</span> */}
-      <span>{category.name}</span>
+      {/* <span role="img">{unit.icon}</span> */}
+      <span>{unit.name}</span>
     </div>
   );
 }

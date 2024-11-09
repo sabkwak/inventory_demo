@@ -31,7 +31,7 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import CategoryPicker from "@/app/(dashboard)/_components/CategoryPicker";
+import UnitPicker from "@/app/(dashboard)/_components/UnitPicker";
 import {
   EditTransactionSchema,
   EditTransactionSchemaType,
@@ -147,7 +147,7 @@ transaction: {
               price: values.price,
               date: values.date,
               description: values.description,
-              type: values.type, // Convert category to ID if present
+              type: values.type, // Convert unit to ID if present
             },
           });    },
         [mutate]

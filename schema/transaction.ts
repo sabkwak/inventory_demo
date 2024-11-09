@@ -10,8 +10,8 @@ export const CreateTransactionSchema = z.object({
   description: z.string().nullable().optional(), // Make description optional
   date: z.coerce.date(),
   client: z.string().nullable().optional(),
-  // categoryIcon: z.string().optional(),
-  // category: z.string(),
+  // unitIcon: z.string().optional(),
+  // unit: z.string(),
   // brand: z.string(),
   // brandIcon: z.string().optional(),
   // ingredient: z.string(),
@@ -32,7 +32,7 @@ export const EditTransactionSchema = z.object({
   amount: z.coerce.number().min(0).multipleOf(0.01).default(0), // Make it optional with a default value of 0
   date: z.coerce.date(),
   description: z.string().nullable().optional(), // Make description optional
-  // categoryIcon: z.string().optional(),
+  // unitIcon: z.string().optional(),
   type: z.union([z.literal("order"), z.literal("returns")]),
 });
 
