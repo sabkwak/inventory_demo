@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "UserSettings" (
     "userId" TEXT NOT NULL,
-    "Unit" TEXT NOT NULL DEFAULT 'g',
+    "DefaultUnit" TEXT NOT NULL DEFAULT 'g',
     "weight" TEXT NOT NULL DEFAULT 'g',
 
     CONSTRAINT "UserSettings_pkey" PRIMARY KEY ("userId")

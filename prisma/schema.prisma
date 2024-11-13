@@ -16,7 +16,7 @@ datasource db {
 
 model UserSettings {
   userId   String @id
-  Unit     String @default("g")
+  DefaultUnit     String @default("g")
   weight String @default("g")
 }
 

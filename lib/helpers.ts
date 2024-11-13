@@ -20,16 +20,16 @@ export async function fetchTransactionById(id: number) {
 }
 
 
-export function GetFormatterForWeight(unit: string) {
-  const weightInfo = Weights.find((w) => w.value === unit);
+export function GetFormatterForWeight(defaultUnit: string) {
+  const weightInfo = Weights.find((w) => w.value === defaultUnit);
 
   if (!weightInfo) {
-    throw new Error(`Invalid unit: ${unit}`);
+    throw new Error(`Invalid defaultUnit: ${defaultUnit}`);
   }
 
   return new Intl.NumberFormat(weightInfo.locale, {
-    style: "unit",
-    unit: weightInfo.intlUnit,  // Use the valid Intl unit name
-    unitDisplay: "short",
+    style: "defaultUnit",
+    defaultUnit: weightInfo.intlDefaultUnit,  // Use the valid Intl defaultUnit name
+    defaultUnitDisplay: "short",
   });
 }

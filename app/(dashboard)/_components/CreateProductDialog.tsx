@@ -163,8 +163,8 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
     return <div>Loading user settings...</div>;
   }
 
-  // Destructure the weight unit from userSettings
-  const weightUnit = userSettings?.weight || "g"; // Default to grams if not available
+  // Destructure the weight defaultUnit from userSettings
+  const weightDefaultUnit = userSettings?.weight || "g"; // Default to grams if not available
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
