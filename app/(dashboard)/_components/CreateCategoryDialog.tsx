@@ -28,9 +28,9 @@ import {
 import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
-  CreateUnitSchema,
-  CreateUnitSchemaType,
-} from "@/schema/units";
+  CreateCategorySchema,
+  CreateCategorySchemaType,
+} from "@/schema/categories";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleOff, Loader2, PlusSquare } from "lucide-react";
 import React, { ReactNode, useCallback, useState } from "react";
@@ -38,21 +38,21 @@ import { useForm } from "react-hook-form";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CreateUnit } from "@/app/(dashboard)/_actions/units";
-import { Unit } from "@prisma/client";
+import { CreateCategory } from "@/app/(dashboard)/_actions/categories";
+import { Category } from "@prisma/client";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 
 interface Props {
 
-  successCallback: (unit: Unit) => void;
+  successCallback: (category: Category) => void;
   trigger?: ReactNode;
 }
 
-function CreateUnitDialog({ successCallback, trigger }: Props) {
+function CreateCategoryDialog({ successCallback, trigger }: Props) {
   const [open, setOpen] = useState(false);
-  const form = useForm<CreateUnitSchemaType>({
-    resolver: zodResolver(CreateUnitSchema),
+  const form = useForm<CreateCategorySchemaType>({
+    resolver: zodResolver(CreateCategorySchema),
     defaultValues: {
      
     },
@@ -62,37 +62,37 @@ function CreateUnitDialog({ successCallback, trigger }: Props) {
   const theme = useTheme();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: CreateUnit,
-    onSuccess: async (data: Unit) => {
+    mutationFn: CreateCategory,
+    onSuccess: async (data: Category) => {
       form.reset({
         name: "",
         // icon: "",
        
       });
 
-      toast.success(`Unit ${data.name} created successfully 🎉`, {
-        id: "create-unit",
+      toast.success(`Category ${data.name} created successfully 🎉`, {
+        id: "create-category",
       });
 
       successCallback(data);
 
       await queryClient.invalidateQueries({
-        queryKey: ["units"],
+        queryKey: ["categories"],
       });
 
       setOpen((prev) => !prev);
     },
     onError: () => {
       toast.error("Something went wrong", {
-        id: "create-unit",
+        id: "create-category",
       });
     },
   });
 
   const onSubmit = useCallback(
-    (values: CreateUnitSchemaType) => {
-      toast.loading("Creating unit...", {
-        id: "create-unit",
+    (values: CreateCategorySchemaType) => {
+      toast.loading("Creating category...", {
+        id: "create-category",
       });
       mutate(values);
     },
@@ -125,10 +125,10 @@ function CreateUnitDialog({ successCallback, trigger }: Props) {
             >
               
             </span>
-            unit
+            category
           </DialogTitle>
           <DialogDescription>
-            Units are used to group your transactions
+            Categories are used to group your transactions
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -140,10 +140,10 @@ function CreateUnitDialog({ successCallback, trigger }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Unit" {...field} />
+                    <Input placeholder="Category" {...field} />
                   </FormControl>
                   <FormDescription>
-                    This is how your unit will appear in the app
+                    This is how your category will appear in the app
                   </FormDescription>
                 </FormItem>
               )}
@@ -193,7 +193,7 @@ function CreateUnitDialog({ successCallback, trigger }: Props) {
                     </Popover>
                   </FormControl>
                   <FormDescription>
-                    This is how your unit will appear in the app
+                    This is how your category will appear in the app
                   </FormDescription>
                 </FormItem>
               )}
@@ -222,4 +222,4 @@ function CreateUnitDialog({ successCallback, trigger }: Props) {
   );
 }
 
-export default CreateUnitDialog;
+export default CreateCategoryDialog;

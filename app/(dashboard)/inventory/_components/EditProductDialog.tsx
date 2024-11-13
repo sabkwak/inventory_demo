@@ -23,7 +23,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import BrandPicker from "@/app/(dashboard)/_components/BrandPicker";
-import UnitPicker from "@/app/(dashboard)/_components/UnitPicker";
+import CategoryPicker from "@/app/(dashboard)/_components/CategoryPicker";
 import {
   EditProductSchema,
   EditProductSchemaType,
@@ -47,7 +47,7 @@ interface Props {
     updatedAt: Date;
     product: string;
     brandId: number;
-    unitId: number | null;
+    categoryId: number | null;
     quantity: number | 0;
     value: number | 0;
     description: string | null;
@@ -59,9 +59,9 @@ interface Props {
 
 function EditProductDialog({ productId, trigger, successCallback, product, open, setOpen }: Props) {
   const [showPicker, setShowPicker] = useState(false); 
-  const [showUnitPicker, setShowUnitPicker] = useState(false); 
+  const [showCategoryPicker, setShowCategoryPicker] = useState(false); 
 
-  const [unitName, setUnitName] = useState<string>("");
+  const [categoryName, setCategoryName] = useState<string>("");
   const [brandName, setBrandName] = useState<string>("");
   // const [open, setOpen] = useState(false);
 
@@ -75,7 +75,7 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
       quantity: product.quantity || 0,
       value: product.value || 0,
       brand: brandName,
-      unit: unitName,
+      category: categoryName,
       description: product.description || "",
       createdAt: new Date(product.createdAt),
     },
@@ -83,30 +83,30 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
 
   const queryClient = useQueryClient();
   useEffect(() => {
-    async function fetchUnitAndBrand() {
+    async function fetchCategoryAndBrand() {
       try {
-        const unitResponse = await fetch(`/api/units?id=${product.unitId}`);
-        const unitData = await unitResponse.json();
+        const categoryResponse = await fetch(`/api/categories?id=${product.categoryId}`);
+        const categoryData = await categoryResponse.json();
 
         const brandResponse = await fetch(`/api/brands?id=${product.brandId}`);
         const brandData = await brandResponse.json();
 
-        if (unitResponse.ok) {
-          setUnitName(unitData.name);
+        if (categoryResponse.ok) {
+          setCategoryName(categoryData.name);
         }
 
         if (brandResponse.ok) {
           setBrandName(brandData.name);
         }
       } catch (error) {
-        toast.error("Failed to fetch unit or brand information.");
+        toast.error("Failed to fetch category or brand information.");
       }
     }
 
     if (open) {
-      fetchUnitAndBrand();
+      fetchCategoryAndBrand();
     }
-  }, [open, product.unitId, product.brandId]);
+  }, [open, product.categoryId, product.brandId]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: EditProduct,
@@ -120,7 +120,7 @@ value: 0,
         // icon: "",
         // ingredient: undefined,
         brand: undefined,
-        unit: undefined,
+        category: undefined,
       });
 
       toast.success(`Ingredient ${data.product} edited successfully 🎉`, {
@@ -157,7 +157,7 @@ value: 0,
           createdAt: values.createdAt,
           brand: values.brand,
           description: values.description,
-          unit: values.unit, // Convert unit to ID if present
+          category: values.category, // Convert category to ID if present
         },
       });    },
     [mutate]
@@ -233,29 +233,29 @@ value: 0,
             />
  <FormField
   control={form.control}
-  name="unit"
+  name="category"
   render={({ field }) => (
     <FormItem className="flex flex-col">
-      <FormLabel>Unit</FormLabel>
+      <FormLabel>Category</FormLabel>
       <FormControl>
-        {!showUnitPicker ? (
+        {!showCategoryPicker ? (
         <Input
           {...field} // Connects the input field to react-hook-form
-          value={field.value || unitName} // Displays the fetched brandName
-          onFocus={() => setShowUnitPicker(true)} // Show picker on input focus
-          placeholder="Enter unit name"
+          value={field.value || categoryName} // Displays the fetched brandName
+          onFocus={() => setShowCategoryPicker(true)} // Show picker on input focus
+          placeholder="Enter category name"
         />
       ) : (
-        <UnitPicker
-          unitName={unitName} // Pass the current brand name
+        <CategoryPicker
+          categoryName={categoryName} // Pass the current brand name
           onChange={(value: string) => {
             field.onChange(value); // Update form value
-            setShowUnitPicker(false); // Hide picker once a value is selected
+            setShowCategoryPicker(false); // Hide picker once a value is selected
           }}
         />
       )}
       </FormControl>
-      <FormDescription>*Warning Selecting this box will reset the unit for this item</FormDescription>
+      <FormDescription>*Warning Selecting this box will reset the category for this item</FormDescription>
     </FormItem>
   )}
 /> 
@@ -283,7 +283,7 @@ value: 0,
         />
       )}
       </FormControl>
-      <FormDescription>*Warning* You will have to re-enter if you click Unit or Brand</FormDescription>
+      <FormDescription>*Warning* You will have to re-enter if you click Category or Brand</FormDescription>
     </FormItem>
   )}
 /> 

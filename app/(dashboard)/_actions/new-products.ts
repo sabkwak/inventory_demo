@@ -21,7 +21,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     redirect("/sign-in");
   }
 
-  const { product, quantity, value, unit, brand, createdAt, description } = parsedBody.data;
+  const { product, quantity, value, category, brand, createdAt, description } = parsedBody.data;
 
   // const productRow = await prisma.product.findFirst({
   //   where: {
@@ -31,17 +31,17 @@ export async function CreateProduct(form: CreateProductSchemaType) {
   // });
 
   // if (!productRow) {
-  //   throw new Error("unit not found");
+  //   throw new Error("category not found");
   // }
-  // Handle the optional unit
-  let unitRow = null;
-  if (unit) {
-    unitRow = await prisma.unit.findFirst({
-      where: { name: unit },
+  // Handle the optional category
+  let categoryRow = null;
+  if (category) {
+    categoryRow = await prisma.category.findFirst({
+      where: { name: category },
     });
 
-    if (!unitRow) {
-      throw new Error("Unit not found");
+    if (!categoryRow) {
+      throw new Error("Category not found");
     }
   }
   
@@ -75,7 +75,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
       product,
       description: description || "", // Set to empty string if not provided
       // icon: icon ?? "",  // Default to an empty string if icon is null
-      unit: unitRow ? { connect: { id: unitRow.id } } : undefined, // Conditionally connect to a unit
+      category: categoryRow ? { connect: { id: categoryRow.id } } : undefined, // Conditionally connect to a category
       brand: {
         connect: { id: brandRow.id },    // Connect to an existing brand by ID
       },

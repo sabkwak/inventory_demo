@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { id: parseInt(id as string, 10) },
       include: {
         brand: true,
-        unit: true,
+        category: true,
       },
     });
 

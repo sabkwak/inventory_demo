@@ -35,12 +35,12 @@ export type GetBalanceStatsResponseType = Awaited<
 >;
 
 async function getBalanceStats(userId: string, from: string, to: string) {
-  const flowerUnitId = 1;  // Assuming Flower has unit ID 1
-  const miscUnitId = 2;    // Assuming Misc has unit ID 2
+  const flowerCategoryId = 1;  // Assuming Flower has category ID 1
+  const miscCategoryId = 2;    // Assuming Misc has category ID 2
 
   const flowerBalance = await prisma.product.aggregate({
     where: {
-      unitId: 3,
+      categoryId: 3,
       createdAt: {
         gte: new Date(from),
         lte: new Date(to),
@@ -53,7 +53,7 @@ async function getBalanceStats(userId: string, from: string, to: string) {
 
   const miscBalance = await prisma.product.aggregate({
     where: {
-      unitId: 4,
+      categoryId: 4,
       createdAt: {
         gte: new Date(from),
         lte: new Date(to),

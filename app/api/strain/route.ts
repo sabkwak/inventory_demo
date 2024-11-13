@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
             where: { id: Number(id) },
             include: {
                 brand: true,
-                unit: true,
+                category: true,
             },
         });
 

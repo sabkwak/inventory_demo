@@ -158,20 +158,20 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     enableHiding: true, // Amount is visible by default
   },
   {
-    accessorKey: "unit",
+    accessorKey: "category",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Unit" />
+      <DataTableColumnHeader column={column} title="Category" />
     ),
     filterFn: (row, id, value) => {
-      const unitName = row.original.unitName;
-      return value.includes(unitName);
+      const categoryName = row.original.categoryName;
+      return value.includes(categoryName);
     },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.unitName || "No Unit"}
+        {row.original.categoryName || "No Category"}
       </div>
     ),
-    enableHiding: false, // Unit is hidden by default
+    enableHiding: false, // Category is hidden by default
   },
   {
     accessorKey: "client",
@@ -278,7 +278,7 @@ const [pagination, setPagination] = useState({
         description: false, // Initially hidden
         date: false, // Initially hidden
         price: false,
-        unit: false,
+        category: false,
         client: false,
         type: false,
       };
@@ -287,7 +287,7 @@ const [pagination, setPagination] = useState({
       description: false, // Initially hidden
       date: false, // Initially hidden
       price: false,
-      unit: false,
+      category: false,
       client: false,
       type: false,
     };
@@ -328,16 +328,16 @@ useEffect(() => {
     },
     onColumnVisibilityChange: setColumnVisibility, // Update visibility state based on changes
   });
-  const unitsOptions = useMemo(() => {
-    const unitsMap = new Map<string, { value: string; label: string }>();
+  const categoriesOptions = useMemo(() => {
+    const categoriesMap = new Map<string, { value: string; label: string }>();
     history.data?.forEach((transaction) => {
-      const unitName = transaction.unitName || "No Unit";
-      unitsMap.set(unitName, {
-        value: unitName,
-        label: `${unitName}`,
+      const categoryName = transaction.categoryName || "No Category";
+      categoriesMap.set(categoryName, {
+        value: categoryName,
+        label: `${categoryName}`,
       });
     });
-    return Array.from(unitsMap.values());
+    return Array.from(categoriesMap.values());
   }, [history.data]);
   const clientsOptions = useMemo(() => {
     const clientsMap = new Map();
@@ -383,11 +383,11 @@ useEffect(() => {
     <div className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">
         <div className="flex gap-2">
-          {table.getColumn("unit") && (
+          {table.getColumn("category") && (
             <DataTableFacetedFilter
-              title="Unit"
-              column={table.getColumn("unit")}
-              options={unitsOptions}
+              title="Category"
+              column={table.getColumn("category")}
+              options={categoriesOptions}
             />
           )}
           {table.getColumn("brand") && (
@@ -452,7 +452,7 @@ useEffect(() => {
                   Amount: row.original.amount, // Assuming this is numeric, no formatting required
                   Ingredient: row.original.productName,
                   Brand: row.original.brandName,
-                  Unit: row.original.unitName,
+                  Category: row.original.categoryName,
                   Client: row.original.clientName,
                   Description: row.original.description,
                   Date_Ordered_or_Returned: formattedDateTime, // Use the formatted date and time for export

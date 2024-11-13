@@ -68,7 +68,7 @@ export async function EditTransaction({
     typeConnect = { connect: { id: typeRecord.id } };
   }
 
-  // Log the client and unit connections before the update
+  // Log the client and category connections before the update
   console.log("Type connect:", typeConnect);
 
   // Update the transaction in the database

@@ -18,7 +18,7 @@ import {
 import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Product } from "@prisma/client";
-import { Brand, Unit } from "@prisma/client";
+import { Brand, Category } from "@prisma/client";
 
 import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -72,18 +72,18 @@ const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
   const brands=Array.isArray(brandsQuery.data) ? brandsQuery.data : [];
 
   
-  const unitsQuery = useQuery({
-    queryKey: ["units"],
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
     queryFn: () =>
-      fetch(`/api/units`).then((res) => res.json()),
+      fetch(`/api/categories`).then((res) => res.json()),
   });
-  if (unitsQuery.isLoading) {
+  if (categoriesQuery.isLoading) {
     return <div>Loading...</div>;
   }
-  if (unitsQuery.isError) {
-    return <div>Error: {unitsQuery.error.message}</div>;
+  if (categoriesQuery.isError) {
+    return <div>Error: {categoriesQuery.error.message}</div>;
   }
-  const units=Array.isArray(unitsQuery.data) ? unitsQuery.data : [];
+  const categories=Array.isArray(categoriesQuery.data) ? categoriesQuery.data : [];
 
   // Ensure productsQuery.data is an array
   // Ensure productsQuery.data is an array
@@ -101,7 +101,7 @@ const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
             <ProductRow
     product={selectedProduct}
     brands={brands}
-    units={units}
+    categories={categories}
 />          ) : (
             "Select ingredient"
           )}
@@ -132,7 +132,7 @@ const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
                     setOpen((prev) => !prev);
                   }}
                 >
-              <ProductRow product={product} brands={brandsQuery.data} units={unitsQuery.data} />
+              <ProductRow product={product} brands={brandsQuery.data} categories={categoriesQuery.data} />
               <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
@@ -151,19 +151,19 @@ const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
 
 export default ProductPicker;
 
-function ProductRow({ product, brands, units }: { product: Product, brands: any[], units: any[] }) {
+function ProductRow({ product, brands, categories }: { product: Product, brands: any[], categories: any[] }) {
 
   const brandName = brands.find((brand) => brand.id === product.brandId).name;
 
   
-  const unitName = units.find((unit) => unit.id === product.unitId).name;
+  const categoryName = categories.find((category) => category.id === product.categoryId).name;
 
   return (
     <div className="flex items-center gap-2">
       {/* <span role="img">{product.icon}</span> */}
       <span>{product.product}</span>
       <span>    -        {brandName}</span>
-      <span>    -        {unitName}</span>
+      <span>    -        {categoryName}</span>
     </div>
   );
 }

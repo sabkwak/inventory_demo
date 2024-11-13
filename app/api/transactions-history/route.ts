@@ -38,7 +38,7 @@ export type GetTransactionHistoryResponseType = Awaited<
   ReturnType<typeof getTransactionsHistory>
 >;
 
-// Function to fetch the transaction history with brand, ingredient, unit, and client included
+// Function to fetch the transaction history with brand, ingredient, category, and client included
 async function getTransactionsHistory(userId: string, from: Date, to: Date) {
   const userSettings = await prisma.userSettings.findUnique({
     where: {
@@ -51,7 +51,7 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
 
   // const formatter = GetFormatterForWeight(userSettings.weight);
 
-  // Fetch transactions including product's brand, unit, and client
+  // Fetch transactions including product's brand, category, and client
   const transactions = await prisma.transaction.findMany({
     where: {
       date: {
@@ -66,9 +66,9 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
       product: {
         select: {
           product: true,  // Include product name
-          unit: {
+          category: {
             select: {
-              name: true, // Include unit name
+              name: true, // Include category name
             },
           },
           brand: {
@@ -90,7 +90,7 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
     ...transaction,
     productName: transaction.product?.product || "---",  // Add product name
     brandName: transaction.product?.brand?.name || "---",  // Add brand name
-    unitName: transaction.product?.unit?.name || "---",  // Add unit name
+    categoryName: transaction.product?.category?.name || "---",  // Add category name
     clientName: transaction.client?.name || "",  // Add client name
     amount: transaction.amount,  // Format the amount based on user weight
   }));

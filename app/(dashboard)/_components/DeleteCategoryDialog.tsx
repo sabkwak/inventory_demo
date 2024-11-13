@@ -1,6 +1,6 @@
 "use client";
 
-import { DeleteUnit } from "@/app/(dashboard)/_actions/units";
+import { DeleteCategory } from "@/app/(dashboard)/_actions/categories";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,34 +13,34 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { TransactionType } from "@/lib/types";
-import { Unit } from "@prisma/client";
+import { Category } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { ReactNode } from "react";
 import { toast } from "sonner";
 
 interface Props {
   trigger: ReactNode;
-  unit: Unit;
+  category: Category;
 }
 
-function DeleteUnitDialog({ unit, trigger }: Props) {
-  const unitIdentifier = `${unit.name}`;
+function DeleteCategoryDialog({ category, trigger }: Props) {
+  const categoryIdentifier = `${category.name}`;
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: DeleteUnit,
+    mutationFn: DeleteCategory,
     onSuccess: async () => {
-      toast.success("Unit deleted successfully", {
-        id: unitIdentifier,
+      toast.success("Category deleted successfully", {
+        id: categoryIdentifier,
       });
 
       await queryClient.invalidateQueries({
-        queryKey: ["units"],
+        queryKey: ["categories"],
       });
     },
     onError: () => {
-      toast.error("Please delete all Products assigned to this Unit under the Inventory tab first.", {
-        id: unitIdentifier,
+      toast.error("Please delete all Products assigned to this Category under the Inventory tab first.", {
+        id: categoryIdentifier,
       });
     },
   });
@@ -52,19 +52,19 @@ function DeleteUnitDialog({ unit, trigger }: Props) {
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete your
-            unit
+            category
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              toast.loading("Deleting unit...", {
-                id: unitIdentifier,
+              toast.loading("Deleting category...", {
+                id: categoryIdentifier,
               });
               deleteMutation.mutate({
-                name: unit.name,
-                // icon: unit.icon
+                name: category.name,
+                // icon: category.icon
               
               });
             }}
@@ -77,4 +77,4 @@ function DeleteUnitDialog({ unit, trigger }: Props) {
   );
 }
 
-export default DeleteUnitDialog;
+export default DeleteCategoryDialog;
