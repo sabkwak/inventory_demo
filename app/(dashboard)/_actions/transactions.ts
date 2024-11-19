@@ -19,7 +19,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     redirect("/sign-in");
   }
 
-  const { productId, client, price, amount, date, description, type } = parsedBody.data;
+  const { productId, client, price, amount, date, description, type , unit} = parsedBody.data;
 
   // Fetch the product based on the productId
   const productRow = await prisma.product.findUnique({

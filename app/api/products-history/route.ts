@@ -73,6 +73,11 @@ async function getProductsHistory(
           name: true,
         },
       },
+      unit: {
+        select: {
+          name: true,
+        },
+      },
       brand: {
         select: {
           name: true,
@@ -86,6 +91,8 @@ async function getProductsHistory(
     productName: product.product || "---",
     brandName: product.brand?.name || "---",
     categoryName: product.category?.name || "---",
+    unitName: product.unit?.name || "",
+
     // date: product.createdAt,
   }));
 }

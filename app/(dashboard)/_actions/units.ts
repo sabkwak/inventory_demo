@@ -2,16 +2,16 @@
 
 import prisma from "@/lib/prisma";
 import {
-  CreateCategorySchema,
-  CreateCategorySchemaType,
-  DeleteCategorySchema,
-  DeleteCategorySchemaType,
-} from "@/schema/categories";
+  CreateUnitSchema,
+  CreateUnitSchemaType,
+  DeleteUnitSchema,
+  DeleteUnitSchemaType,
+} from "@/schema/units";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-export async function CreateCategory(form: CreateCategorySchemaType) {
-  const parsedBody = CreateCategorySchema.safeParse(form);
+export async function CreateUnit(form: CreateUnitSchemaType) {
+  const parsedBody = CreateUnitSchema.safeParse(form);
   if (!parsedBody.success) {
     throw new Error("bad request");
   }
@@ -21,17 +21,17 @@ export async function CreateCategory(form: CreateCategorySchemaType) {
     redirect("/sign-in");
   }
 
-  const { name , unit} = parsedBody.data;
-  return await prisma.category.create({
+  const { name, unit} = parsedBody.data;
+  return await prisma.unit.create({
     data: {
       name,
-      // icon
+      // icon,
     },
   });
 }
 
-export async function DeleteCategory(form: DeleteCategorySchemaType) {
-  const parsedBody = DeleteCategorySchema.safeParse(form);
+export async function DeleteUnit(form: DeleteUnitSchemaType) {
+  const parsedBody = DeleteUnitSchema.safeParse(form);
   if (!parsedBody.success) {
     throw new Error("bad request");
   }
@@ -41,13 +41,12 @@ export async function DeleteCategory(form: DeleteCategorySchemaType) {
     redirect("/sign-in");
   }
 
-  return await prisma.category.delete({
+  return await prisma.unit.delete({
     where: {
-    
+     
        
         name: parsedBody.data.name,
-      
-    
+       
     },
   });
 }

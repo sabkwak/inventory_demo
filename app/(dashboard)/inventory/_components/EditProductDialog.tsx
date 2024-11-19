@@ -24,6 +24,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from "@/components/ui/input";
 import BrandPicker from "@/app/(dashboard)/_components/BrandPicker";
 import CategoryPicker from "@/app/(dashboard)/_components/CategoryPicker";
+import UnitPicker from "@/app/(dashboard)/_components/UnitPicker";
+
 import {
   EditProductSchema,
   EditProductSchemaType,
@@ -48,6 +50,7 @@ interface Props {
     product: string;
     brandId: number;
     categoryId: number | null;
+    unitId: number | null;
     quantity: number | 0;
     value: number | 0;
     description: string | null;
@@ -62,6 +65,9 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
   const [showCategoryPicker, setShowCategoryPicker] = useState(false); 
 
   const [categoryName, setCategoryName] = useState<string>("");
+  const [showUnitPicker, setShowUnitPicker] = useState(false); 
+
+  const [unitName, setUnitName] = useState<string>("");
   const [brandName, setBrandName] = useState<string>("");
   // const [open, setOpen] = useState(false);
 
@@ -76,6 +82,8 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
       value: product.value || 0,
       brand: brandName,
       category: categoryName,
+      unit: unitName,
+
       description: product.description || "",
       createdAt: new Date(product.createdAt),
     },
@@ -87,26 +95,32 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
       try {
         const categoryResponse = await fetch(`/api/categories?id=${product.categoryId}`);
         const categoryData = await categoryResponse.json();
-
+        const unitResponse = await fetch(`/api/categories?id=${product.unitId}`);
+        const unitData = await unitResponse.json();
         const brandResponse = await fetch(`/api/brands?id=${product.brandId}`);
         const brandData = await brandResponse.json();
 
+        if (unitResponse.ok) {
+          setUnitName(unitData.name);
+        }
+        
         if (categoryResponse.ok) {
           setCategoryName(categoryData.name);
         }
+
 
         if (brandResponse.ok) {
           setBrandName(brandData.name);
         }
       } catch (error) {
-        toast.error("Failed to fetch category or brand information.");
+        toast.error("Failed to fetch unit, category or brand information.");
       }
     }
 
     if (open) {
       fetchCategoryAndBrand();
     }
-  }, [open, product.categoryId, product.brandId]);
+  }, [open, product.categoryId, product.brandId, product.unitId]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: EditProduct,
@@ -121,6 +135,8 @@ value: 0,
         // ingredient: undefined,
         brand: undefined,
         category: undefined,
+        unit: undefined,
+
       });
 
       toast.success(`Ingredient ${data.product} edited successfully 🎉`, {
@@ -158,6 +174,8 @@ value: 0,
           brand: values.brand,
           description: values.description,
           category: values.category, // Convert category to ID if present
+          unit: values.unit, // Convert category to ID if present
+
         },
       });    },
     [mutate]
@@ -231,6 +249,34 @@ value: 0,
                 </FormItem>
               )}
             />
+             <FormField
+  control={form.control}
+  name="unit"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel>Unit</FormLabel>
+      <FormControl>
+        {!showUnitPicker ? (
+        <Input
+          {...field} // Connects the input field to react-hook-form
+          value={field.value || unitName} // Displays the fetched brandName
+          onFocus={() => setShowUnitPicker(true)} // Show picker on input focus
+          placeholder="Enter unit name"
+        />
+      ) : (
+        <UnitPicker
+          unitName={unitName} // Pass the current brand name
+          onChange={(value: string) => {
+            field.onChange(value); // Update form value
+            setShowUnitPicker(false); // Hide picker once a value is selected
+          }}
+        />
+      )}
+      </FormControl>
+      <FormDescription>*Warning Selecting this box will reset the unit for this item</FormDescription>
+    </FormItem>
+  )}
+/> 
  <FormField
   control={form.control}
   name="category"

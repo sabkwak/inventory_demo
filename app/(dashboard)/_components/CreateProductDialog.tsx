@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 // import IngredientPicker from "@/app/(dashboard)/_components/IngredientPicker";
 import BrandPicker from "@/app/(dashboard)/_components/BrandPicker";
 import CategoryPicker from "@/app/(dashboard)/_components/CategoryPicker";
+import UnitPicker from "@/app/(dashboard)/_components/UnitPicker";
 
 import {
   Popover,
@@ -106,7 +107,12 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
     },
     [form]
   );
-
+  const handleUnitChange = useCallback(
+    (value: string) => {
+      form.setValue("Unit", value);
+    },
+    [form]
+  );
   const queryClient = useQueryClient();
   const theme = useTheme();
   const { register, handleSubmit, formState } = useForm();
@@ -124,7 +130,9 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         // icon: "",
         // ingredient: undefined,
         brand: undefined,
-        category: undefined,
+        category: undefined,        
+        unit: undefined,
+
       });
 
       toast.success(`Ingredient ${data.product} created successfully 🎉`, {
@@ -189,7 +197,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
             new Ingredient
           </DialogTitle>
           <DialogDescription>
-            Name a new Ingredient and assign a Brand and Category
+            Name a new Ingredient and assign a Unit, Brand, Category
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -214,13 +222,13 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Value ($)</FormLabel>
+                  <FormLabel>Price ($)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       value={field.value ?? undefined} // Ensure default value is 0
                       type="number"
-                      placeholder="Enter ingredient value"
+                      placeholder="Enter ingredient price"
                       min={0} // Prevent negative values
                     />
                   </FormControl>
@@ -243,6 +251,21 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                     />
                   </FormControl>
 
+                </FormItem>
+              )}
+            />
+                        <FormField
+              control={form.control}
+              name="unit"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Unit</FormLabel>
+                  <FormControl>
+                    <UnitPicker unitName="" onChange={handleUnitChange} />
+                  </FormControl>
+                  <FormDescription>
+                    Select a unit for this Ingredient
+                  </FormDescription>
                 </FormItem>
               )}
             />

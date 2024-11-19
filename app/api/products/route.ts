@@ -15,6 +15,7 @@ export async function GET(request: Request) {
     include: {
       brand: true,
       category: true,
+      unit: true,
     },
     orderBy: {
       product: "asc",

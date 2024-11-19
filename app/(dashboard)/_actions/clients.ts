@@ -21,7 +21,7 @@ export async function CreateClient(form: CreateClientSchemaType) {
     redirect("/sign-in");
   }
 
-  const { name} = parsedBody.data;
+  const { name, unit} = parsedBody.data;
   return await prisma.client.create({
     data: {
       name,

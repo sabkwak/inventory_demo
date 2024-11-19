@@ -55,10 +55,12 @@ interface Props {
   to: Date;
 }
 
-function generateQrCodeUrl(ingredientName: string, quantity: number, category: string, brand: string): string {
+function generateQrCodeUrl(ingredientName: string, quantity: number, unit: string, category: string, brand: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL; // Use your app's URL
   const url = new URL(`${baseUrl}/ingredient/${encodeURIComponent(ingredientName)}`);
   url.searchParams.append('quantity', quantity.toString());
+  url.searchParams.append('unit', unit.toString());
+
   url.searchParams.append('category', category);
   url.searchParams.append('brand', brand);
   return url.toString();
@@ -76,7 +78,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     ),
     cell: ({ row }) => (
       <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.quantity}
+        {row.original.quantity} {row.original.unitName ? row.original.unitName : ''}
       </p>
     ),
     enableHiding: false, // Amount is visible by default
@@ -120,7 +122,23 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     enableHiding: false, // Amount is visible by default
 
   },
+  {
+    accessorKey: "unit",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Unit" />
+    ),
+    filterFn: (row, id, value) => {
+      const unitName = row.original.unitName;
+      return value.includes(unitName);
+    },
+    cell: ({ row }) => (
+      <div className="flex gap-2">
+        {row.original.unitName || "No Unit"}
+      </div>
+    ),
+    enableHiding: true,
 
+  },
   {
     accessorKey: "description",
     header: ({ column }) => (
@@ -307,6 +325,17 @@ const [pagination, setPagination] = useState({
     });
     return Array.from(categoriesMap.values());
   }, [history.data]);
+  const unitsOptions = useMemo(() => {
+    const unitsMap = new Map<string, { value: string; label: string }>();
+    history.data?.forEach((product) => {
+      const unitName = product.unit?.name || "No Unit";
+      unitsMap.set(unitName, {
+        value: unitName,
+        label: `${unitName}`,
+      });
+    });
+    return Array.from(unitsMap.values());
+  }, [history.data]);
   const brandsOptions = useMemo(() => {
     const brandsMap = new Map();
     history.data?.forEach((inventory) => {
@@ -341,6 +370,13 @@ const [pagination, setPagination] = useState({
               title="Category"
               column={table.getColumn("category")}
               options={categoriesOptions}
+            />
+          )}
+                    {table.getColumn("unit") && (
+            <DataTableFacetedFilter
+              title="Unit"
+              column={table.getColumn("unit")}
+              options={unitsOptions}
             />
           )}
                     {table.getColumn("brand") && (
@@ -387,6 +423,7 @@ const [pagination, setPagination] = useState({
            return { 
             Quantity: row.original.quantity,
                 Ingredient: row.original.productName,
+                Unit: row.original.unitName,
                 Brand: row.original.brandName,
                 Category: row.original.categoryName,
                 Description: row.original.description,
@@ -468,7 +505,7 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
   };
   
 // Create a string with all the product details
-const qrCodeUrl = generateQrCodeUrl(product.productName, product.quantity, product.categoryName, product.brandName);
+const qrCodeUrl = generateQrCodeUrl(product.productName, product.quantity, product.unitName, product.categoryName, product.brandName);
 
   return (
     <>

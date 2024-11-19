@@ -36,7 +36,7 @@ export async function EditProduct({
     throw new Error("Invalid product form");
   }
 
-  const { product, quantity, value, category, brand, createdAt, description } = parsed.data;
+  const { product, quantity, value, category, brand, createdAt, description, unit } = parsed.data;
 
    // Validate that the quantity is not negative
    if (quantity < 0) {
@@ -70,6 +70,18 @@ export async function EditProduct({
     categoryConnect = { connect: { id: categoryRecord.id } };
   }
 
+    // Fetch unit ID from the unit code (e.g., "MISC")
+    let unitConnect;
+    if (unit) {
+      const unitRecord = await prisma.unit.findUnique({
+        where: { name: unit }, // Assuming 'code' is the field storing values like "MISC"
+      });
+  
+      if (!unitRecord) {
+        throw new Error(`Unit with code ${unit} not found`);
+      }
+      unitConnect = { connect: { id: unitRecord.id } };
+    }
   // Log the brand and category connections before the update
   console.log("Brand connect:", brandConnect);
   console.log("Category connect:", categoryConnect);
@@ -88,6 +100,8 @@ export async function EditProduct({
         description: description || "",
         ...(brandConnect && { brand: brandConnect }),   // Only connect if brand is valid
         ...(categoryConnect && { category: categoryConnect }), // Only connect if category is valid
+        ...(unitConnect && { unit: unitConnect }), // Only connect if unit is valid
+
       },
     });
 

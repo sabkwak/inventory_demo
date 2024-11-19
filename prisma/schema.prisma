@@ -28,7 +28,13 @@ model Category {
   products  Product[] 
 
 }
+model Unit {
+   id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  name      String    @unique
+  products  Product[] 
 
+}
 model Brand {
    id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
@@ -51,6 +57,8 @@ model Product {
   product     String    
   brandId    Int
   brand      Brand    @relation(fields: [brandId], references: [id])
+   unitId    Int?
+  unit      Unit?    @relation(fields: [unitId], references: [id])
   categoryId  Int?
   category    Category?  @relation(fields: [categoryId], references: [id])
   transactions Transaction[]  // No @relation attribute needed here

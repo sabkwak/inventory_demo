@@ -15,6 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       include: {
         brand: true,
         category: true,
+        unit: true,
       },
     });
 
