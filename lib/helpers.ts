@@ -29,7 +29,7 @@ export function GetFormatterForWeight(unit: string) {
 
   return new Intl.NumberFormat(weightInfo.locale, {
     style: "unit",
-    unit: weightInfo.intlDefaultUnit,  // Use the valid Intl defaultUnit name
+    unit: weightInfo.intlUnit,  // Use the valid Intl defaultUnit name
     unitDisplay: "short",
   });
 }
