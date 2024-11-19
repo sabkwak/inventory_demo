@@ -109,7 +109,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
   );
   const handleUnitChange = useCallback(
     (value: string) => {
-      form.setValue("Unit", value);
+      form.setValue("unit", value);
     },
     [form]
   );
@@ -197,32 +197,85 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
             new Ingredient
           </DialogTitle>
           <DialogDescription>
-            Name a new Ingredient and assign a Unit, Brand, Category
+            Name a new Ingredient and assign a brand and unit
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="flex space-x-4">
             <FormField
               control={form.control}
               name="product"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel className="block">Name (required)</FormLabel>
                   <FormControl>
                     <Input placeholder="Ingredient" {...field} />
                   </FormControl>
-                  <FormDescription>
+                  {/* <FormDescription>
                     This is how your ingredient will appear in the app (required)
-                  </FormDescription>
+                  </FormDescription> */}
                 </FormItem>
               )}
             />
                         <FormField
               control={form.control}
+              name="brand"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="block">Brand (required)</FormLabel>
+                  <FormControl>
+                    <BrandPicker brandName="" onChange={handleBrandChange} />
+                  </FormControl>
+                  {/* <FormDescription>
+                    Select a brand for this Ingredient (required)
+                  </FormDescription> */}
+                </FormItem>
+              )}
+            />
+
+            </div>
+
+<div className="flex space-x-4">
+  <FormField
+    control={form.control}
+    name="quantity"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel className="block">Quantity</FormLabel>
+        <FormControl>
+          <Input
+            {...field}
+            value={field.value ?? 0} // Ensure default value is 0
+            type="number"
+            placeholder="Enter product quantity"
+            min={0} // Prevent negative values
+          />
+        </FormControl>
+      </FormItem>
+    )}
+  />
+  <FormField
+    control={form.control}
+    name="unit"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel className="block">Unit</FormLabel>
+        <FormControl>
+          <UnitPicker unitName="" onChange={handleUnitChange} />
+        </FormControl>
+        {/* <FormDescription>
+          Select a unit for this Ingredient
+        </FormDescription> */}
+      </FormItem>
+    )}
+  />
+              <FormField
+              control={form.control}
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price ($)</FormLabel>
+                  <FormLabel className="block">Price ($)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -235,40 +288,8 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
- <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      value={field.value ?? 0} // Ensure default value is 0
-                      type="number"
-                      placeholder="Enter product quantity"
-                      min={0} // Prevent negative values
-                    />
-                  </FormControl>
-
-                </FormItem>
-              )}
-            />
-                        <FormField
-              control={form.control}
-              name="unit"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Unit</FormLabel>
-                  <FormControl>
-                    <UnitPicker unitName="" onChange={handleUnitChange} />
-                  </FormControl>
-                  <FormDescription>
-                    Select a unit for this Ingredient
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+</div>
+<div className="flex space-x-4">
             <FormField
               control={form.control}
               name="category"
@@ -284,21 +305,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="brand"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Brand</FormLabel>
-                  <FormControl>
-                    <BrandPicker brandName="" onChange={handleBrandChange} />
-                  </FormControl>
-                  <FormDescription>
-                    Select a brand for this Ingredient (required)
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+
                         <FormField
               control={form.control}
               name="description"
@@ -317,6 +324,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
+            </div>
               <FormField
                 control={form.control}
                 name="createdAt"
