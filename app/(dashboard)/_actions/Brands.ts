@@ -21,7 +21,7 @@ export async function CreateBrand(form: CreateBrandSchemaType) {
     redirect("/sign-in");
   }
 
-  const { name, unit} = parsedBody.data;
+  const { name} = parsedBody.data;
   return await prisma.brand.create({
     data: {
       name,

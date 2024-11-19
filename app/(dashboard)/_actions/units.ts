@@ -21,7 +21,7 @@ export async function CreateUnit(form: CreateUnitSchemaType) {
     redirect("/sign-in");
   }
 
-  const { name, unit} = parsedBody.data;
+  const { name } = parsedBody.data;
   return await prisma.unit.create({
     data: {
       name,

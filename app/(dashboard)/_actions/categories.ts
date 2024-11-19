@@ -21,7 +21,7 @@ export async function CreateCategory(form: CreateCategorySchemaType) {
     redirect("/sign-in");
   }
 
-  const { name , unit} = parsedBody.data;
+  const { name } = parsedBody.data;
   return await prisma.category.create({
     data: {
       name,
