@@ -45,15 +45,15 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     }
   }
   
-  const brandRow = await prisma.brand.findFirst({
-    where: {
-    
-      name: brand,
-    },
-  });
+  let brandRow = null;
+  if (brand) {
+    brandRow = await prisma.brand.findFirst({
+      where: { name: brand },
+    });
 
-if (!brandRow) {
-    throw new Error("brand not found");
+    if (!brandRow) {
+      throw new Error("Brand not found");
+    }
   }
   
   let unitRow = null;

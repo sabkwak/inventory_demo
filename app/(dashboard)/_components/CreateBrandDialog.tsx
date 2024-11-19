@@ -53,7 +53,6 @@ function CreateBrandDialog({  successCallback, trigger }: Props) {
   const form = useForm<CreateBrandSchemaType>({
     resolver: zodResolver(CreateBrandSchema),
     defaultValues: {
-    
     },
   });
 
