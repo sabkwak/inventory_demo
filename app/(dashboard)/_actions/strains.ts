@@ -21,7 +21,7 @@
 //     redirect("/sign-in");
 //   }
 
-//   const { name, unit} = parsedBody.data;
+//   const { name } = parsedBody.data;
 //   return await prisma.ingredient.create({
 //     data: {
 //       name,
