@@ -55,14 +55,14 @@ interface Props {
   to: Date;
 }
 
-function generateQrCodeUrl(ingredientName: string, quantity: number, unit: string, category: string, brand: string): string {
+function generateQrCodeUrl(ingredientId: number): string {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL; // Use your app's URL
-  const url = new URL(`${baseUrl}/ingredient/${encodeURIComponent(ingredientName)}`);
-  url.searchParams.append('quantity', quantity.toString());
-  url.searchParams.append('unit', unit.toString());
+  const url = new URL(`${baseUrl}ingredient/${encodeURIComponent(ingredientId)}`);
+  // url.searchParams.append('quantity', quantity.toString());
+  // url.searchParams.append('unit', unit.toString());
 
-  url.searchParams.append('category', category);
-  url.searchParams.append('brand', brand);
+  // url.searchParams.append('category', category);
+  // url.searchParams.append('brand', brand);
   return url.toString();
 }
 
@@ -505,7 +505,7 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
   };
   
 // Create a string with all the product details
-const qrCodeUrl = generateQrCodeUrl(product.productName, product.quantity, product.unitName, product.categoryName, product.brandName);
+const qrCodeUrl = generateQrCodeUrl(product.id);
 
   return (
     <>
@@ -572,7 +572,7 @@ const qrCodeUrl = generateQrCodeUrl(product.productName, product.quantity, produ
 >
   <div className="relative p-4 w-full max-w-md m-auto flex-col flex bg-white rounded-lg shadow-lg">
     <div className="flex items-center justify-between pb-3">
-      <h2 className="text-lg font-semibold text-black">QR Code for {product.productName}</h2>
+      <h2 className="text-lg font-semibold text-black">QR Code for {product.productName} {qrCodeUrl}</h2>
       <button onClick={() => setIsQrModalOpen(false)} className="text-black close-modal">
         &times;
       </button>
