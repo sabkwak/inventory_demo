@@ -80,8 +80,8 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       day: date.getUTCDate(),
       month: date.getUTCMonth(),
       year: date.getUTCFullYear(),
-      returns: type === "add" ? amount : 0,
-      order: type === "subtract" ? amount : 0,
+      add: type === "add" ? amount : 0,
+      subtract: type === "subtract" ? amount : 0,
     },
     update: {
       returns: {
