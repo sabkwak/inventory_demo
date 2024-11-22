@@ -84,10 +84,10 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       subtract: type === "subtract" ? amount : 0,
     },
     update: {
-      returns: {
+      add: {
         increment: type === "add" ? amount : 0,
       },
-      order: {
+      subtract: {
         increment: type === "subtract" ? amount : 0,
       },
     },
@@ -105,8 +105,8 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       userId: user.id,
       month: date.getUTCMonth(),
       year: date.getUTCFullYear(),
-      returns: type === "add" ? amount : 0,
-      order: type === "subtract" ? amount : 0,
+      add: type === "add" ? amount : 0,
+      subtract: type === "subtract" ? amount : 0,
     },
     update: {
       returns: {
