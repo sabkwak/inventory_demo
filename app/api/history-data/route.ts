@@ -61,8 +61,8 @@ async function getHistoryData(
 }
 
 type HistoryData = {
-  returns: number;
-  order: number;
+  add: number;
+  subtract: number;
   year: number;
   month: number;
   day?: number;
@@ -76,8 +76,8 @@ async function getYearHistoryData(userId: string, year: number) {
       year,
     },
     _sum: {
-      returns: true,
-      order: true,
+      add: true,
+      subtract: true,
     },
     orderBy: [
       {
@@ -91,20 +91,20 @@ async function getYearHistoryData(userId: string, year: number) {
   const history: HistoryData[] = [];
 
   for (let i = 0; i < 12; i++) {
-    let returns = 0;
-    let order = 0;
+    let add = 0;
+    let subtract = 0;
 
     const month = result.find((row) => row.month === i);
     if (month) {
-      returns = month._sum.returns || 0;
-      order = month._sum.order || 0;
+      add = month._sum.add || 0;
+      subtract = month._sum.subtract || 0;
     }
 
     history.push({
       year,
       month: i,
-      returns,
-      order,
+      add,
+      subtract,
     });
   }
 
@@ -124,8 +124,8 @@ async function getMonthHistoryData(
       month,
     },
     _sum: {
-      returns: true,
-      order: true,
+      add: true,
+      subtract: true,
     },
     orderBy: [
       {
@@ -138,21 +138,21 @@ async function getMonthHistoryData(
 
   const history: HistoryData[] = [];
   for (let i = 1; i <= new Date(year, month, 0).getDate(); i++) {
-    let returns = 0;
-    let order = 0;
+    let add = 0;
+    let subtract = 0;
 
     const day = result.find((row) => row.day === i);
     if (day) {
-      returns = day._sum.returns || 0;
-      order = day._sum.order || 0;
+      add = day._sum.add || 0;
+      subtract = day._sum.subtract || 0;
     }
 
     history.push({
       year,
       month,
       day: i,
-      returns,
-      order,
+      add,
+      subtract,
     });
   }
 
