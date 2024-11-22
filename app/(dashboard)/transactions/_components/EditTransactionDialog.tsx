@@ -44,7 +44,6 @@ import {
 
 import { cn } from "@/lib/utils";
 import { EditTransaction } from "@/app/(dashboard)/transactions/_actions/editTransaction";
-import ClientPicker from "../../_components/ClientPicker";
 
 interface Props {
     trigger: ReactNode;
