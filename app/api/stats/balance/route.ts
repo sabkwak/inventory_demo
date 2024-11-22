@@ -40,7 +40,7 @@ async function getBalanceStats(userId: string, from: string, to: string) {
 
   const flowerBalance = await prisma.product.aggregate({
     where: {
-      categoryId: 3,
+      categoryId: 1,
       createdAt: {
         gte: new Date(from),
         lte: new Date(to),
