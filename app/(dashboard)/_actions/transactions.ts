@@ -109,10 +109,10 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       subtract: type === "subtract" ? amount : 0,
     },
     update: {
-      returns: {
+      add: {
         increment: type === "add" ? amount : 0,
       },
-      order: {
+      subtract: {
         increment: type === "subtract" ? amount : 0,
       },
     },
