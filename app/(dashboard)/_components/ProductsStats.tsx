@@ -44,7 +44,7 @@ function ProductsStats({ userSettings, from, to }: Props) {
       <SkeletonWrapper isLoading={statsQuery.isFetching}>
         <ProductsCard
           // formatter={formatter}
-          type="returns"
+          type="add"
           data={statsQuery.data || []}
         />
       </SkeletonWrapper>
@@ -73,7 +73,7 @@ function ProductsCard({
     <Card className="h-80 w-full col-span-6">
       <CardHeader>
         <CardTitle className="grid grid-flow-row justify-between gap-2 text-muted-foreground md:grid-flow-col">
-          {type === "subtract" ? "orders" : "returns"} by brand
+          {type === "subtract" ? "subtract" : "add"} by brand
         </CardTitle>
       </CardHeader>
 
@@ -83,7 +83,7 @@ function ProductsCard({
             No data for the selected period
             <p className="text-sm text-muted-foreground">
               Try selecting a different period or try adding new{" "}
-              {type === "subtract" ? "orders" : "returnss"}
+              {type === "subtract" ? "subtract" : "add"}
             </p>
           </div>
         )}
