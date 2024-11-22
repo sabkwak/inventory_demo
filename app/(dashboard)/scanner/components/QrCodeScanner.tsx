@@ -69,10 +69,10 @@ const QrCodeScanner = () => {
                   variant={"outline"}
                   className="bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
                   >
-                  New Order
+                  Add Ingredient
                 </Button>
               }
-              type="returns"
+              type="add"
             />
             </div>
             </div>

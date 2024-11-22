@@ -73,7 +73,7 @@ function StatsCards({ from, to, userSettings }: Props) {
       <SkeletonWrapper isLoading={statsQuery.isFetching}>
         <StatCard
           value={miscBalance}
-          title="Misc Balance"
+          title="Liquor Balance"
           icon={
             <Tally5 className="h-12 w-12 items-center rounded-lg p-2 text-green-500 bg-green-400/10" />
           }

@@ -30,7 +30,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import ClientPicker from "@/app/(dashboard)/_components/ClientPicker";
 import ProductPicker from "@/app/(dashboard)/_components/ProductPicker";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -50,7 +49,6 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
     defaultValues: {
       type,
       date: new Date(),
-      client: undefined, // Initialize with undefined or null
       productId: undefined, // Initialize with undefined or null
     },
   });
@@ -70,7 +68,6 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
         productId: undefined,
         price: undefined,
         type,
-        client: "",
         description: "",
         amount: 0,
         date: new Date(),
@@ -92,12 +89,6 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
     },
   });
 
-  const handleClientChange = useCallback(
-    (value: string) => {
-      form.setValue("client", value);
-    },
-    [form]
-  );
 
   const fetchInventory = async (productId: number): Promise<number> => {
     // Replace with actual API call to fetch inventory
@@ -189,21 +180,6 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
                       min={0} // Prevent negative values
                     />
                   </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="client"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Client</FormLabel>
-                  <FormControl>
-                    <ClientPicker clientName="" onChange={handleClientChange} />
-                  </FormControl>
-                  <FormDescription>
-                    Select a client for this transaction (required)
-                  </FormDescription>
                 </FormItem>
               )}
             />

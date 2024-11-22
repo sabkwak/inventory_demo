@@ -53,7 +53,7 @@ async function getBalanceStats(userId: string, from: string, to: string) {
 
   const miscBalance = await prisma.product.aggregate({
     where: {
-      categoryId: 4,
+      categoryId: 2,
       createdAt: {
         gte: new Date(from),
         lte: new Date(to),
