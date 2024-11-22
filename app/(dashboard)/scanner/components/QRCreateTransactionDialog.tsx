@@ -151,7 +151,7 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
             <span
               className={cn(
                 "m-1",
-                type === "order" ? "text-emerald-500" : "text-red-500"
+                type === "subtract" ? "text-emerald-500" : "text-red-500"
               )}
             >
               {type}

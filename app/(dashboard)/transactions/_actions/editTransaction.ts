@@ -36,24 +36,13 @@ export async function EditTransaction({
     throw new Error("Invalid transaction form");
   }
 
-  const { amount, price, client, type, date, description } = parsed.data;
+  const { amount, price, type, date, description } = parsed.data;
 
    // Validate that the quantity is not negative
    if (amount < 0) {
     throw new Error("Amount cannot be negative.");
   }
   // Fetch client ID from the client code (e.g., "EV10")
-  let clientConnect;
-  if (client) {
-    const clientRecord = await prisma.client.findUnique({
-      where: { name: client }, // Assuming 'code' is the field storing values like "EV10"
-    });
-
-    if (!clientRecord) {
-      throw new Error(`Client with code ${client} not found`);
-    }
-    clientConnect = { connect: { id: clientRecord.id } };
-  }
 
   // Fetch type ID from the type code (e.g., "MISC")
   let typeConnect;
@@ -80,7 +69,6 @@ export async function EditTransaction({
       data: {
         amount,
         price,
-        ...(clientConnect && { client: clientConnect }),   // Only connect if brand is valid
 
         date: new Date(date),
         description: description || "",

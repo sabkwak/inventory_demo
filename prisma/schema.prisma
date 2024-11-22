@@ -43,12 +43,6 @@ model Brand {
 
 }
 
-model Client {
-   id           Int            @id @default(autoincrement())
-   createdAt    DateTime       @default(now())
-   name         String         @unique
-   transactions Transaction[]  // Relation to transactions
-}
 
 model Product {
   id          Int       @id @default(autoincrement())
@@ -76,12 +70,10 @@ model Transaction {
   amount      Float
   description String?
   date        DateTime
-  type        String   @default("order")
+  type        String   @default("subtract")
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId   Int
-  clientId    Int      // Foreign key reference to Client
-  client      Client   @relation(fields: [clientId], references: [id])  // Set up relation to Client
-  price    Int?       @default(0)
+   price    Int?       @default(0)
 
 }
 
@@ -91,8 +83,8 @@ model MonthHistory {
   day     Int
   month   Int
   year    Int
-  order  Float
-  returns Float
+  subtract  Float
+  add Float
 
   @@id([day, month, year])
 }
@@ -101,8 +93,8 @@ model YearHistory {
   userId  String
   month   Int
   year    Int
-  order  Float
-  returns Float
+  subtract  Float
+  add Float
 
   @@id([month, year])
 }

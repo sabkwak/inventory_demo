@@ -37,7 +37,7 @@ function ProductsStats({ userSettings, from, to }: Props) {
       <SkeletonWrapper isLoading={statsQuery.isFetching}>
         <ProductsCard
           // formatter={formatter}
-          type="order"
+          type="subtract"
           data={statsQuery.data || []}
         />
       </SkeletonWrapper>
@@ -73,7 +73,7 @@ function ProductsCard({
     <Card className="h-80 w-full col-span-6">
       <CardHeader>
         <CardTitle className="grid grid-flow-row justify-between gap-2 text-muted-foreground md:grid-flow-col">
-          {type === "order" ? "orders" : "returns"} by brand
+          {type === "subtract" ? "orders" : "returns"} by brand
         </CardTitle>
       </CardHeader>
 
@@ -83,7 +83,7 @@ function ProductsCard({
             No data for the selected period
             <p className="text-sm text-muted-foreground">
               Try selecting a different period or try adding new{" "}
-              {type === "order" ? "orders" : "returnss"}
+              {type === "subtract" ? "orders" : "returnss"}
             </p>
           </div>
         )}
@@ -112,7 +112,7 @@ function ProductsCard({
                     <Progress
                       value={percentage}
                       indicator={
-                        type === "order" ? "bg-emerald-500" : "bg-red-500"
+                        type === "subtract" ? "bg-emerald-500" : "bg-red-500"
                       }
                     />
                   </div>

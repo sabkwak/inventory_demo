@@ -117,7 +117,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date Ordered/Returned" />
+      <DataTableColumnHeader column={column} title="Date Updated" />
     ),
     filterFn: (row, id, value) => {
       const date = row.original.date;
@@ -174,22 +174,6 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     enableHiding: false, // Category is hidden by default
   },
   {
-    accessorKey: "client",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Client" />
-    ),
-    filterFn: (row, id, value) => {
-      const clientName = row.original.clientName;
-      return value.includes(clientName);
-    },
-     cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-        {row.original.clientName}
-      </div>
-    ),
-    enableHiding: true, // Brand is visible by default
-  },
-  {
     accessorKey: "type",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
@@ -202,11 +186,11 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       <div
         className={cn(
           "capitalize rounded-lg text-center p-2",
-          row.original.type === "order" && "bg-emerald-400/10 text-emerald-500",
-          row.original.type === "returns" && "bg-red-400/10 text-red-500"
+          row.original.type === "subtract" && "bg-red-400/10 text-red-500",
+          row.original.type === "add" && "bg-emerald-400/10 text-emerald-500"
         )}
       >
-        {row.original.type === "order" ? "ordered" : "returned"}
+        {row.original.type === "subtract" ? "add" : "subtract"}
       </div>
     ),
     enableHiding: true, // Type is hidden by default
@@ -279,7 +263,6 @@ const [pagination, setPagination] = useState({
         date: false, // Initially hidden
         price: false,
         category: false,
-        client: false,
         type: false,
       };
     }
@@ -288,7 +271,6 @@ const [pagination, setPagination] = useState({
       date: false, // Initially hidden
       price: false,
       category: false,
-      client: false,
       type: false,
     };
   });
@@ -339,17 +321,7 @@ useEffect(() => {
     });
     return Array.from(categoriesMap.values());
   }, [history.data]);
-  const clientsOptions = useMemo(() => {
-    const clientsMap = new Map();
-    history.data?.forEach((transaction) => {
-      clientsMap.set(transaction.clientName, {
-        value: transaction.clientName,
-        label: `${transaction.clientName}`,
-      });
-    });
-    const uniqueBrands = new Set(clientsMap.values());
-    return Array.from(uniqueBrands);
-  }, [history.data]);
+
   const brandsOptions = useMemo(() => {
     const brandsMap = new Map();
     history.data?.forEach((transaction) => {
@@ -404,20 +376,14 @@ useEffect(() => {
               options={productsOptions}
             />
           )}
-                    {table.getColumn("client") && (
-            <DataTableFacetedFilter
-              title="Client"
-              column={table.getColumn("client")}
-              options={clientsOptions}
-            />
-          )}
+
           {table.getColumn("type") && (
             <DataTableFacetedFilter
               title="Type"
               column={table.getColumn("type")}
               options={[
-                { label: "order", value: "order" },
-                { label: "returns", value: "returns" },
+                { label: "subtract", value: "subtract" },
+                { label: "add", value: "add" },
               ]}
             />
           )}
@@ -453,7 +419,6 @@ useEffect(() => {
                   Ingredient: row.original.productName,
                   Brand: row.original.brandName,
                   Category: row.original.categoryName,
-                  Client: row.original.clientName,
                   Description: row.original.description,
                   Date_Ordered_or_Returned: formattedDateTime, // Use the formatted date and time for export
                  Price: row.original.price,
@@ -563,7 +528,6 @@ function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
           transaction={{
             ...transaction,
             price: transaction.price || 0,
-            client: { name: transaction.clientName }, // Ensure client property is included
           }}
           transactionId={transaction.id}
           trigger={undefined}

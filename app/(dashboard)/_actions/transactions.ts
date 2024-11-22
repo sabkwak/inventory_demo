@@ -19,7 +19,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     redirect("/sign-in");
   }
 
-  const { productId, client, price, amount, date, description, type } = parsedBody.data;
+  const { productId, price, amount, date, description, type } = parsedBody.data;
 
   // Fetch the product based on the productId
   const productRow = await prisma.product.findUnique({
@@ -31,24 +31,11 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   if (!productRow) {
     throw new Error("Product not found");
   }
-  if (!client) {
-    throw new Error("Client name is required.");
-  }
-  
-  const clientRow = await prisma.client.findFirst({
-    where: {
-      name: client,
-    },
-  });
-  
-  if (!clientRow) {
-    throw new Error("Client not found");
-  }
-  
+
   const currentInventory = productRow.quantity;
 
   // Calculate new inventory level based on the transaction type (order or return)
-  const newInventory = type === "order" ? currentInventory - amount : currentInventory + amount;
+  const newInventory = type === "subtract" ? currentInventory - amount : currentInventory + amount;
 
   // Prevent negative inventory for orders
   if (newInventory < 0) {
@@ -61,10 +48,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     data: {
       amount: amount,
       price: price || undefined,
-      client: {
-        connect: { id: clientRow.id },    // Connect to an existing brand by ID
-      },      
-      description: description || "", // Set to empty string if not provided
+      description: description || "", // Set to empty string if not prosvided
       date: date,
       type: type,
       product: {
@@ -77,7 +61,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     where: { id: productRow.id },
     data: {
       quantity: {
-        increment: type === "order" ? -amount : amount, // Decrement for orders, increment for returns
+        increment: type === "subtract" ? -amount : amount, // Decrement for orders, increment for returns
       },
     },
   });
@@ -96,15 +80,15 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       day: date.getUTCDate(),
       month: date.getUTCMonth(),
       year: date.getUTCFullYear(),
-      returns: type === "returns" ? amount : 0,
-      order: type === "order" ? amount : 0,
+      returns: type === "add" ? amount : 0,
+      order: type === "subtract" ? amount : 0,
     },
     update: {
       returns: {
-        increment: type === "returns" ? amount : 0,
+        increment: type === "add" ? amount : 0,
       },
       order: {
-        increment: type === "order" ? amount : 0,
+        increment: type === "subtract" ? amount : 0,
       },
     },
   });
@@ -121,15 +105,15 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       userId: user.id,
       month: date.getUTCMonth(),
       year: date.getUTCFullYear(),
-      returns: type === "returns" ? amount : 0,
-      order: type === "order" ? amount : 0,
+      returns: type === "add" ? amount : 0,
+      order: type === "subtract" ? amount : 0,
     },
     update: {
       returns: {
-        increment: type === "returns" ? amount : 0,
+        increment: type === "add" ? amount : 0,
       },
       order: {
-        increment: type === "order" ? amount : 0,
+        increment: type === "subtract" ? amount : 0,
       },
     },
   });

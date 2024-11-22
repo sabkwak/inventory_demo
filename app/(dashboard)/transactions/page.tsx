@@ -50,7 +50,7 @@ function TransactionsPage() {
                   New Order
                 </Button>
               }
-              type="order"
+              type="subtract"
             />
 
             <CreateTransactionDialog

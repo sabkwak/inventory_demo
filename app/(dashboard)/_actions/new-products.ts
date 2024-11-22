@@ -116,15 +116,15 @@ if (!brandRow) {
   //     day: createdAt.getUTCDate(),
   //     month: createdAt.getUTCMonth(),
   //     year: createdAt.getUTCFullYear(),
-  //     returns: type === "returns" ? amount : 0,
-  //     order: type === "order" ? amount : 0,
+  //     returns: type === "add" ? amount : 0,
+  //     order: type === "subtract" ? amount : 0,
   //   },
   //   update: {
   //     returns: {
-  //       increment: type === "returns" ? amount : 0,
+  //       increment: type === "add" ? amount : 0,
   //     },
   //     order: {
-  //       increment: type === "order" ? amount : 0,
+  //       increment: type === "subtract" ? amount : 0,
   //     },
   //   },
   // })
@@ -142,15 +142,15 @@ if (!brandRow) {
   //     userId: user.id,
   //     month: createdAt.getUTCMonth(),
   //     year: createdAt.getUTCFullYear(),
-  //     returns: type === "returns" ? amount : 0,
-  //     order: type === "order" ? amount : 0,
+  //     returns: type === "add" ? amount : 0,
+  //     order: type === "subtract" ? amount : 0,
   //   },
   //   update: {
   //     returns: {
-  //       increment: type === "returns" ? amount : 0,
+  //       increment: type === "add" ? amount : 0,
   //     },
   //     order: {
-  //       increment: type === "order" ? amount : 0,
+  //       increment: type === "subtract" ? amount : 0,
   //     },
   //   },
   // })

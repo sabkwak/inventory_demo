@@ -78,11 +78,7 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
           },
         },
       },
-      client: {
-        select: {
-          name: true, // Include client name
-        },
-      },
+
     },
   });
 
@@ -91,7 +87,6 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
     productName: transaction.product?.product || "---",  // Add product name
     brandName: transaction.product?.brand?.name || "---",  // Add brand name
     categoryName: transaction.product?.category?.name || "---",  // Add category name
-    clientName: transaction.client?.name || "",  // Add client name
     amount: transaction.amount,  // Format the amount based on user weight
   }));
 }

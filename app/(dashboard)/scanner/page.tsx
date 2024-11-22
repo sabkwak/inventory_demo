@@ -150,7 +150,7 @@ const QrCodeScanner = () => {
                   New Order
                 </Button>
               }
-              type="order"
+              type="subtract"
             />
                         <CreateTransactionDialog
               trigger={

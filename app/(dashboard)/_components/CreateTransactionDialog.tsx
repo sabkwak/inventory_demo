@@ -36,7 +36,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import ClientPicker from "@/app/(dashboard)/_components/ClientPicker";
+// import ClientPicker from "@/app/(dashboard)/_components/ClientPicker";
 import ProductPicker from "@/app/(dashboard)/_components/ProductPicker";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -57,7 +57,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
     defaultValues: {
       type,
       date: new Date(),
-      client: undefined, // Initialize with undefined or null
+      // client: undefined, // Initialize with undefined or null
       productId: undefined, // Initialize with undefined or null
     },
   });
@@ -77,7 +77,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
         productId: undefined,
         price: undefined,
         type,
-        client: "",
         description: "",
         amount: 0,
         date: new Date(),
@@ -99,12 +98,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
     },
   });
 
-  const handleClientChange = useCallback(
-    (value: string) => {
-      form.setValue("client", value);
-    },
-    [form]
-  );
+
 
   const fetchInventory = async (productId: number): Promise<number> => {
     // Replace with actual API call to fetch inventory
@@ -154,16 +148,16 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Create a new
+         
             <span
               className={cn(
                 "m-1",
-                type === "order" ? "text-emerald-500" : "text-red-500"
+                type === "subtract" ? "text-red-500":"text-emerald-500",     "capitalize"
+
               )}
             >
               {type}
-            </span>
-            transaction
+            </span> Ingredient
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -199,21 +193,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="client"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Client</FormLabel>
-                  <FormControl>
-                    <ClientPicker clientName="" onChange={handleClientChange} />
-                  </FormControl>
-                  <FormDescription>
-                    Select a client for this transaction (required)
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+
             <FormField
               control={form.control}
               name="amount"
