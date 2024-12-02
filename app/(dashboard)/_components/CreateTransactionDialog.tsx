@@ -170,8 +170,11 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                 <FormItem className="flex flex-col">
                   <FormLabel>Ingredient</FormLabel>
                   <FormControl>
-                    <ProductPicker onChange={(productId: number) => form.setValue("productId", productId)} />
-                  </FormControl>
+                  <ProductPicker
+  defaultProductId={defaultProductId}
+  onChange={(productId: number) => form.setValue("productId", productId)}
+/>
+                    </FormControl>
                   <FormDescription>Select a ingredient for this transaction (required)</FormDescription>
                 </FormItem>
               )}

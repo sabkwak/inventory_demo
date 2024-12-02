@@ -23,17 +23,12 @@ import { cn } from "@/lib/utils";
 
 interface Props {
   onChange: (value: number) => void; // Pass only the productId
+  defaultProductId?: number; // Optional default product ID
 }
 
-function ProductPicker({ onChange }: Props) {
+function ProductPicker({ onChange, defaultProductId }: Props) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<{ productId: number; brandId: number } | null>(null);
-
-  useEffect(() => {
-    if (value) {
-      onChange(value.productId); // Pass only productId to onChange
-    }
-  }, [onChange, value]);
 
   const productsQuery = useQuery({
     queryKey: ["products"],
@@ -48,9 +43,21 @@ function ProductPicker({ onChange }: Props) {
   const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
   const brands = Array.isArray(brandsQuery.data) ? brandsQuery.data : [];
 
-  const selectedProduct = products.find(
-    (product: Product) => product.id === value?.productId && product.brandId === value?.brandId
-  );
+  useEffect(() => {
+    if (defaultProductId && products.length > 0) {
+      const defaultProduct = products.find((product: Product) => product.id === defaultProductId);
+      if (defaultProduct) {
+        setValue({ productId: defaultProduct.id, brandId: defaultProduct.brandId });
+        onChange(defaultProduct.id); // Trigger onChange with the default product ID
+      }
+    }
+  }, [defaultProductId, products, onChange]);
+
+  useEffect(() => {
+    if (value) {
+      onChange(value.productId); // Pass only productId to onChange
+    }
+  }, [value, onChange]);
 
   const successCallback = useCallback(
     (product: Product) => {
@@ -60,13 +67,19 @@ function ProductPicker({ onChange }: Props) {
     []
   );
 
-  if (brandsQuery.isLoading) {
+  if (brandsQuery.isLoading || productsQuery.isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (brandsQuery.isError) {
-    return <div>Error: {(brandsQuery.error as Error).message}</div>;
+  if (brandsQuery.isError || productsQuery.isError) {
+    return (
+      <div>Error: {brandsQuery.error ? (brandsQuery.error as Error).message : (productsQuery.error as Error).message}</div>
+    );
   }
+
+  const selectedProduct = products.find(
+    (product: Product) => product.id === value?.productId && product.brandId === value?.brandId
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -97,12 +110,11 @@ function ProductPicker({ onChange }: Props) {
             <CommandList>
               {products.map((product: Product) => (
                 <CommandItem
-                  key={`${product.product}-${product.brandId}`} // Use a composite key to account for multiple brands
+                  key={`${product.id}-${product.brandId}`} // Simplified key
                   onSelect={() => {
                     setValue({ productId: product.id, brandId: product.brandId });
                     setOpen(false); // Close only the ProductPicker, not the entire dialog
                   }}
-                  
                 >
                   <ProductRow product={product} brands={brands} />
                   <Check
