@@ -49,16 +49,17 @@ import { DateToUTCDate } from "@/lib/helpers";
 interface Props {
   trigger: ReactNode;
   type: TransactionType;
+  defaultProductId?: number; // Add defaultProductId prop
 }
 
-function CreateTransactionDialog({ trigger, type }: Props) {
+function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(CreateTransactionSchema),
     defaultValues: {
       type,
       date: new Date(),
       // client: undefined, // Initialize with undefined or null
-      productId: undefined, // Initialize with undefined or null
+      productId: defaultProductId || undefined, // Initialize with undefined or null
     },
   });
 
@@ -74,7 +75,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       });
 
       form.reset({
-        productId: undefined,
+        productId: defaultProductId || undefined,
         price: undefined,
         type,
         description: "",
