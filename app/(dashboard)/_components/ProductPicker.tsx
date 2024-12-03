@@ -89,10 +89,21 @@ setValue({
   }
 
   if (unitsQuery.isError || productsQuery.isError) {
+    const unitsError = unitsQuery.error;
+    const productsError = productsQuery.error;
+  
     return (
-      <div>Error: {unitsQuery.error ? (unitsQuery.error as Error).message : (productsQuery.error as Error).message}</div>
+      <div>
+        Error:{" "}
+        {unitsError
+          ? (unitsError as Error).message
+          : productsError
+          ? (productsError as Error).message
+          : "Unknown error"}
+      </div>
     );
   }
+  
   const selectedProduct = products.find(
     (product: Product) => product.id === value?.productId && product.brandId === value?.brandId 
     && product.unitId === value?.unitId 
