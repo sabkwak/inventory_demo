@@ -28,7 +28,7 @@ interface Props {
 
 function ProductPicker({ onChange, defaultProductId }: Props) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<{ productId: number; brandId: number } | null>(null);
+  const [value, setValue] = useState<{ productId: number; brandId: number, unitId: number } | null>(null);
 
   const productsQuery = useQuery({
     queryKey: ["products"],
@@ -39,15 +39,19 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
     queryKey: ["brands"],
     queryFn: () => fetch(`/api/brands`).then((res) => res.json()),
   });
-
+  const unitsQuery = useQuery({
+    queryKey: ["units"],
+    queryFn: () => fetch(`/api/units`).then((res) => res.json()),
+  });
   const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
+  const units = Array.isArray(unitsQuery.data) ? unitsQuery.data : [];
   const brands = Array.isArray(brandsQuery.data) ? brandsQuery.data : [];
 
   useEffect(() => {
     if (defaultProductId && products.length > 0) {
       const defaultProduct = products.find((product: Product) => product.id === defaultProductId);
       if (defaultProduct) {
-        setValue({ productId: defaultProduct.id, brandId: defaultProduct.brandId });
+        setValue({ productId: defaultProduct.id, brandId: defaultProduct.brandId,unitId: defaultProduct.unitId  });
         onChange(defaultProduct.id); // Trigger onChange with the default product ID
       }
     }
@@ -61,7 +65,7 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
 
   const successCallback = useCallback(
     (product: Product) => {
-      setValue({ productId: product.id, brandId: product.brandId });
+      setValue({ productId: product.id, brandId: product.brandId, unitId: product.unitId });
       setOpen(false);
     },
     []
@@ -76,9 +80,18 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
       <div>Error: {brandsQuery.error ? (brandsQuery.error as Error).message : (productsQuery.error as Error).message}</div>
     );
   }
+  if (unitsQuery.isLoading || productsQuery.isLoading) {
+    return <div>Loading...</div>;
+  }
 
+  if (unitsQuery.isError || productsQuery.isError) {
+    return (
+      <div>Error: {unitsQuery.error ? (unitsQuery.error as Error).message : (productsQuery.error as Error).message}</div>
+    );
+  }
   const selectedProduct = products.find(
-    (product: Product) => product.id === value?.productId && product.brandId === value?.brandId
+    (product: Product) => product.id === value?.productId && product.brandId === value?.brandId 
+    && product.unitId === value?.unitId 
   );
 
   return (
@@ -91,7 +104,7 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
           className="w-[200px] justify-between"
         >
           {selectedProduct ? (
-            <ProductRow product={selectedProduct} brands={brands} />
+            <ProductRow product={selectedProduct} brands={brands} units={units} />
           ) : (
             "Select ingredient"
           )}
@@ -110,13 +123,13 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
             <CommandList>
               {products.map((product: Product) => (
                 <CommandItem
-                  key={`${product.id}-${product.brandId}`} // Simplified key
+                  key={`${product.id}-${product.brandId}-${product.unitId}`} // Simplified key
                   onSelect={() => {
-                    setValue({ productId: product.id, brandId: product.brandId });
+                    setValue({ productId: product.id, brandId: product.brandId, unitId: product.unitId });
                     setOpen(false); // Close only the ProductPicker, not the entire dialog
                   }}
                 >
-                  <ProductRow product={product} brands={brands} />
+                  <ProductRow product={product} brands={brands} units={units} />
                   <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
@@ -138,17 +151,22 @@ export default ProductPicker;
 function ProductRow({
   product,
   brands,
+  units,
 }: {
   product: Product;
   brands: any[];
+  units: any[];
+
 }) {
   const brandName = brands.find(
     (brand) => brand.id === product.brandId
   )?.name;
-
+  const unitName= units.find(
+    (unit) => unit.id === product.unitId
+  )?.name;
   return (
     <div className="flex items-center gap-2">
-      <span>{product.product}</span>
+      <span>{product.product} ({unitName})</span>
       <span> - {brandName}</span>
     </div>
   );

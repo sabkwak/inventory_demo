@@ -71,6 +71,11 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
               name: true, // Include category name
             },
           },
+          unit: {
+            select: {
+              name: true,
+            },
+          },
           brand: {
             select: {
               name: true, // Include brand name
@@ -88,5 +93,7 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
     brandName: transaction.product?.brand?.name || "---",  // Add brand name
     categoryName: transaction.product?.category?.name || "---",  // Add category name
     amount: transaction.amount,  // Format the amount based on user weight
+    unitName: transaction.product.unit?.name || "",
+
   }));
 }

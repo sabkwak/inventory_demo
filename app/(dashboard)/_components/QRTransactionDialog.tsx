@@ -230,7 +230,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
   render={({ field }) => (
     <FormItem>
       <FormLabel>Amount <UnitRetriever
-  defaultProductId={9}
+  defaultProductId={defaultProductId}
   onChange={(unitName) => console.log("Selected unit:", unitName)}
 /></FormLabel>
       <div className="flex items-center gap-2">

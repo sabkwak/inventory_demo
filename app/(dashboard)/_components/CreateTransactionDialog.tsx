@@ -23,6 +23,8 @@ import {
   CreateTransactionSchemaType,
 } from "@/schema/transaction";
 import { ReactNode, useCallback, useState } from "react";
+import { useQuery } from '@tanstack/react-query';  // Import the useQuery hook for fetching product data
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,6 +40,8 @@ import {
 import { Input } from "@/components/ui/input";
 // import ClientPicker from "@/app/(dashboard)/_components/ClientPicker";
 import ProductPicker from "@/app/(dashboard)/_components/ProductPicker";
+import UnitRetriever from "@/app/(dashboard)/_components/UnitRetriever";
+
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
@@ -45,7 +49,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateTransaction } from "@/app/(dashboard)/_actions/transactions";
 import { toast } from "sonner";
 import { DateToUTCDate } from "@/lib/helpers";
-
+import {  useEffect } from "react";
+import { useRouter } from "next/navigation";
 interface Props {
   trigger: ReactNode;
   type: TransactionType;
@@ -53,6 +58,9 @@ interface Props {
 }
 
 function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
+  const [openDialog, setOpenDialog] = useState(false);
+  const queryClient = useQueryClient();
+  const [isMounted, setIsMounted] = useState(false);
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(CreateTransactionSchema),
     defaultValues: {
@@ -63,9 +71,32 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
     },
   });
 
-  const [openDialog, setOpenDialog] = useState(false); // Separate state for the dialog
 
-  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['product', form.getValues('productId')],
+    queryFn: async () => {
+      const productResponse = await fetch(`/api/product?id=${form.getValues('productId')}`);
+      const product = await productResponse.json();
+  
+      const unitResponse = await fetch(`/api/product?id=${form.getValues('productId')}`);
+      const ingredient = await unitResponse.json();
+  
+      return { product, unit: ingredient?.unit?.name || null };
+    },
+    enabled: !!form.getValues('productId'),
+  });
+  
+  
+  useEffect(() => {
+    if (data) {
+      console.log('Product fetched:', data);  // Debugging log
+    }
+  }, [data]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: CreateTransaction,
@@ -197,20 +228,25 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                 </FormItem>
               )}
             />
+  {/* Amount field with dynamic unit */}
+     
+  <FormField
+  control={form.control}
+  name="amount"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Amount <UnitRetriever
+  defaultProductId={defaultProductId}
+  onChange={(unitName) => console.log("Selected unit:", unitName)}
+/></FormLabel>
+      <div className="flex items-center gap-2">
+        <Input {...field} type="number" placeholder="Enter amount" />
+     
 
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <Input defaultValue={0} type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>Transaction amount (required)</FormDescription>
-                </FormItem>
-              )}
-            />
+      </div>
+    </FormItem>
+  )}
+/>
             <FormField
               control={form.control}
               name="description"

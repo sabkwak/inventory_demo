@@ -65,7 +65,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     ),
     cell: ({ row }) => (
       <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.amount}
+        {row.original.amount} {row.original.unitName ? row.original.unitName : ''}
       </p>
     ),
     enableHiding: false, // Amount is visible by default

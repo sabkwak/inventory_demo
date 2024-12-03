@@ -50,8 +50,7 @@ function UnitRetriever({ defaultProductId, onChange }: Props) {
   if (ingredientQuery.isLoading) return <div>Loading...</div>;
   if (ingredientQuery.isError) return <div>Error fetching ingredient</div>;
 
-  return <span>({unitName || ""})</span>;
-}
+  return unitName ? <span>({unitName})</span> : null;}
 
 export default UnitRetriever;
 
