@@ -65,7 +65,11 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
 
   const successCallback = useCallback(
     (product: Product) => {
-      setValue({ productId: product.id, brandId: product.brandId, unitId: product.unitId });
+setValue({
+  productId: product.id,
+  brandId: product.brandId,
+  unitId: product.unitId ?? 0, // Default to 0 if unitId is null
+});
       setOpen(false);
     },
     []
@@ -161,13 +165,16 @@ function ProductRow({
   const brandName = brands.find(
     (brand) => brand.id === product.brandId
   )?.name;
-  const unitName= units.find(
-    (unit) => unit.id === product.unitId
-  )?.name;
+  const unitName =
+    product.unitId && product.unitId !== 0
+      ? units.find((unit) => unit.id === product.unitId)?.name
+      : null; // Don't fetch unitName if unitId is 0 or null
+
   return (
     <div className="flex items-center gap-2">
-      <span>{product.product} ({unitName})</span>
-      <span> - {brandName}</span>
+      <span>
+        {product.product} {unitName ? `(${unitName})` : ""}
+      </span>      <span> - {brandName}</span>
     </div>
   );
 }
