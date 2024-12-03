@@ -252,8 +252,8 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input {...field} />
-                  </FormControl>
+        <Input {...field} value={form.getValues("description") ?? ''} />
+      </FormControl>            
                 </FormItem>
               )}
             />
