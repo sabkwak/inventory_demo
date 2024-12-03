@@ -570,36 +570,43 @@ const qrCodeUrl = generateQrCodeUrl(product.id);
   onRequestClose={() => setIsQrModalOpen(false)}
   className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex"
 >
-  <div className="relative p-4 w-full max-w-md m-auto flex-col flex bg-white rounded-lg shadow-lg">
-    <div className="flex items-center justify-between pb-3">
-    <h2 className="text-lg font-semibold text-black">
-      <a href={qrCodeUrl} target="_blank" rel="noopener noreferrer">
+<div className="relative p-4 w-full max-w-md m-auto flex-col flex bg-white rounded-lg shadow-lg">
+  <div className="flex items-center justify-between pb-3"> {/* Keep this as justify-between */}
+    <h2 className="text-lg font-semibold text-blue-600 text-center flex-1"> {/* Added flex-1 to take up available space */}
+      <a
+        href={qrCodeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:underline hover:text-blue-800"
+      >
         QR Code for {product.productName}
       </a>
     </h2>
-      <button onClick={() => setIsQrModalOpen(false)} className="text-black close-modal">
-        &times;
-      </button>
-    </div>
-    <div className="mb-4 flex justify-center">
+
+    <button
+      onClick={() => setIsQrModalOpen(false)}
+      className="text-black close-modal"
+    >
+      &times;
+    </button>
+  </div>
+  <div className="mb-4 flex justify-center">
     <a href={qrCodeUrl} target="_blank" rel="noopener noreferrer">
       <div className="QRCodeCanvas">
-    <QRCodeCanvas 
-  value={qrCodeUrl} 
-  size={256} 
-/>
-    </div>
+        <QRCodeCanvas value={qrCodeUrl} size={256} />
+      </div>
     </a>
-    </div>
-    <div className="flex justify-center">
-      <button
-        onClick={downloadQRCode}
-        className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-700"
-      >
-        Save QR Code
-      </button>
-    </div>
   </div>
+  <div className="flex justify-center">
+    <button
+      onClick={downloadQRCode}
+      className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-700"
+    >
+      Save QR Code
+    </button>
+  </div>
+</div>
+
 </Modal>
     </>
   );
