@@ -572,16 +572,24 @@ const qrCodeUrl = generateQrCodeUrl(product.id);
 >
   <div className="relative p-4 w-full max-w-md m-auto flex-col flex bg-white rounded-lg shadow-lg">
     <div className="flex items-center justify-between pb-3">
-      <h2 className="text-lg font-semibold text-black">QR Code for {product.productName} {qrCodeUrl}</h2>
+    <h2 className="text-lg font-semibold text-black">
+      <a href={qrCodeUrl} target="_blank" rel="noopener noreferrer">
+        QR Code for {product.productName}
+      </a>
+    </h2>
       <button onClick={() => setIsQrModalOpen(false)} className="text-black close-modal">
         &times;
       </button>
     </div>
     <div className="mb-4 flex justify-center">
+    <a href={qrCodeUrl} target="_blank" rel="noopener noreferrer">
+      <div className="QRCodeCanvas">
     <QRCodeCanvas 
   value={qrCodeUrl} 
   size={256} 
 />
+    </div>
+    </a>
     </div>
     <div className="flex justify-center">
       <button
