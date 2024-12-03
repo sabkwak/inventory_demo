@@ -51,7 +51,7 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
     if (defaultProductId && products.length > 0) {
       const defaultProduct = products.find((product: Product) => product.id === defaultProductId);
       if (defaultProduct) {
-        setValue({ productId: defaultProduct.id, brandId: defaultProduct.brandId,unitId: defaultProduct.unitId  });
+        setValue({ productId: defaultProduct.id, brandId: defaultProduct.brandId,unitId: defaultProduct.unitId ?? 0  });
         onChange(defaultProduct.id); // Trigger onChange with the default product ID
       }
     }
@@ -140,7 +140,7 @@ setValue({
                 <CommandItem
                   key={`${product.id}-${product.brandId}-${product.unitId}`} // Simplified key
                   onSelect={() => {
-                    setValue({ productId: product.id, brandId: product.brandId, unitId: product.unitId });
+                    setValue({ productId: product.id, brandId: product.brandId, unitId: product.unitId ?? 0 });
                     setOpen(false); // Close only the ProductPicker, not the entire dialog
                   }}
                 >
