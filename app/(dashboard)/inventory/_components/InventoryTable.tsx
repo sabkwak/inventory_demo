@@ -245,6 +245,7 @@ function ProductTable({ from, to }: Props) {
       const savedVisibility = localStorage.getItem('productTableVisibility');
       return savedVisibility ? JSON.parse(savedVisibility) : {
         description: false,
+        unit: false,
         date: false,
         value: false,
         type: false,

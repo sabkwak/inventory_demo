@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";  // Add this import
 import { ReactNode} from "react";
-
+import { useQuery } from '@tanstack/react-query';  // Import the useQuery hook for fetching product data
 import { zodResolver } from "@hookform/resolvers/zod";  // Add this import
 import { Check, ChevronsUpDown } from "lucide-react";
 import {
@@ -46,6 +46,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import ProductPicker from "@/app/(dashboard)/_components/ProductPicker";
+import UnitRetriever from "@/app/(dashboard)/_components/UnitRetriever";
+
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
@@ -53,7 +55,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateTransaction } from "@/app/(dashboard)/_actions/transactions";
 import { toast } from "sonner";
 import { DateToUTCDate } from "@/lib/helpers";
-
 interface Props {
   trigger: ReactNode;
   type: TransactionType;
@@ -74,12 +75,31 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
     },
   });
 
-  // Ensure that useRouter only runs on the client
   const router = useRouter();
-  
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['product', form.getValues('productId')],
+    queryFn: async () => {
+      const productResponse = await fetch(`/api/product?id=${form.getValues('productId')}`);
+      const product = await productResponse.json();
+  
+      const unitResponse = await fetch(`/api/product?id=${form.getValues('productId')}`);
+      const ingredient = await unitResponse.json();
+  
+      return { product, unit: ingredient?.unit?.name || null };
+    },
+    enabled: !!form.getValues('productId'),
+  });
+  
+  
+  useEffect(() => {
+    if (data) {
+      console.log('Product fetched:', data);  // Debugging log
+    }
+  }, [data]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: CreateTransaction,
@@ -117,7 +137,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
 
   const handleBackToInventory = () => {
     if (router) {
-      router.push("/inventory");  // Navigate to the /inventory page
+      router.push("/inventory");
     }
   };
 
@@ -132,10 +152,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
         <DialogHeader>
           <DialogTitle>
             <div className="flex justify-between">
-              <span className={cn("m-1", "capitalize", "text-blue-500")}>
-                New Transaction
-              </span>
-              {/* Close button to navigate back to /inventory */}
+              <span className="m-1 capitalize text-blue-500">New Transaction</span>
               <button
                 onClick={handleBackToInventory}
                 className="text-xl text-gray-500 hover:text-gray-700"
@@ -163,29 +180,16 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                           className="w-[200px] justify-between"
                         >
                           {field.value === "add" ? "Add" : "Subtract"}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-[200px] p-0">
                         <Command>
                           <CommandList>
-                            <CommandItem
-                              onSelect={() => field.onChange("add")}
-                              className={cn("cursor-pointer")}
-                            >
-                              <span className="text-green-600 font-medium">Add</span>
-                              {field.value === "add" && (
-                                <Check className="ml-2 h-4 w-4 text-green-600" />
-                              )}
+                            <CommandItem onSelect={() => field.onChange("add")}>
+                              Add
                             </CommandItem>
-                            <CommandItem
-                              onSelect={() => field.onChange("subtract")}
-                              className={cn("cursor-pointer")}
-                            >
-                              <span className="text-red-600 font-medium">Subtract</span>
-                              {field.value === "subtract" && (
-                                <Check className="ml-2 h-4 w-4 text-red-600" />
-                              )}
+                            <CommandItem onSelect={() => field.onChange("subtract")}>
+                              Subtract
                             </CommandItem>
                           </CommandList>
                         </Command>
@@ -214,12 +218,31 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                       }
                     />
                   </FormControl>
-                  <FormDescription>
-                    Select an ingredient for this transaction (required).
-                  </FormDescription>
                 </FormItem>
               )}
             />
+
+            {/* Amount field with dynamic unit */}
+     
+            <FormField
+  control={form.control}
+  name="amount"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Amount <UnitRetriever
+  defaultProductId={9}
+  onChange={(unitName) => console.log("Selected unit:", unitName)}
+/></FormLabel>
+      <div className="flex items-center gap-2">
+        <Input {...field} type="number" placeholder="Enter amount" />
+     
+
+      </div>
+    </FormItem>
+  )}
+/>
+
+
             {/* Other Fields */}
             <FormField
               control={form.control}
@@ -235,25 +258,13 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
             />
             <FormField
               control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-        <Input {...field} value={form.getValues("description") ?? ''} />
-      </FormControl>            
+                    <Input {...field} value={form.getValues("description") ?? ''} />
+                  </FormControl>            
                 </FormItem>
               )}
             />
@@ -268,13 +279,9 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                       <FormControl>
                         <Button
                           variant={"outline"}
-                          className={cn(
-                            "w-[200px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
+                          className="w-[200px] pl-3 text-left font-normal"
                         >
                           {field.value ? format(field.value, "PPP") : "Pick a date"}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
@@ -307,5 +314,4 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
     </Dialog>
   );
 }
-
 export default CreateTransactionDialog;

@@ -1,42 +1,37 @@
-import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { z } from "zod";
 
-// Handle GET request
-export async function GET(req: NextRequest) {
-    const url = new URL(req.url);
-    const id = url.searchParams.get('id');
-  
-    if (id) {
-      // Fetch a single product (ingredient) by ID
-      const product = await prisma.product.findUnique({
-        where: { id: Number(id) },
-        include: {
-          brand: true,
-          category: true,
-        },
-      });
-  
-      if (!product) {
-        return NextResponse.json({ message: 'Product not found' }, { status: 404 });
-      }
-  
-      return NextResponse.json(product, { status: 200 });
-    } else {
-      // Fetch all products for the index page
-      const products = await prisma.product.findMany({
-        select: {
-          id: true,
-          product: true, // Correct field name
-        },
-      });
-  
-      return NextResponse.json(products, { status: 200 });
-    }
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const ingredientIdParam = searchParams.get("id");
+
+  if (!ingredientIdParam) {
+    return NextResponse.json({ error: "Ingredient ID is required" }, { status: 400 });
   }
-  
 
-// If you want to handle other methods like POST, you can add those here, for example:
-export async function POST(req: NextRequest) {
-    // Implement POST logic here
-    return NextResponse.json({ message: "POST request received" });
+  // Validate ingredientId as a positive integer
+  const ingredientIdSchema = z.number().int().positive();
+  const parseResult = ingredientIdSchema.safeParse(Number(ingredientIdParam));
+
+  if (!parseResult.success) {
+    return NextResponse.json({ error: "Invalid ingredient ID" }, { status: 400 });
+  }
+
+  const ingredientId = parseResult.data;
+
+  // Fetch ingredient by ID, including its unit
+  const ingredient = await prisma.product.findUnique({
+    where: { id: ingredientId },
+    include: {
+      unit: true, // Include the unit relation
+      brand: true, // Include the brand relation (optional)
+    },
+  });
+
+  if (!ingredient) {
+    return NextResponse.json({ error: "Ingredient not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(ingredient);
 }

@@ -37,7 +37,7 @@ export default function IngredientDetails({ params }: { params: { id: string } }
         <div className="mb-4">
           <h2 className="text-xl font-bold">Ingredient: {data.product}</h2>
           <p className="text-sm">
-            <strong>Quantity:</strong> {data.quantity}
+            <strong>Quantity:</strong> {data.quantity} {data.unit?.name ? data.unit?.name : ''}
           </p>
           <p className="text-sm">
             <strong>Brand:</strong> {data.brand?.name || 'None'}
