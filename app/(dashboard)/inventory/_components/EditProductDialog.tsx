@@ -273,7 +273,6 @@ value: 0,
         />
       )}
       </FormControl>
-      <FormDescription>*Warning Selecting this box will reset the unit for this item</FormDescription>
     </FormItem>
   )}
 /> 
@@ -301,7 +300,6 @@ value: 0,
         />
       )}
       </FormControl>
-      <FormDescription>*Warning Selecting this box will reset the category for this item</FormDescription>
     </FormItem>
   )}
 /> 
@@ -329,7 +327,6 @@ value: 0,
         />
       )}
       </FormControl>
-      <FormDescription>*Warning* You will have to re-enter if you click Category or Brand</FormDescription>
     </FormItem>
   )}
 /> 
