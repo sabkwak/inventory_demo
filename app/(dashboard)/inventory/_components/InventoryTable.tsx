@@ -142,7 +142,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
   {
     accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
+      <DataTableColumnHeader column={column} title="Description/Notes" />
     ),
     cell: ({ row }) => (
       <div className="capitalize">{row.original.description}</div>

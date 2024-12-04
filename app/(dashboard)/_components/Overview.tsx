@@ -53,6 +53,22 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
         />
 
       </div>
+
+      <div className="container flex flex-wrap items-end justify-between gap-2 py-6">
+
+      <div className="flex flex-col gap-1">
+
+<h2 className="text-3xl font-bold">Sabrina's To Do List</h2>
+<p className="text-sm text-gray-400">
+-Add optional "minimum quantity" field to "Create New Ingredient" window so when the user "Subtracts" an Ingredient and the quantity falls below the minimum, it shows up on this dashboard. The user will also be able to opt in for notifications</p>
+<p className="text-sm text-gray-400">
+-Create new user tutorial
+</p>
+<p className="text-sm text-gray-400">
+-Add graphs/visuals/summaries to dashboard
+</p>
+</div>
+</div>
     </>
   );
 }

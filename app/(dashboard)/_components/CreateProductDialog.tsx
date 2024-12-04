@@ -311,7 +311,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Description/Notes</FormLabel>
                   <FormControl>
                   <Input
           {...field}   // Spread field but override `value` within it
