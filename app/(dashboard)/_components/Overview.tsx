@@ -67,6 +67,9 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
 <p className="text-sm text-gray-400">
 -Add graphs/visuals/summaries to dashboard
 </p>
+<p className="text-sm text-gray-400">
+-Improve mobile Inventory/Transaction Table views. User currently has to scroll horizontally to see all columns :/
+</p>
 </div>
 </div>
     </>
