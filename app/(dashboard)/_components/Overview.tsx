@@ -21,8 +21,7 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
 
         <h2 className="text-3xl font-bold">Overview</h2>
         <p className="text-sm text-gray-400">
-        Please refresh to update inventory balance after creating a Transaction
-      </p>
+85- here before your inventory gets 86'd &#x1F480;</p>
       </div>
         <div className="flex items-center gap-3">
           <DateRangePicker
