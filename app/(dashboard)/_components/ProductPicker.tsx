@@ -22,6 +22,8 @@ import { Product } from "@prisma/client";
 import { cn } from "@/lib/utils";
 
 interface Props {
+  userSettings: any;
+
   onChange: (value: number) => void; // Pass only the productId
   defaultProductId?: number; // Optional default product ID
 }
@@ -29,8 +31,11 @@ interface Props {
 function ProductPicker({ onChange, defaultProductId }: Props) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<{ productId: number; brandId: number, unitId: number } | null>(null);
-  const [userSettings, setUserSettings] = useState({});
-
+  const userQuery = useQuery({
+    queryKey: ["products"],
+    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+  });
+  const user = userQuery.data;
   const productsQuery = useQuery({
     queryKey: ["products"],
     queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
@@ -133,7 +138,7 @@ setValue({
       <PopoverContent className="w-[200px] p-0">
         <Command onSubmit={(e) => e.preventDefault()}>
           <CommandInput placeholder="Search product..." />
-          <CreateProductDialog userSettings={userSettings} successCallback={successCallback} trigger={undefined} />
+          <CreateProductDialog userSettings={user} successCallback={successCallback} trigger={undefined} />
           <CommandEmpty>
             <p>Ingredient not found</p>
             <p className="text-xs text-muted-foreground">Tip: Create a new ingredient</p>
@@ -149,7 +154,7 @@ setValue({
                   }}
                 >
                   <ProductRow product={product} brands={brands} units={units} />
-                  {product.userId === userId && 
+                  {product?.userId === user && 
                   <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
