@@ -11,13 +11,13 @@ export default function Page() {
     if (isSignedIn ) {
       const user = useAuth();
       // Determine clerkId as email or phone number
-      const clerkId = user?.emailAddresses?.[0]?.emailAddress || user?.phoneNumbers?.[0]?.phoneNumber;
+      // const clerkId = user?.emailAddresses?.[0]?.emailAddress || user?.phoneNumbers?.[0]?.phoneNumber;
 
       // Save user settings on first sign-in
       axios.post('/api/user-settings', {
-        userId: clerkId, // Use the email or phone number as userId
-        email: user.emailAddresses[0]?.emailAddress,
-        phone: user.phoneNumbers[0]?.phoneNumber,
+        // userId: clerkId, // Use the email or phone number as userId
+        // email: user.emailAddresses[0]?.emailAddress,
+        // phone: user.phoneNumbers[0]?.phoneNumber,
       });
     }
     
