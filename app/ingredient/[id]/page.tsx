@@ -7,7 +7,11 @@ import { useRouter } from 'next/navigation';  // Import useRouter hook
 export default function IngredientDetails({ params }: { params: { id: string } }) {
   const { id } = params;
   const router = useRouter();  // Initialize router for navigation
-
+  const userQuery = useQuery({
+    queryKey: ["products"],
+    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+  });
+  const user = userQuery.data;
   const { data, isLoading, error } = useQuery({
     queryKey: ['ingredient', id],
     queryFn: () => fetch(`/api/ingredient?id=${id}`).then((res) => res.json()),
@@ -48,7 +52,7 @@ export default function IngredientDetails({ params }: { params: { id: string } }
         </div>
         <div className="flex flex-col items-center gap-4 mt-4">
           {/* Add Transaction */}
-          <QRTransactionDialog
+          <QRTransactionDialog userSettings={user}
             trigger={
               <button className="px-4 py-2 bg-green-500 text-white text-sm font-medium rounded hover:bg-green-700">
                 Add Transaction
@@ -58,7 +62,7 @@ export default function IngredientDetails({ params }: { params: { id: string } }
             defaultProductId={data.id}
           />
           {/* Subtract Transaction */}
-          <QRTransactionDialog
+          <QRTransactionDialog userSettings={user}
             trigger={
               <button className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded hover:bg-red-700">
                 Subtract Transaction
