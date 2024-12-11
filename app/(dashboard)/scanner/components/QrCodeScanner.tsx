@@ -4,12 +4,17 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Button } from "@/components/ui/button";
 import QRCreateTransactionDialog from "@/app/(dashboard)/scanner/components/QRCreateTransactionDialog";
 import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
+import { useQuery } from "@tanstack/react-query";
 
 const QrCodeScanner = () => {
   const [decodedText, setDecodedText] = useState<string | null>(null);
   const [ingredientInfo, setIngredientInfo] = useState<{ ingredientId: string, quantity: number, category: string, brand: string } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const userQuery = useQuery({
+    queryKey: ["products"],
+    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+  });
+  const user = userQuery.data;
   useEffect(() => {
     const scanner = new Html5QrcodeScanner(
       "qr-reader",
@@ -63,7 +68,7 @@ const QrCodeScanner = () => {
               <p><strong>Category:</strong> {ingredientInfo.category}</p>
               <p><strong>Brand:</strong> {ingredientInfo.brand}</p>
               <div>
-              <CreateTransactionDialog
+              <CreateTransactionDialog userSettings={user}
               trigger={
                 <Button
                   variant={"outline"}

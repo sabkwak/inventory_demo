@@ -10,12 +10,13 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
+  const currentUserId = user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber;
 
   if (searchParams.get('userId')) {
     const userId = searchParams.get('userId');
     const products = await prisma.product.findMany({
       where: {
-        userId: userId,
+        userId: currentUserId,
       },
       include: {
         brand: true,

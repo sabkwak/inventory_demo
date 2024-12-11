@@ -37,6 +37,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateTransaction } from "@/app/(dashboard)/_actions/transactions";
 import { toast } from "sonner";
 import { DateToUTCDate } from "@/lib/helpers";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   trigger: ReactNode;
@@ -52,7 +53,11 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
       productId: undefined, // Initialize with undefined or null
     },
   });
-
+  const userQuery = useQuery({
+    queryKey: ["products"],
+    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+  });
+  const user = userQuery.data;
   const [openDialog, setOpenDialog] = useState(false); // Separate state for the dialog
 
   const queryClient = useQueryClient();
@@ -159,7 +164,7 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
                 <FormItem className="flex flex-col">
                   <FormLabel>Ingredient</FormLabel>
                   <FormControl>
-                    <ProductPicker onChange={(productId: number) => form.setValue("productId", productId)} />
+                    <ProductPicker userSettings={user} onChange={(productId: number) => form.setValue("productId", productId)} />
                   </FormControl>
                   <FormDescription>Select a ingredient for this transaction (required)</FormDescription>
                 </FormItem>
