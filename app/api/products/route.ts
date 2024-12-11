@@ -42,7 +42,7 @@ export async function GET(request: Request) {
   }
 }
 
-export async function GET_user(request: Request) {
+export async function GET(request: Request) {
   const user = await currentUser();
   if (!user) {
     redirect("/sign-in");
