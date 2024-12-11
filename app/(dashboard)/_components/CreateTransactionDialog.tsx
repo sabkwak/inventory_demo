@@ -51,16 +51,29 @@ import { toast } from "sonner";
 import { DateToUTCDate } from "@/lib/helpers";
 import {  useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { UserSettings } from "@prisma/client";
+
 interface Props {
   trigger: ReactNode;
   type: TransactionType;
   defaultProductId?: number; // Add defaultProductId prop
-}
+  userSettings: UserSettings;
 
+}
+async function fetchUserSettings() {
+  const res = await fetch("/api/user-settings"); // Call your API route
+  if (!res.ok) throw new Error("Failed to fetch user settings");
+  return res.json();
+}
 function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
   const queryClient = useQueryClient();
   const [isMounted, setIsMounted] = useState(false);
+  const userQuery = useQuery({
+    queryKey: ["products"],
+    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+  });
+  const user = userQuery.data;
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(CreateTransactionSchema),
     defaultValues: {
@@ -77,7 +90,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  const { data, isLoading, error } = useQuery({
+  const { data, error } = useQuery({
     queryKey: ['product', form.getValues('productId')],
     queryFn: async () => {
       const productResponse = await fetch(`/api/product?id=${form.getValues('productId')}`);
@@ -90,7 +103,10 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
     },
     enabled: !!form.getValues('productId'),
   });
-  
+  const { data: userSettings, isLoading } = useQuery({
+    queryKey: ["userSettings"], // Query key
+    queryFn: fetchUserSettings, // Query function
+  });
   
   useEffect(() => {
     if (data) {
@@ -201,7 +217,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                 <FormItem className="flex flex-col">
                   <FormLabel>Ingredient</FormLabel>
                   <FormControl>
-                  <ProductPicker
+                  <ProductPicker userSettings={user}
   defaultProductId={defaultProductId}
   onChange={(productId: number) => form.setValue("productId", productId)}
 />
