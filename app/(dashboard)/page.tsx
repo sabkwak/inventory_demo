@@ -1,3 +1,5 @@
+"use client";
+
 import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
 import Overview from "@/app/(dashboard)/_components/Overview";
 import { Button } from "@/components/ui/button";
