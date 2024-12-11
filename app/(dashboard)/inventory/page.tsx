@@ -9,6 +9,7 @@ import InventoryTable from "./_components/InventoryTable";
 import { Button } from "@/components/ui/button"; // Import the Button component
 import CreateProductDialog from "@/app/(dashboard)/_components/CreateProductDialog"; // Import the CreateProductDialog component
 import { useQuery } from "@tanstack/react-query";
+import type { NextPage } from 'next';
 
 
 interface Props {
