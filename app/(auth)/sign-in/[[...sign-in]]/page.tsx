@@ -5,12 +5,13 @@ import { useEffect } from 'react';
 import axios from 'axios';
 
 export default function Page() {
-  const { isSignedIn, user } = useAuth();
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
-    if (isSignedIn && user) {
+    if (isSignedIn ) {
+      const user = useAuth();
       // Determine clerkId as email or phone number
-      const clerkId = user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber;
+      const clerkId = user?.emailAddresses?.[0]?.emailAddress || user?.phoneNumbers?.[0]?.phoneNumber;
 
       // Save user settings on first sign-in
       axios.post('/api/user-settings', {
@@ -19,7 +20,8 @@ export default function Page() {
         phone: user.phoneNumbers[0]?.phoneNumber,
       });
     }
-  }, [isSignedIn, user]);
+    
+  }, [isSignedIn]);
 
   return <SignIn />;
 }
