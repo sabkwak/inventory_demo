@@ -5,16 +5,18 @@ import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
 
 async function page() {
-  const user = await currentUser();
-  if (!user) {
-    redirect("/sign-in");
-  }
+  const userQuery = useQuery({
+    queryKey: ["products"],
+    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+  });
+  const user = userQuery.data;
 
   const userSettings = await prisma.userSettings.findUnique({
     where: {
-      userId: user.id,
+      userId: user,
     },
   });
 
@@ -32,7 +34,7 @@ async function page() {
 
 
 
-            <CreateTransactionDialog
+            <CreateTransactionDialog userSettings={user}
               trigger={
                 <Button
                   variant={"outline"}
@@ -42,7 +44,7 @@ Add Ingredient              </Button>
               }
               type="add"
             />           
-             <CreateTransactionDialog
+             <CreateTransactionDialog userSettings={user}
             trigger={
               <Button
                 variant={"outline"}
