@@ -14,7 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 interface Props {
   userSettings: any;
 }
-function InventoryPage({userSettings}: Props) {
+const InventoryPage: NextPage<Props> = ({ userSettings }: Props) => {
   const userQuery = useQuery({
     queryKey: ["products"],
     queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
