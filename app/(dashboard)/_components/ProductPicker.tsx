@@ -29,6 +29,7 @@ interface Props {
 function ProductPicker({ onChange, defaultProductId }: Props) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<{ productId: number; brandId: number, unitId: number } | null>(null);
+  const [userSettings, setUserSettings] = useState({});
 
   const productsQuery = useQuery({
     queryKey: ["products"],
@@ -132,7 +133,7 @@ setValue({
       <PopoverContent className="w-[200px] p-0">
         <Command onSubmit={(e) => e.preventDefault()}>
           <CommandInput placeholder="Search product..." />
-          <CreateProductDialog successCallback={successCallback} trigger={undefined} />
+          <CreateProductDialog userSettings={userSettings} successCallback={successCallback} trigger={undefined} />
           <CommandEmpty>
             <p>Ingredient not found</p>
             <p className="text-xs text-muted-foreground">Tip: Create a new ingredient</p>

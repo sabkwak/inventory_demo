@@ -58,7 +58,7 @@ import { UserSettings } from "@prisma/client";
 interface Props {
   trigger: ReactNode;
   successCallback: (product: Product) => void;
-  userSettings: UserSettings;
+  userSettings: any;
 
 }
 
