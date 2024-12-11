@@ -1,17 +1,30 @@
 // app/api/products/[id].ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/lib/prisma';
+import { getAuth } from '@clerk/nextjs/server'; // Example for Clerk authentication
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
+  // Check if the ID is valid
   if (!id || Array.isArray(id)) {
     return res.status(400).json({ error: 'Invalid product ID' });
   }
 
   try {
-    const product = await prisma.product.findUnique({
-      where: { id: parseInt(id as string, 10) },
+    // Get the authenticated user
+    const { userId } = getAuth(req);
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Fetch the product while ensuring it belongs to the logged-in user
+    const product = await prisma.product.findFirst({
+      where: {
+        id: parseInt(id as string, 10),
+        userId: userId, // Ensure the product belongs to the logged-in user
+      },
       include: {
         brand: true,
         category: true,
@@ -25,6 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     res.status(200).json(product);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }

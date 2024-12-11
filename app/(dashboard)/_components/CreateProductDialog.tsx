@@ -53,10 +53,13 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import * as z from "zod";
+import { UserSettings } from "@prisma/client";
 
 interface Props {
   trigger: ReactNode;
   successCallback: (product: Product) => void;
+  userSettings: UserSettings;
+
 }
 
 async function fetchUserSettings() {

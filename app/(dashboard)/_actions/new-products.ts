@@ -11,16 +11,21 @@ import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 export async function CreateProduct(form: CreateProductSchemaType) {
+  console.log('CreateProduct function called');
   const parsedBody = CreateProductSchema.safeParse(form);
   if (!parsedBody.success) {
+    console.log('Error parsing form data:', parsedBody.error);
     throw new Error(parsedBody.error.message);
   }
 
   const user = await currentUser();
   if (!user) {
+    console.log('User not found');
+
     redirect("/sign-in");
   }
-
+  console.log('User ID:', user.id);
+  const userIdUserSettings = user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber;
   const { product, quantity, value, category, brand, createdAt, description , unit} = parsedBody.data;
 
   // const productRow = await prisma.product.findFirst({
@@ -55,7 +60,8 @@ export async function CreateProduct(form: CreateProductSchemaType) {
 if (!brandRow) {
     throw new Error("brand not found");
   }
-  
+
+
   let unitRow = null;
   if (unit) {
     unitRow = await prisma.unit.findFirst({
@@ -81,6 +87,7 @@ if (!brandRow) {
 
   return await prisma.product.create({
     data: {
+      userId: userIdUserSettings,
       quantity,
       value: value || undefined,
       product,

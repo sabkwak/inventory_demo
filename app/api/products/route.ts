@@ -10,17 +10,42 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
- 
-  const products = await prisma.product.findMany({
-    include: {
-      brand: true,
-      category: true,
-      unit: true,
-    },
-    orderBy: {
-      product: "asc",
-    },
-  });
 
-  return Response.json(products);
+  if (searchParams.get('userId')) {
+    const userId = searchParams.get('userId');
+    const products = await prisma.product.findMany({
+      where: {
+        userId: userId,
+      },
+      include: {
+        brand: true,
+        category: true,
+        unit: true,
+      },
+      orderBy: {
+        product: "asc",
+      },
+    });
+    return Response.json(products);
+  } else {
+    const products = await prisma.product.findMany({
+      include: {
+        brand: true,
+        category: true,
+        unit: true,
+      },
+      orderBy: {
+        product: "asc",
+      },
+    });
+    return Response.json(products);
+  }
+}
+
+export async function GET_user(request: Request) {
+  const user = await currentUser();
+  if (!user) {
+    redirect("/sign-in");
+  }
+  return Response.json(user);
 }

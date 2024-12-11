@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const CreateProductSchema = z.object({
+  // userId: z.string(),
   product: z.string(),
   value: z.preprocess((value) => {
     if (value === "" || value === undefined) return undefined;
@@ -29,6 +30,8 @@ export const DeleteProductSchema = z.object({
 export type DeleteProductSchemaType = z.infer<typeof DeleteProductSchema>;
 
 export const EditProductSchema = z.object({
+
+  // user: z.string(),
   id: z.number(), // Using ID instead of name for deletion
   product: z.coerce.string(),
   quantity: z.coerce.number().min(0).multipleOf(0.01).default(0), // Make it optional with a default value of 0

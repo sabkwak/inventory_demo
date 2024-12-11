@@ -19,14 +19,29 @@ export async function UpdateUserWeight(weight: string) {
     redirect("/sign-in");
   }
 
-  const userSettings = await prisma.userSettings.update({
+  const existingUserSettings = await prisma.userSettings.findUnique({
     where: {
       userId: user.id,
     },
-    data: {
-      weight,
-    },
   });
 
-  return userSettings;
+  if (existingUserSettings) {
+    const userSettings = await prisma.userSettings.update({
+      where: {
+        userId: user.id,
+      },
+      data: {
+        weight,
+      },
+    });
+    return userSettings;
+  } else {
+    const userSettings = await prisma.userSettings.create({
+      data: {
+        userId: user.id,
+        weight,
+      },
+    });
+    return userSettings;
+  }
 }
