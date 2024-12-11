@@ -1,5 +1,3 @@
-"use client";
-
 import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
 import Overview from "@/app/(dashboard)/_components/Overview";
 import { Button } from "@/components/ui/button";
@@ -7,24 +5,24 @@ import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 
 async function page() {
-  const userQuery = useQuery({
-    queryKey: ["products"],
-    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
-  });
-  const user = userQuery.data;
+  const user = await currentUser();
+  if (!user) {
+    redirect("/sign-in");
+  }
 
   const userSettings = await prisma.userSettings.findUnique({
     where: {
-      userId: user,
+      userId: user.id,
     },
   });
 
   if (!userSettings) {
     redirect("/wizard");
   }
+
 
   return (
     <div className="h-full bg-background">
@@ -36,7 +34,7 @@ async function page() {
 
 
 
-            <CreateTransactionDialog userSettings={user}
+            <CreateTransactionDialog userSettings={userSettings}
               trigger={
                 <Button
                   variant={"outline"}
@@ -46,7 +44,7 @@ Add Ingredient              </Button>
               }
               type="add"
             />           
-             <CreateTransactionDialog userSettings={user}
+             <CreateTransactionDialog userSettings={userSettings}
             trigger={
               <Button
                 variant={"outline"}
