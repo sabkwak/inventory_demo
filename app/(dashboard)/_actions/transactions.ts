@@ -18,6 +18,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   if (!user) {
     redirect("/sign-in");
   }
+  const userIdUserSettings = user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber;
 
   const { productId, price, amount, date, description, type } = parsedBody.data;
 
@@ -46,6 +47,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   // Proceed with transaction creation if inventory is valid
   await prisma.transaction.create({
     data: {
+      userId: userIdUserSettings,
       amount: amount,
       price: price || undefined,
       description: description || "", // Set to empty string if not prosvided

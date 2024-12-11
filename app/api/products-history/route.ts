@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
   // Fetch products with pagination
   const products = await getProductsHistory(
-    user.id,
+    user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber,
     queryParams.data.from,
     queryParams.data.to,
    
@@ -48,17 +48,11 @@ async function getProductsHistory(
   from: Date,
   to: Date,
 ) {
-  const userSettings = await prisma.userSettings.findUnique({
-    where: {
-      userId,
-    },
-  });
-  if (!userSettings) {
-    throw new Error("User settings not found");
-  }
+
 
   const products = await prisma.product.findMany({
     where: {
+      userId,
       createdAt: {
         gte: from,
         lte: to,

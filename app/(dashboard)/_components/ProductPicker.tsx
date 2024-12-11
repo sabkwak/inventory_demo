@@ -32,8 +32,12 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
 
   const productsQuery = useQuery({
     queryKey: ["products"],
-    queryFn: () => fetch(`/api/products`).then((res) => res.json()),
+    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
   });
+  const products = productsQuery.data;
+
+  const userProducts = products;
+
 
   const brandsQuery = useQuery({
     queryKey: ["brands"],
@@ -43,7 +47,6 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
     queryKey: ["units"],
     queryFn: () => fetch(`/api/units`).then((res) => res.json()),
   });
-  const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
   const units = Array.isArray(unitsQuery.data) ? unitsQuery.data : [];
   const brands = Array.isArray(brandsQuery.data) ? brandsQuery.data : [];
 
@@ -55,7 +58,7 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
         onChange(defaultProduct.id); // Trigger onChange with the default product ID
       }
     }
-  }, [defaultProductId, products, onChange]);
+  }, [defaultProductId, userProducts, onChange]);
 
   useEffect(() => {
     if (value) {
@@ -136,7 +139,7 @@ setValue({
           </CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {products.map((product: Product) => (
+              {products?.map((product: Product) => (
                 <CommandItem
                   key={`${product.id}-${product.brandId}-${product.unitId}`} // Simplified key
                   onSelect={() => {
@@ -145,12 +148,13 @@ setValue({
                   }}
                 >
                   <ProductRow product={product} brands={brands} units={units} />
+                  {product.userId === userId && 
                   <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
                       value?.productId === product.id && value?.brandId === product.brandId && "opacity-100"
                     )}
-                  />
+                  />}
                 </CommandItem>
               ))}
             </CommandList>
