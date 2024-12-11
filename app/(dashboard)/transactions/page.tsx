@@ -8,12 +8,18 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 
 function TransactionsPage() {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
     from: new Date(new Date().getFullYear(), 0, 1), // Set 'from' date to January 1st of this year
     to: addDays(new Date(), 1), // Set the 'to' date to tomorrow
   });
+  const userQuery = useQuery({
+    queryKey: ["products"],
+    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+  });
+  const user = userQuery.data;
   return (
     <>
       <div className="border-b bg-card">
@@ -41,7 +47,7 @@ function TransactionsPage() {
             }}
           />
           <div className="flex items-center gap-3">
-            <CreateTransactionDialog
+            <CreateTransactionDialog userSettings={user}
               trigger={
                 <Button
                   variant={"outline"}
@@ -53,7 +59,7 @@ function TransactionsPage() {
               type="add"
             />
 
-            <CreateTransactionDialog
+            <CreateTransactionDialog userSettings={user}
               trigger={
                 <Button
                   variant={"outline"}
