@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { DateToUTCDate, GetFormatterForWeight } from "@/lib/helpers";
 import { UserSettings } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import { Tally5, Scale } from "lucide-react";
+import { Tally5, Scale, CookingPot, Martini} from "lucide-react";
 import React, { ReactNode, useCallback, useMemo } from "react";
 import CountUp from "react-countup";
 
@@ -66,7 +66,7 @@ function StatsCards({ from, to, userSettings }: Props) {
           value={flowerBalance}
           title="Food Balance"
           icon={
-            <Tally5 className="h-12 w-12 items-center rounded-lg p-2 text-blue-500 bg-blue-400/10" />
+            <CookingPot className="h-12 w-12 items-center rounded-lg p-2 text-blue-500 bg-blue-400/10" />
           }
         />
       </SkeletonWrapper>
@@ -75,7 +75,7 @@ function StatsCards({ from, to, userSettings }: Props) {
           value={miscBalance}
           title="Liquor Balance"
           icon={
-            <Tally5 className="h-12 w-12 items-center rounded-lg p-2 text-green-500 bg-green-400/10" />
+            <Martini className="h-12 w-12 items-center rounded-lg p-2 text-green-500 bg-green-400/10" />
           }
         />
       </SkeletonWrapper>
