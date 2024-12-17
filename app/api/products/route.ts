@@ -29,8 +29,11 @@ export async function GET(request: Request) {
     });
     return Response.json(products);
   } else {
+    const userId = searchParams.get('userId');
     const products = await prisma.product.findMany({
-      include: {
+      where: {
+        userId: currentUserId,
+      },      include: {
         brand: true,
         category: true,
         unit: true,

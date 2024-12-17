@@ -71,7 +71,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
   const [isMounted, setIsMounted] = useState(false);
   const userQuery = useQuery({
     queryKey: ["products"],
-    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+    queryFn: () => fetch(`/api/products`).then((res) => res.json()),
   });
   const user = userQuery.data;
   const form = useForm<CreateTransactionSchemaType>({

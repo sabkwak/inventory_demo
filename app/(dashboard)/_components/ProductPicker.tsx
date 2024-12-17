@@ -113,7 +113,7 @@ setValue({
     );
   }
   
-  const selectedProduct = products.find(
+  const selectedProduct = Array.isArray(products) && products.find(
     (product: Product) => product.id === value?.productId && product.brandId === value?.brandId 
     && product.unitId === value?.unitId 
   );
@@ -145,7 +145,7 @@ setValue({
           </CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {products?.map((product: Product) => (
+            {Array.isArray(products) && products.map((product: Product) => (
                 <CommandItem
                   key={`${product.id}-${product.brandId}-${product.unitId}`} // Simplified key
                   onSelect={() => {
