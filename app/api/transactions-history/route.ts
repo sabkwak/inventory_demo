@@ -39,7 +39,7 @@ export type GetTransactionHistoryResponseType = Awaited<
 >;
 
 // Function to fetch the transaction history with brand, ingredient, category, and client included
-async function getTransactionsHistory(userId: string, from: Date, to: Date) {
+async function getTransactionsHistory(from: Date, to: Date) {
 
 
   // const formatter = GetFormatterForWeight(userSettings.weight);

@@ -34,7 +34,7 @@ export type GetBalanceStatsResponseType = Awaited<
   ReturnType<typeof getBalanceStats>
 >;
 
-async function getBalanceStats(userId: string, from: string, to: string) {
+async function getBalanceStats(from: string, to: string) {
   const flowerCategoryId = 1;  // Assuming Flower has category ID 1
   const miscCategoryId = 2;    // Assuming Misc has category ID 2
 

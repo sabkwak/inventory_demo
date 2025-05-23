@@ -29,7 +29,6 @@ export async function GET(request: Request) {
 
   // Fetch products with pagination
   const products = await getProductsHistory(
-    user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber,
     queryParams.data.from,
     queryParams.data.to,
    
@@ -44,7 +43,6 @@ export type GetProductHistoryResponseType = Awaited<
 >;
 
 async function getProductsHistory(
-  userId: string,
   from: Date,
   to: Date,
 ) {
@@ -52,7 +50,6 @@ async function getProductsHistory(
 
   const products = await prisma.product.findMany({
     where: {
-      // userId,
       createdAt: {
         gte: from,
         lte: to,

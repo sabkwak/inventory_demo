@@ -12,9 +12,7 @@ export async function GET(request: Request) {
   const currentUserId = user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber;
 
   const products = await prisma.product.findMany({
-    where: {
-      userId: currentUserId,
-    },
+
     include: {
       brand: true,
       category: true,

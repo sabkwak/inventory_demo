@@ -23,7 +23,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const product = await prisma.product.findFirst({
       where: {
         id: parseInt(id as string, 10),
-        userId: userId, // Ensure the product belongs to the logged-in user
       },
       include: {
         brand: true,
