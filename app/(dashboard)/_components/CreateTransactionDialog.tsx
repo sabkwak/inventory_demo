@@ -1,4 +1,5 @@
 "use client";
+import { useWatch } from 'react-hook-form';
 
 import {
   Dialog,
@@ -190,6 +191,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
     [mutate]
   );
 
+
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -244,22 +246,32 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                 </FormItem>
               )}
             />
-            <FormField
+
+
+
+<FormField
   control={form.control}
   name="priceType"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Price Type</FormLabel>
-      <FormControl>
-        <select {...field}>
-          <option value="">Select price type</option>
-          <option value="unit">Unit price</option>
-          <option value="total">Total price</option>
-        </select>
-      </FormControl>
-      <FormMessage>If a price is entered, please specify price-type</FormMessage>
-    </FormItem>
-  )}
+  render={({ field }) => {
+    const priceValue = useWatch({
+      control: form.control,
+      name: 'price',
+    });
+
+    return (
+      <FormItem hidden={!priceValue}>
+        <FormLabel>Price Type</FormLabel>
+        <FormControl>
+          <select {...field}>
+            <option value="">Select price type</option>
+            <option value="unit">Unit price</option>
+            <option value="total">Total price</option>
+          </select>
+        </FormControl>
+        <FormMessage>Please specify price-type</FormMessage>
+      </FormItem>
+    );
+  }}
 />
   {/* Amount field with dynamic unit */}
      
