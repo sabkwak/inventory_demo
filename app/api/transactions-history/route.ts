@@ -26,7 +26,6 @@ export async function GET(request: Request) {
   }
 
   const transactions = await getTransactionsHistory(
-    user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber,
     queryParams.data.from,
     queryParams.data.to
   );

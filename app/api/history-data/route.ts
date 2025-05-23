@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     });
   }
 
-  const data = await getHistoryData(user.id, queryParams.data.timeframe, {
+  const data = await getHistoryData( queryParams.data.timeframe, {
     month: queryParams.data.month,
     year: queryParams.data.year,
   });
