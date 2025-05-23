@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     });
   }
 
-  const stats = await getBalanceStats(user.id, from, to);
+  const stats = await getBalanceStats(from, to);
 
   return new Response(JSON.stringify(stats));
 }
