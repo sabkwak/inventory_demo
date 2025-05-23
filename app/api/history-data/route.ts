@@ -72,7 +72,6 @@ async function getYearHistoryData(userId: string, year: number) {
   const result = await prisma.yearHistory.groupBy({
     by: ["month"],
     where: {
-      userId,
       year,
     },
     _sum: {
@@ -119,7 +118,6 @@ async function getMonthHistoryData(
   const result = await prisma.monthHistory.groupBy({
     by: ["day"],
     where: {
-      userId,
       year,
       month,
     },
