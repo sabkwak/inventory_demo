@@ -9,7 +9,7 @@ export default function IngredientDetails({ params }: { params: { id: string } }
   const router = useRouter();  // Initialize router for navigation
   const userQuery = useQuery({
     queryKey: ["products"],
-    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+    queryFn: () => fetch(`/api/products`).then((res) => res.json()),
   });
   const user = userQuery.data;
   const { data, isLoading, error } = useQuery({
