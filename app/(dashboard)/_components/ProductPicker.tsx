@@ -154,7 +154,7 @@ setValue({
                   }}
                 >
                   <ProductRow product={product} brands={brands} units={units} />
-                  {product?.userId === user && 
+                  {
                   <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",

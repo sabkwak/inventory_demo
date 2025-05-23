@@ -61,9 +61,8 @@ model Product {
   quantity    Int       @default(0)
   value    Int?       @default(0)
   description String?
-  userId    String
 
-  @@unique([product, brandId, userId])  // Enforce unique combination of product, brand, and category
+  @@unique([product, brandId])  // Enforce unique combination of product, brand, and category
 }
 
 model Transaction {
@@ -77,13 +76,11 @@ model Transaction {
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId   Int
    price    Int?       @default(0)
-  userId      String
 
 }
 
 
 model MonthHistory {
-  userId  String
   day     Int
   month   Int
   year    Int
@@ -94,7 +91,6 @@ model MonthHistory {
 }
 
 model YearHistory {
-  userId  String
   month   Int
   year    Int
   subtract  Float

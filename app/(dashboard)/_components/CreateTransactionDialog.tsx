@@ -244,6 +244,23 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                 </FormItem>
               )}
             />
+            <FormField
+  control={form.control}
+  name="priceType"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Price Type</FormLabel>
+      <FormControl>
+        <select {...field}>
+          <option value="">Select price type</option>
+          <option value="unit">Unit price</option>
+          <option value="total">Total price</option>
+        </select>
+      </FormControl>
+      <FormMessage>If a price is entered, please specify price-type</FormMessage>
+    </FormItem>
+  )}
+/>
   {/* Amount field with dynamic unit */}
      
   <FormField

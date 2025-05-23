@@ -47,7 +47,6 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
   // Fetch transactions including product's brand, category, and client
   const transactions = await prisma.transaction.findMany({
     where: {
-      userId,
       date: {
         gte: from,
         lte: to,

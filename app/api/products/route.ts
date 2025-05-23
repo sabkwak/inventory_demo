@@ -15,9 +15,9 @@ export async function GET(request: Request) {
   if (searchParams.get('userId')) {
     const userId = searchParams.get('userId');
     const products = await prisma.product.findMany({
-      where: {
-        userId: currentUserId,
-      },
+      // where: {
+      //   userId: currentUserId,
+      // },
       include: {
         brand: true,
         category: true,
@@ -29,11 +29,12 @@ export async function GET(request: Request) {
     });
     return Response.json(products);
   } else {
-    const userId = searchParams.get('userId');
+    // const userId = searchParams.get('userId');
     const products = await prisma.product.findMany({
-      where: {
-        userId: currentUserId,
-      },      include: {
+      // where: {
+      //   userId: currentUserId,
+      // },      
+      include: {
         brand: true,
         category: true,
         unit: true,

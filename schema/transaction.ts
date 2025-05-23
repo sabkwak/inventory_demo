@@ -2,10 +2,12 @@ import { z } from "zod";
 
 export const CreateTransactionSchema = z.object({
   amount: z.coerce.number().positive().multipleOf(0.01),
-  price: z.preprocess((price) => {
+   price: z.preprocess((price) => {
     if (price === "" || price === undefined) return undefined;
     return Number(price);
   }, z.number().optional()),
+    priceType: z.string().optional(),
+
   productId: z.number(),  // Use productId as it's unique
   description: z.string().nullable().optional(), // Make description optional
   date: z.coerce.date(),
@@ -17,6 +19,13 @@ export const CreateTransactionSchema = z.object({
   // ingredient: z.string(),
   // ingredientIcon: z.string().optional(),
   type: z.union([z.literal("subtract"), z.literal("add")]),
+}).refine((data) => {
+  if (data.price !== undefined && data.price !== null && data.priceType === undefined) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please select a price type if you enter a price",
 });
 
 export type CreateTransactionSchemaType = z.infer<

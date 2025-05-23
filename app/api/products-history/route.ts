@@ -52,7 +52,7 @@ async function getProductsHistory(
 
   const products = await prisma.product.findMany({
     where: {
-      userId,
+      // userId,
       createdAt: {
         gte: from,
         lte: to,

@@ -13,7 +13,7 @@ export const CreateProductSchema = z.object({
   }, z.number().min(0).multipleOf(0.01)), // Use preprocess to handle string input
   createdAt: z.coerce.date(),
   description: z.string().nullable().optional(),
-  category: z.string().nullable().optional(),
+  category: z.string().nullable().optional(), 
   unit: z.string().nullable().optional(),
 
   brand: z.string(),
@@ -43,7 +43,6 @@ export const EditProductSchema = z.object({
   }, z.number().optional()),
     category: z.string().nullable().optional(), // Make category optional
     unit: z.string().nullable().optional(), // Make unit optional
-
   brand: z.string(),
 });
 
