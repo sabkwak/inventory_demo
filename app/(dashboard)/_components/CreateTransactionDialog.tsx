@@ -124,7 +124,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
 
       form.reset({
         productId: defaultProductId || undefined,
-        price: undefined,
+        price: null,
         type,
         description: "",
         amount: 0,
@@ -240,10 +240,10 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
 )}                  <FormControl>
                     <Input
                       {...field}
-                      value={field.value ?? undefined} // Ensure default value is 0
+                      value={field.value ?? null} // Ensure default value is 0
                       type="number"
                       placeholder="Enter price"
-                      min={0} // Prevent negative values
+      step="any" // Allow any positive value, but not negative
                     />
                   </FormControl>
                 </FormItem>

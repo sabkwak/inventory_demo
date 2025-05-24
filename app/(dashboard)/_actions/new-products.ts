@@ -79,7 +79,7 @@ if (!brandRow) {
   // }
 
 
-  await prisma.product.create({
+  const newProduct = await prisma.product.create({
     data: {
       quantity,
       value: value || undefined,
@@ -101,19 +101,19 @@ if (!brandRow) {
       createdAt,
         },
   })
-    // Create a new transaction for the product creation
-  await prisma.transaction.create({
-    data: {
-      amount: form.quantity, // Use the initial quantity of the product
-      price: null, // Set price to null since it's not applicable for product creation
-      description: `Initial stock of ${form.product}`,
-      date: new Date(),
-      type: 'add', // or 'initial' if you want to distinguish it from regular 'add' transactions
-      product: {
-        connect: { id: productRow.id },
-      },
+// Create a new transaction for the product creation
+await prisma.transaction.create({
+  data: {
+    amount: quantity, // Use the initial quantity of the product
+    price: null, // Set price to null since it's not applicable for product creation
+    description: `Initial stock of ${product}`,
+    date: new Date(),
+    type: 'add', // or 'initial' if you want to distinguish it from regular 'add' transactions
+    product: {
+      connect: { id: newProduct.id },
     },
-  });
+  },
+});
   // Update month aggregate table
   // await prisma.monthHistory.upsert({
   //   where: {

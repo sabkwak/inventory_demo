@@ -128,7 +128,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
       form.reset({
         product: "",
         description: "",
-        value: undefined,
+        value: null,
         quantity: 0,
         // icon: "",
         // ingredient: undefined,
@@ -285,10 +285,10 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                   <FormControl>
                     <Input
                       {...field}
-                      value={field.value ?? undefined} // Ensure default value is 0
+                      value={field.value ?? null} // Ensure default value is 0
                       type="number"
                       placeholder="Enter ingredient price"
-                      min={0} // Prevent negative values
+      step="any" // Allow any positive value, but not negative
                     />
                   </FormControl>
                 </FormItem>

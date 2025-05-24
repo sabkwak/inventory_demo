@@ -3,7 +3,7 @@ import { z } from "zod";
 export const CreateTransactionSchema = z.object({
   amount: z.coerce.number().positive().multipleOf(0.01),
    price: z.preprocess((price) => {
-    if (price === "" || price === undefined) return undefined;
+    if (price === "" || price === null) return null;
     return Number(price);
   }, z.number().optional()),
     priceType: z.string().optional(),
@@ -20,7 +20,7 @@ export const CreateTransactionSchema = z.object({
   // ingredientIcon: z.string().optional(),
   type: z.union([z.literal("subtract"), z.literal("add")]),
 }).refine((data) => {
-  if (data.price !== undefined && data.price !== null && data.priceType === undefined) {
+  if (data.price !== null && data.price !== null && data.priceType === undefined) {
     return false;
   }
   return true;
@@ -34,7 +34,7 @@ export type CreateTransactionSchemaType = z.infer<
 export const EditTransactionSchema = z.object({
   id: z.number(), // Using ID instead of name for deletion
   price: z.preprocess((price) => {
-    if (price === "" || price === undefined) return undefined;
+    if (price === "" || price === null) return null;
     return Number(price);
   }, z.number().optional()),
   // client: z.string(),

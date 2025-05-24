@@ -4,7 +4,7 @@ export const CreateProductSchema = z.object({
   // userId: z.string(),
   product: z.string(),
   value: z.preprocess((value) => {
-    if (value === "" || value === undefined) return undefined;
+    if (value === "" || value === null) return null;
     return Number(value);
   }, z.number().optional()),
   quantity: z.preprocess((quantity) => {
@@ -38,7 +38,7 @@ export const EditProductSchema = z.object({
   createdAt: z.coerce.date(),
   description: z.string().nullable().optional(), // Make description optional
   value: z.preprocess((value) => {
-    if (value === "" || value === undefined) return undefined;
+    if (value === "" || value === null) return null;
     return Number(value);
   }, z.number().optional()),
     category: z.string().nullable().optional(), // Make category optional
