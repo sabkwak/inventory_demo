@@ -1,4 +1,5 @@
 "use client";
+import { useWatch } from 'react-hook-form';
 
 import {
   Dialog,
@@ -71,7 +72,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
   const [isMounted, setIsMounted] = useState(false);
   const userQuery = useQuery({
     queryKey: ["products"],
-    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+    queryFn: () => fetch(`/api/products`).then((res) => res.json()),
   });
   const user = userQuery.data;
   const form = useForm<CreateTransactionSchemaType>({
@@ -190,6 +191,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
     [mutate]
   );
 
+
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -244,6 +246,33 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                 </FormItem>
               )}
             />
+
+
+
+<FormField
+  control={form.control}
+  name="priceType"
+  render={({ field }) => {
+    const priceValue = useWatch({
+      control: form.control,
+      name: 'price',
+    });
+
+    return (
+      <FormItem hidden={!priceValue}>
+        <FormLabel>Price Type</FormLabel>
+        <FormControl>
+          <select {...field}>
+            <option value="">Select price type</option>
+            <option value="unit">Unit price</option>
+            <option value="total">Total price</option>
+          </select>
+        </FormControl>
+        <FormMessage>Please specify price-type</FormMessage>
+      </FormItem>
+    );
+  }}
+/>
   {/* Amount field with dynamic unit */}
      
   <FormField

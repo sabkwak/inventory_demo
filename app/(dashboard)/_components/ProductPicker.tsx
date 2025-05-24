@@ -33,12 +33,12 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
   const [value, setValue] = useState<{ productId: number; brandId: number, unitId: number } | null>(null);
   const userQuery = useQuery({
     queryKey: ["products"],
-    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+    queryFn: () => fetch(`/api/products`).then((res) => res.json()),
   });
   const user = userQuery.data;
   const productsQuery = useQuery({
     queryKey: ["products"],
-    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+    queryFn: () => fetch(`/api/products`).then((res) => res.json()),
   });
   const products = productsQuery.data;
 
@@ -113,7 +113,7 @@ setValue({
     );
   }
   
-  const selectedProduct = products.find(
+  const selectedProduct = Array.isArray(products) && products.find(
     (product: Product) => product.id === value?.productId && product.brandId === value?.brandId 
     && product.unitId === value?.unitId 
   );
@@ -145,7 +145,7 @@ setValue({
           </CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {products?.map((product: Product) => (
+            {Array.isArray(products) && products.map((product: Product) => (
                 <CommandItem
                   key={`${product.id}-${product.brandId}-${product.unitId}`} // Simplified key
                   onSelect={() => {
@@ -154,7 +154,7 @@ setValue({
                   }}
                 >
                   <ProductRow product={product} brands={brands} units={units} />
-                  {product?.userId === user && 
+                  {
                   <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
@@ -170,7 +170,6 @@ setValue({
     </Popover>
   );
 }
-
 export default ProductPicker;
 
 function ProductRow({

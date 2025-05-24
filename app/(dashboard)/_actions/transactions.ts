@@ -20,7 +20,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   }
   const userIdUserSettings = user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber;
 
-  const { productId, price, amount, date, description, type } = parsedBody.data;
+  const { productId, price, priceType, amount, date, description, type } = parsedBody.data;
 
   // Fetch the product based on the productId
   const productRow = await prisma.product.findUnique({
@@ -47,9 +47,8 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   // Proceed with transaction creation if inventory is valid
   await prisma.transaction.create({
     data: {
-      userId: userIdUserSettings,
       amount: amount,
-      price: price || undefined,
+    price: priceType === "total" && price ? price / amount : price,
       description: description || "", // Set to empty string if not prosvided
       date: date,
       type: type,
@@ -78,7 +77,6 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       },
     },
     create: {
-      userId: user.id,
       day: date.getUTCDate(),
       month: date.getUTCMonth(),
       year: date.getUTCFullYear(),
@@ -104,7 +102,6 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       },
     },
     create: {
-      userId: user.id,
       month: date.getUTCMonth(),
       year: date.getUTCFullYear(),
       add: type === "add" ? amount : 0,

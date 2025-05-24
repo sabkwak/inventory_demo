@@ -26,7 +26,6 @@ export async function GET(request: Request) {
   }
 
   const transactions = await getTransactionsHistory(
-    user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber,
     queryParams.data.from,
     queryParams.data.to
   );
@@ -39,7 +38,7 @@ export type GetTransactionHistoryResponseType = Awaited<
 >;
 
 // Function to fetch the transaction history with brand, ingredient, category, and client included
-async function getTransactionsHistory(userId: string, from: Date, to: Date) {
+async function getTransactionsHistory(from: Date, to: Date) {
 
 
   // const formatter = GetFormatterForWeight(userSettings.weight);
@@ -47,7 +46,6 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
   // Fetch transactions including product's brand, category, and client
   const transactions = await prisma.transaction.findMany({
     where: {
-      userId,
       date: {
         gte: from,
         lte: to,
