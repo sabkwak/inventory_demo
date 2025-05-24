@@ -33,12 +33,12 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
   const [value, setValue] = useState<{ productId: number; brandId: number, unitId: number } | null>(null);
   const userQuery = useQuery({
     queryKey: ["products"],
-    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+    queryFn: () => fetch(`/api/products`).then((res) => res.json()),
   });
   const user = userQuery.data;
   const productsQuery = useQuery({
     queryKey: ["products"],
-    queryFn: () => fetch(`/api/products/user`).then((res) => res.json()),
+    queryFn: () => fetch(`/api/products`).then((res) => res.json()),
   });
   const products = productsQuery.data;
 
