@@ -278,7 +278,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="block">Price ($)</FormLabel>
+                  <FormLabel className="block">Purchase Price ($)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
