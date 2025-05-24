@@ -273,7 +273,10 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
       </FormItem>
     )}
   />
-              <FormField
+
+</div>
+<div className="flex space-x-4">
+                <FormField
               control={form.control}
               name="value"
               render={({ field }) => (
@@ -291,8 +294,6 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
-</div>
-<div className="flex space-x-4">
             <FormField
               control={form.control}
               name="category"
@@ -309,7 +310,9 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
               )}
             />
 
-                        <FormField
+
+            </div>
+                                    <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
@@ -327,7 +330,6 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
-            </div>
               <FormField
                 control={form.control}
                 name="createdAt"

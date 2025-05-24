@@ -53,7 +53,7 @@ function TransactionsPage() {
                   variant={"outline"}
                   className="bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
                 >
-                  Add Ingredient
+                  Add Quantity
                 </Button>
               }
               type="add"
@@ -65,7 +65,7 @@ function TransactionsPage() {
                   variant={"outline"}
                   className="bg-gradient-to-r from-red-800 to-red-900 text-white hover:from-red-700 hover:to-red-800 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 ease-in-out"
                 >
-                 Subtract Ingredient
+                 Subtract Quantity
                 </Button>
               }
               type="subtract"

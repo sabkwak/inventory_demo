@@ -233,13 +233,16 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price ($)</FormLabel>
-                  <FormControl>
+{type === "subtract" ? (
+  <FormLabel>Selling Price ($)</FormLabel>
+) : (
+  <FormLabel>Purchase Price ($)</FormLabel>
+)}                  <FormControl>
                     <Input
                       {...field}
                       value={field.value ?? undefined} // Ensure default value is 0
                       type="number"
-                      placeholder="Enter transaction price"
+                      placeholder="Enter price"
                       min={0} // Prevent negative values
                     />
                   </FormControl>
