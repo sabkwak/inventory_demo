@@ -170,7 +170,6 @@ setValue({
     </Popover>
   );
 }
-
 export default ProductPicker;
 
 function ProductRow({
