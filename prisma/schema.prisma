@@ -59,7 +59,7 @@ model Product {
   category    Category?  @relation(fields: [categoryId], references: [id])
   transactions Transaction[]  // No @relation attribute needed here
   quantity    Int       @default(0)
-  value    Int?       @default(0)
+  value    Int?       
   description String?
 
   @@unique([product, brandId])  // Enforce unique combination of product, brand, and category
@@ -75,7 +75,7 @@ model Transaction {
   type        String   @default("subtract")
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId   Int
-   price    Int?       @default(0)
+   price    Int?     
 
 }
 
