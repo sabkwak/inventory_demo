@@ -104,6 +104,30 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     enableHiding: false, // Brand is visible by default
   },
   {
+  accessorKey: "totalCost",
+  header: ({ column }) => (
+    <DataTableColumnHeader column={column} title="Total Transaction Cost" />
+  ),
+  cell: ({ row }) => (
+    <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+      {row.original.price !== null ? `$${row.original.price * row.original.amount}` : "-"}
+    </p>
+  ),
+  enableHiding: true, // Total Cost is visible by default
+},
+  {
+    accessorKey: "price",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Unit Price ($/unit)" />
+    ),
+    cell: ({ row }) => (
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        ${row.original.price}/{row.original.unitName ? row.original.unitName : ''}
+      </p>
+    ),
+    enableHiding: true, // Amount is visible by default
+  },
+  {
     accessorKey: "description",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Description/Notes" />
@@ -145,18 +169,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     },
     enableHiding: true, // Date is hidden by default
   },
-  {
-    accessorKey: "price",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Price ($)" />
-    ),
-    cell: ({ row }) => (
-      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.price}
-      </p>
-    ),
-    enableHiding: true, // Amount is visible by default
-  },
+
   {
     accessorKey: "category",
     header: ({ column }) => (

@@ -21,8 +21,8 @@ function Navbar() {
 
 const items = [
   { label: "Dashboard", link: "/" },
-  { label: "Transactions", link: "/transactions" },
   { label: "Inventory", link: "/inventory" },
+  { label: "Transactions", link: "/transactions" },
   { label: "Manage", link: "/manage" },
   { label: "Scanner", link: "/scanner" },
 ];

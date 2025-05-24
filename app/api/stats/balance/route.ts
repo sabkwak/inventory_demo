@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     });
   }
 
-  const stats = await getBalanceStats(user.id, from, to);
+  const stats = await getBalanceStats(from, to);
 
   return new Response(JSON.stringify(stats));
 }
@@ -34,7 +34,7 @@ export type GetBalanceStatsResponseType = Awaited<
   ReturnType<typeof getBalanceStats>
 >;
 
-async function getBalanceStats(userId: string, from: string, to: string) {
+async function getBalanceStats(from: string, to: string) {
   const flowerCategoryId = 1;  // Assuming Flower has category ID 1
   const miscCategoryId = 2;    // Assuming Misc has category ID 2
 
