@@ -21,7 +21,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     redirect("/sign-in");
   }
 
-  const { product, quantity, value, category, brand, createdAt, description , unit} = parsedBody.data;
+  const { product, quantity, priceType, value, category, brand, createdAt, description , unit} = parsedBody.data;
 
   // const productRow = await prisma.product.findFirst({
   //   where: {
@@ -79,10 +79,10 @@ if (!brandRow) {
   // }
 
 
-  const newProduct = await prisma.product.create({
+  return await prisma.product.create({
     data: {
       quantity,
-      value: value || undefined,
+value: priceType === "total" && quantity !== 0 && value !== undefined ? value / quantity : value,
       product,
       description: description || "", // Set to empty string if not provided
       // icon: icon ?? "",  // Default to an empty string if icon is null
@@ -101,19 +101,7 @@ if (!brandRow) {
       createdAt,
         },
   })
-// Create a new transaction for the product creation
-await prisma.transaction.create({
-  data: {
-    amount: quantity, // Use the initial quantity of the product
-    price: null, // Set price to null since it's not applicable for product creation
-    description: `Initial stock of ${product}`,
-    date: new Date(),
-    type: 'add', // or 'initial' if you want to distinguish it from regular 'add' transactions
-    product: {
-      connect: { id: newProduct.id },
-    },
-  },
-});
+  
   // Update month aggregate table
   // await prisma.monthHistory.upsert({
   //   where: {

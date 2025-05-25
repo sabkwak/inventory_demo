@@ -4,9 +4,10 @@ export const CreateProductSchema = z.object({
   // userId: z.string(),
   product: z.string(),
   value: z.preprocess((value) => {
-    if (value === "" || value === null) return null;
+    if (value === "" || value === undefined) return undefined;
     return Number(value);
   }, z.number().optional()),
+  priceType: z.string().optional(),
   quantity: z.preprocess((quantity) => {
     if (quantity === "" || quantity === undefined) return 0; // Default to 0 if empty
     return Number(quantity);
@@ -38,7 +39,7 @@ export const EditProductSchema = z.object({
   createdAt: z.coerce.date(),
   description: z.string().nullable().optional(), // Make description optional
   value: z.preprocess((value) => {
-    if (value === "" || value === null) return null;
+    if (value === "" || value === undefined) return undefined;
     return Number(value);
   }, z.number().optional()),
     category: z.string().nullable().optional(), // Make category optional
