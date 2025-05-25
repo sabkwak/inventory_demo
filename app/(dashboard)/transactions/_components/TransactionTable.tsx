@@ -58,20 +58,7 @@ const emptyData: any[] = [];
 type TransactionHistoryRow = GetTransactionHistoryResponseType[0];
 
 const columns: ColumnDef<TransactionHistoryRow>[] = [
-  {
-    accessorKey: "amount",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Amount" />
-    ),
-    cell: ({ row }) => (
-      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.amount} {row.original.unitName ? row.original.unitName : ''}
-      </p>
-    ),
-    enableHiding: false, // Amount is visible by default
-  },
-
-  {
+    {
     accessorKey: "product",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Ingredient" />
@@ -103,6 +90,20 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     ),
     enableHiding: false, // Brand is visible by default
   },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Amount" />
+    ),
+    cell: ({ row }) => (
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        {row.original.amount} {row.original.unitName ? row.original.unitName : ''}
+      </p>
+    ),
+    enableHiding: false, // Amount is visible by default
+  },
+
+
   {
   accessorKey: "totalCost",
   header: ({ column }) => (
