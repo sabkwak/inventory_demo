@@ -34,21 +34,29 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   }
 
   const currentInventory = productRow.quantity;
-
+  const averageCost = productRow.value;
   // Calculate new inventory level based on the transaction type (order or return)
   const newInventory = type === "subtract" ? currentInventory - amount : currentInventory + amount;
-
+  const unitPrice = price;
   // Prevent negative inventory for orders
   if (newInventory < 0) {
     throw new Error("Error: Negative inventory not allowed");
     return;
   }
-
+  if (price !== undefined) {
+    if (priceType === "total") {
+  let unitPrice = price / amount;
+    }
+  else if (priceType === "unit") {
+  let unitPrice = price;
+    }
+  }
+  
   // Proceed with transaction creation if inventory is valid
   await prisma.transaction.create({
     data: {
       amount: amount,
-    price: priceType === "total" && price ? price / amount : price,
+      price: unitPrice,
       description: description || "", // Set to empty string if not prosvided
       date: date,
       type: type,
@@ -57,16 +65,26 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       },        },
   });
 
-  // Update the product quantity
-  await prisma.product.update({
-    where: { id: productRow.id },
-    data: {
-      quantity: {
-        increment: type === "subtract" ? -amount : amount, // Decrement for orders, increment for returns
-      },
-    },
-  });
+  // Update the product quantity and average
+if (price !== undefined) {
+  const product = await prisma.product.findUnique({ where: { id: productRow.id } });
+  if (product) {
+    const newValue = product.value !== null
+      ? (product.value + price) / 2
+      : price;
+    await prisma.product.update({ where: { id: productRow.id }, data: { value: newValue } });
+  }
+}
 
+await prisma.product.update({
+  where: { id: productRow.id },
+  data: {
+    quantity: {
+      increment: type === "subtract" ? -amount : amount, // Decrement for orders, increment for returns
+    },
+   
+  },
+});
   // Update month aggregate table
   await prisma.monthHistory.upsert({
     where: {
@@ -117,3 +135,4 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     },
   });
 }
+
