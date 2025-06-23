@@ -2,6 +2,7 @@
 
 import ProductsStats from "@/app/(dashboard)/_components/ProductsStats";
 import StatsCards from "@/app/(dashboard)/_components/StatsCards";
+import AnalyticsDashboard from "@/app/(dashboard)/_components/AnalyticsDashboard";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { MAX_DATE_RANGE_DAYS } from "@/lib/constants";
 import { UserSettings } from "@prisma/client";
@@ -51,8 +52,15 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
           from={dateRange.from}
           to={dateRange.to}
         />
-
+        <ProductsStats
+          userSettings={userSettings}
+          from={dateRange.from}
+          to={dateRange.to}
+        />
       </div>
+
+      {/* Analytics Dashboard */}
+      <AnalyticsDashboard userSettings={userSettings} />
 
       <div className="container flex flex-wrap items-end justify-between gap-2 py-6">
 
