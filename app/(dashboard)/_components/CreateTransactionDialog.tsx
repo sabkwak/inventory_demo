@@ -252,26 +252,19 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
 <FormField
   control={form.control}
   name="priceType"
-  render={({ field }) => {
-    const priceValue = useWatch({
-      control: form.control,
-      name: 'price',
-    });
-
-    return (
-      <FormItem hidden={!priceValue}>
-        <FormLabel>Price Type</FormLabel>
-        <FormControl>
-          <select {...field}>
-            <option value="">Select price type</option>
-            <option value="unit">Unit price</option>
-            <option value="total">Total price</option>
-          </select>
-        </FormControl>
-        <FormMessage>Please specify price-type</FormMessage>
-      </FormItem>
-    );
-  }}
+  render={({ field }) => (
+    <FormItem hidden={!form.watch('price')}>
+      <FormLabel>Price Type</FormLabel>
+      <FormControl>
+        <select {...field}>
+          <option value="">Select price type</option>
+          <option value="unit">Unit price</option>
+          <option value="total">Total price</option>
+        </select>
+      </FormControl>
+      <FormMessage>Please specify price-type</FormMessage>
+    </FormItem>
+  )}
 />
   {/* Amount field with dynamic unit */}
      

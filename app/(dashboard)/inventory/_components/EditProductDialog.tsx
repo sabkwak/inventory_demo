@@ -178,7 +178,7 @@ value: 0,
 
         },
       });    },
-    [mutate]
+    [mutate, productId]
   );
 
   return (

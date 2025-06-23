@@ -57,14 +57,14 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
   const brands = Array.isArray(brandsQuery.data) ? brandsQuery.data : [];
 
   useEffect(() => {
-    if (defaultProductId && products.length > 0) {
+    if (defaultProductId && products && products.length > 0) {
       const defaultProduct = products.find((product: Product) => product.id === defaultProductId);
       if (defaultProduct) {
         setValue({ productId: defaultProduct.id, brandId: defaultProduct.brandId,unitId: defaultProduct.unitId ?? 0  });
         onChange(defaultProduct.id); // Trigger onChange with the default product ID
       }
     }
-  }, [defaultProductId, userProducts, onChange]);
+  }, [defaultProductId, products, onChange]);
 
   useEffect(() => {
     if (value) {

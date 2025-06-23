@@ -102,7 +102,7 @@ transaction: {
         if (open) {
           fetchTransaction();
         }
-      }, [open, transaction.amount, transaction.description]);
+      }, [open, transaction.id, transaction.amount, transaction.description]);
 
     const { mutate, isPending } = useMutation({
         mutationFn: EditTransaction,
@@ -144,7 +144,7 @@ transaction: {
               type: values.type, // Convert category to ID if present
             },
           });    },
-        [mutate]
+        [mutate, transactionId]
       );
 
     return (

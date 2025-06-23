@@ -21,7 +21,7 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
 
         <h2 className="text-3xl font-bold">Overview</h2>
         <p className="text-sm text-gray-400">
-85- here before your inventory gets 86'd &#x1F480;</p>
+85- here before your inventory gets 86&apos;d &#x1F480;</p>
       </div>
         <div className="flex items-center gap-3">
           <DateRangePicker
@@ -57,10 +57,10 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
       <div className="container flex flex-wrap items-end justify-between gap-2 py-6">
 
       <div className="flex flex-col gap-1">
-      <p className="text-sm text-gray-400 italic">(Psst! Hello! Thanks for checking out my demo for Project 85 :) I recommend you use this on a desktop and try out the "View QR Code" action on the Inventory page and scanning the QR code with your phone. Please let me know what features you'd like to see next!</p>
-<h2 className="text-3xl font-bold">Sabrina's To Do List</h2>
+      <p className="text-sm text-gray-400 italic">(Psst! Hello! Thanks for checking out my demo for Project 85 :) I recommend you use this on a desktop and try out the &quot;View QR Code&quot; action on the Inventory page and scanning the QR code with your phone. Please let me know what features you&apos;d like to see next!</p>
+<h2 className="text-3xl font-bold">Sabrina&apos;s To Do List</h2>
 <p className="text-sm text-gray-400">
--Add optional "minimum quantity" field to "Create New Ingredient" window so when the user "Subtracts" an Ingredient and the quantity falls below the minimum, it shows up on this dashboard. The user will also be able to opt in for notifications</p>
+-Add optional &quot;minimum quantity&quot; field to &quot;Create New Ingredient&quot; window so when the user &quot;Subtracts&quot; an Ingredient and the quantity falls below the minimum, it shows up on this dashboard. The user will also be able to opt in for notifications</p>
 <p className="text-sm text-gray-400">
 -Create new user tutorial
 </p>

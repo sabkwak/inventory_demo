@@ -79,7 +79,7 @@ if (!brandRow) {
   // }
 
 
-  await prisma.product.create({
+  const productRow = await prisma.product.create({
     data: {
       quantity,
       value: value || undefined,
@@ -100,7 +100,7 @@ if (!brandRow) {
       
       createdAt,
         },
-  })
+  });
     // Create a new transaction for the product creation
   await prisma.transaction.create({
     data: {
@@ -114,6 +114,8 @@ if (!brandRow) {
       },
     },
   });
+
+  return productRow;
   // Update month aggregate table
   // await prisma.monthHistory.upsert({
   //   where: {
