@@ -140,7 +140,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
         queryKey: ["overview"],
       });
 
-      setOpenDialog((prev) => !prev);
+      setOpenDialog(false);
     },
     onError: (error: any) => {
       // Dismiss the loading toast
