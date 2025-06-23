@@ -1,0 +1,65 @@
+-- Create tables
+CREATE TABLE "Brand" (
+  "id" SERIAL PRIMARY KEY,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "name" VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE "Category" (
+  "id" SERIAL PRIMARY KEY,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "name" VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE "Unit" (
+  "id" SERIAL PRIMARY KEY,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "name" VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE "Product" (
+  "id" SERIAL PRIMARY KEY,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "product" VARCHAR(255) NOT NULL,
+  "brandId" INTEGER NOT NULL,
+  "unitId" INTEGER,
+  "categoryId" INTEGER,
+  "quantity" INTEGER NOT NULL DEFAULT 0,
+  "value" INTEGER,
+  "description" VARCHAR(255),
+  CONSTRAINT "Product_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "Brand"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT "Product_unitId_fkey" FOREIGN KEY ("unitId") REFERENCES "Unit"("id") ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE SET NULL ON UPDATE CASCADE,
+  UNIQUE ("product", "brandId")
+);
+
+CREATE TABLE "Transaction" (
+  "id" SERIAL PRIMARY KEY,
+  "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "amount" FLOAT NOT NULL,
+  "description" VARCHAR(255),
+  "date" TIMESTAMP NOT NULL,
+  "type" VARCHAR(255) NOT NULL DEFAULT 'subtract',
+  "productId" INTEGER NOT NULL,
+  "price" INTEGER,
+  CONSTRAINT "Transaction_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE "MonthHistory" (
+  "day" INTEGER NOT NULL,
+  "month" INTEGER NOT NULL,
+  "year" INTEGER NOT NULL,
+  "subtract" FLOAT NOT NULL,
+  "add" FLOAT NOT NULL,
+  PRIMARY KEY ("day", "month", "year")
+);
+
+CREATE TABLE "YearHistory" (
+  "month" INTEGER NOT NULL,
+  "year" INTEGER NOT NULL,
+  "subtract" FLOAT NOT NULL,
+  "add" FLOAT NOT NULL,
+  PRIMARY KEY ("month", "year")
+);
