@@ -18,7 +18,7 @@ export const CreateTransactionSchema = z.object({
   // brandIcon: z.string().optional(),
   // ingredient: z.string(),
   // ingredientIcon: z.string().optional(),
-  type: z.union([z.literal("subtract"), z.literal("add")]),
+  type: z.union([z.literal("subtract"), z.literal("add"), z.literal("sold"), z.literal("waste")]),
 }).refine((data) => {
   if (data.price !== undefined && data.price !== null && data.priceType === undefined) {
     return false;
@@ -42,7 +42,7 @@ export const EditTransactionSchema = z.object({
   date: z.coerce.date(),
   description: z.string().nullable().optional(), // Make description optional
   // categoryIcon: z.string().optional(),
-  type: z.union([z.literal("subtract"), z.literal("add")]),
+  type: z.union([z.literal("subtract"), z.literal("add"), z.literal("sold"), z.literal("waste")]),
 });
 
 export type EditTransactionSchemaType = z.infer<typeof EditTransactionSchema>;

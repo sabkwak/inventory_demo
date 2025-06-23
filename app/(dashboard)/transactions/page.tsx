@@ -7,6 +7,7 @@ import { differenceInDays, startOfMonth, startOfQuarter, addDays } from "date-fn
 import React, { useState } from "react";
 import { toast } from "sonner";
 import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
+import SubtractQuantityDropdown from "@/app/(dashboard)/_components/SubtractQuantityDropdown";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 
@@ -59,17 +60,7 @@ function TransactionsPage() {
               type="add"
             />
 
-            <CreateTransactionDialog userSettings={user}
-              trigger={
-                <Button
-                  variant={"outline"}
-                  className="bg-gradient-to-r from-red-800 to-red-900 text-white hover:from-red-700 hover:to-red-800 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 ease-in-out"
-                >
-                 Subtract Quantity
-                </Button>
-              }
-              type="subtract"
-            />
+            <SubtractQuantityDropdown userSettings={user} />
           </div>
         </div>
       </div>

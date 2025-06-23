@@ -137,6 +137,36 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
     [mutate]
   );
 
+  const getTypeColor = (type: TransactionType) => {
+    switch (type) {
+      case "add":
+        return "text-emerald-500";
+      case "subtract":
+        return "text-red-500";
+      case "sold":
+        return "text-blue-500";
+      case "waste":
+        return "text-orange-500";
+      default:
+        return "text-gray-500";
+    }
+  };
+
+  const getTypeLabel = (type: TransactionType) => {
+    switch (type) {
+      case "add":
+        return "Add";
+      case "subtract":
+        return "Subtract";
+      case "sold":
+        return "Sold";
+      case "waste":
+        return "Waste";
+      default:
+        return type;
+    }
+  };
+
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -146,11 +176,11 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
             Create a new
             <span
               className={cn(
-                "m-1",
-                type === "subtract" ? "text-emerald-500" : "text-red-500"
+                "m-1 capitalize",
+                getTypeColor(type)
               )}
             >
-              {type}
+              {getTypeLabel(type)}
             </span>
             transaction
           </DialogTitle>

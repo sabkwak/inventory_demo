@@ -63,17 +63,32 @@ function ProductsCard({
   // formatter: Intl.NumberFormat;
   data: GetProductsStatsResponseType;
 }) {
-  const filteredData = data.filter((el) => el.type === type);
+  // For statistics, group "sold" and "waste" with "subtract" since they all reduce inventory
+  const isSubtractType = type === "subtract" || type === "sold" || type === "waste";
+  const filteredData = data.filter((el) => {
+    if (isSubtractType) {
+      return el.type === "subtract" || el.type === "sold" || el.type === "waste";
+    }
+    return el.type === type;
+  });
+  
   const total = filteredData.reduce(
     (acc, el) => acc + (el._sum?.amount || 0),
     0
   );
 
+  const getTypeLabel = (type: TransactionType) => {
+    if (isSubtractType) {
+      return "Subtract (Sold/Waste)";
+    }
+    return type === "add" ? "Add" : type;
+  };
+
   return (
     <Card className="h-80 w-full col-span-6">
       <CardHeader>
         <CardTitle className="grid grid-flow-row justify-between gap-2 text-muted-foreground md:grid-flow-col">
-          {type === "subtract" ? "subtract" : "add"} by brand
+          {getTypeLabel(type)} by brand
         </CardTitle>
       </CardHeader>
 
@@ -83,7 +98,7 @@ function ProductsCard({
             No data for the selected period
             <p className="text-sm text-muted-foreground">
               Try selecting a different period or try adding new{" "}
-              {type === "subtract" ? "subtract" : "add"}
+              {getTypeLabel(type)}
             </p>
           </div>
         )}
@@ -112,7 +127,7 @@ function ProductsCard({
                     <Progress
                       value={percentage}
                       indicator={
-                        type === "subtract" ? "bg-emerald-500" : "bg-red-500"
+                        isSubtractType ? "bg-emerald-500" : "bg-red-500"
                       }
                     />
                   </div>

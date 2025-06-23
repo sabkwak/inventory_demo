@@ -4,7 +4,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 // See https://clerk.com/docs/references/nextjs/auth-middleware
 // for more information about configuring your Middleware
 export default authMiddleware({
-  publicRoutes: ['/'],
 });
 
 export const config = {

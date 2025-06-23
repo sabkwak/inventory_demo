@@ -280,13 +280,13 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="block">Purchase Price ($)</FormLabel>
+                  <FormLabel className="block">Cost of Production ($)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       value={field.value ?? undefined} 
                       type="number"
-                      placeholder="Enter ingredient price"
+                      placeholder="Enter cost price"
   min={undefined} // Add this line
                     />
                   </FormControl>

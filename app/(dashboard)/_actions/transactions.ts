@@ -35,10 +35,12 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
   const currentInventory = productRow.quantity;
 
-  // Calculate new inventory level based on the transaction type (order or return)
-  const newInventory = type === "subtract" ? currentInventory - amount : currentInventory + amount;
+  // Calculate new inventory level based on the transaction type
+  // "sold" and "waste" are treated the same as "subtract" for inventory purposes
+  const isSubtractType = type === "subtract" || type === "sold" || type === "waste";
+  const newInventory = isSubtractType ? currentInventory - amount : currentInventory + amount;
 
-  // Prevent negative inventory for orders
+  // Prevent negative inventory for subtract types
   if (newInventory < 0) {
     throw new Error("Error: Negative inventory not allowed");
     return;
@@ -62,7 +64,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     where: { id: productRow.id },
     data: {
       quantity: {
-        increment: type === "subtract" ? -amount : amount, // Decrement for orders, increment for returns
+        increment: isSubtractType ? -amount : amount, // Decrement for subtract types, increment for add
       },
     },
   });
@@ -81,14 +83,14 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       month: date.getUTCMonth(),
       year: date.getUTCFullYear(),
       add: type === "add" ? amount : 0,
-      subtract: type === "subtract" ? amount : 0,
+      subtract: isSubtractType ? amount : 0,
     },
     update: {
       add: {
         increment: type === "add" ? amount : 0,
       },
       subtract: {
-        increment: type === "subtract" ? amount : 0,
+        increment: isSubtractType ? amount : 0,
       },
     },
   });
@@ -105,14 +107,14 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       month: date.getUTCMonth(),
       year: date.getUTCFullYear(),
       add: type === "add" ? amount : 0,
-      subtract: type === "subtract" ? amount : 0,
+      subtract: isSubtractType ? amount : 0,
     },
     update: {
       add: {
         increment: type === "add" ? amount : 0,
       },
       subtract: {
-        increment: type === "subtract" ? amount : 0,
+        increment: isSubtractType ? amount : 0,
       },
     },
   });

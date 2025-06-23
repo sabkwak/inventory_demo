@@ -59,15 +59,19 @@ interface Props {
   type: TransactionType;
   defaultProductId?: number; // Add defaultProductId prop
   userSettings: UserSettings;
-
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
 }
 async function fetchUserSettings() {
   const res = await fetch("/api/user-settings"); // Call your API route
   if (!res.ok) throw new Error("Failed to fetch user settings");
   return res.json();
 }
-function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
-  const [openDialog, setOpenDialog] = useState(false);
+function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpen }: Props) {
+  const [internalOpenDialog, setInternalOpenDialog] = useState(false);
+  const openDialog = open !== undefined ? open : internalOpenDialog;
+  const setOpenDialog = setOpen || setInternalOpenDialog;
+  
   const queryClient = useQueryClient();
   const [isMounted, setIsMounted] = useState(false);
   const userQuery = useQuery({
@@ -191,6 +195,35 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
     [mutate]
   );
 
+  const getTypeLabel = (type: TransactionType) => {
+    switch (type) {
+      case "add":
+        return "Add";
+      case "subtract":
+        return "Subtract";
+      case "sold":
+        return "Sold";
+      case "waste":
+        return "Waste";
+      default:
+        return type;
+    }
+  };
+
+  const getTypeColor = (type: TransactionType) => {
+    switch (type) {
+      case "add":
+        return "text-emerald-500";
+      case "subtract":
+        return "text-red-500";
+      case "sold":
+        return "text-blue-500";
+      case "waste":
+        return "text-orange-500";
+      default:
+        return "text-gray-500";
+    }
+  };
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
@@ -198,15 +231,13 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-         
             <span
               className={cn(
-                "m-1",
-                type === "subtract" ? "text-red-500":"text-emerald-500",     "capitalize"
-
+                "m-1 capitalize",
+                getTypeColor(type)
               )}
             >
-              {type}
+              {getTypeLabel(type)}
             </span> Ingredient
           </DialogTitle>
         </DialogHeader>
@@ -233,16 +264,21 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
               name="price"
               render={({ field }) => (
                 <FormItem>
-{type === "subtract" ? (
-  <FormLabel>Selling Price ($)</FormLabel>
-) : (
-  <FormLabel>Purchase Price ($)</FormLabel>
-)}                  <FormControl>
+                  {type === "add" ? (
+                    <FormLabel>Production Cost ($)</FormLabel>
+                  ) : type === "sold" ? (
+                    <FormLabel>Selling Price ($)</FormLabel>
+                  ) : type === "waste" ? (
+                    <FormLabel>Value Lost ($)</FormLabel>
+                  ) : (
+                    <FormLabel>Selling Price ($)</FormLabel>
+                  )}
+                  <FormControl>
                     <Input
                       {...field}
                       value={field.value ?? undefined} // Ensure default value is 0
                       type="number"
-                      placeholder="Enter price"
+                      placeholder="Enter cost"
   min={undefined} // Add this line
                     />
                   </FormControl>
