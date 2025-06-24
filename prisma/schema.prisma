@@ -61,6 +61,9 @@ model Product {
   quantity    Int       @default(0)
   value    Int?       
   description String?
+  selling_price_per_unit Decimal?
+  expiry_date DateTime?
+  min_stock Decimal? @default(0)
 
   @@unique([product, brandId])  // Enforce unique combination of product, brand, and category
 }
