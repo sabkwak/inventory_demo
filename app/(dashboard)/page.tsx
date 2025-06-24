@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 import { useQuery } from '@tanstack/react-query';
 import ProfitLossKPI from "./_components/ProfitLossKPI";
+import SubtractQuantityDropdown from "@/app/(dashboard)/_components/SubtractQuantityDropdown";
 
 async function page() {
   const user = await currentUser();
@@ -47,12 +48,8 @@ Add Ingredient              </Button>
             />           
              <CreateTransactionDialog userSettings={userSettings}
             trigger={
-              <Button
-                variant={"outline"}
-                className="bg-gradient-to-r from-red-800 to-red-900 text-white hover:from-red-700 hover:to-red-800 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+              <SubtractQuantityDropdown userSettings={userSettings} />
 
-                >
-Subtract Ingredient                </Button>
             }
             type="subtract"
           />
