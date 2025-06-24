@@ -8,6 +8,8 @@ import React from "react";
 import { useQuery } from '@tanstack/react-query';
 import ProfitLossKPI from "./_components/ProfitLossKPI";
 import SubtractQuantityDropdown from "@/app/(dashboard)/_components/SubtractQuantityDropdown";
+import CreateProductDialog from "@/app/(dashboard)/_components/CreateProductDialog"; // Import the CreateProductDialog component
+import DashboardHeader from "@/app/(dashboard)/_components/DashboardHeader";
 
 async function page() {
   const user = await currentUser();
@@ -29,32 +31,7 @@ async function page() {
   return (
     <div className="h-full bg-background">
       <div className="border-b bg-card">
-        <div className="container flex flex-wrap items-center justify-between gap-6 py-8">
-          <p className="text-3xl font-bold">Hello, {user.firstName}! 👋</p>
-
-          <div className="flex items-center gap-3">
-
-
-
-            <CreateTransactionDialog userSettings={userSettings}
-              trigger={
-                <Button
-                  variant={"outline"}
-                  className="bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
-                  >
-Add Ingredient              </Button>
-              }
-              type="add"
-            />           
-             <CreateTransactionDialog userSettings={userSettings}
-            trigger={
-              <SubtractQuantityDropdown userSettings={userSettings} />
-
-            }
-            type="subtract"
-          />
-          </div>
-        </div>
+        <DashboardHeader userSettings={userSettings} userFirstName={user.firstName || "User"} />
       </div>
       <Overview userSettings={userSettings} />
       <ProfitLossKPI />
