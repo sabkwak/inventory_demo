@@ -137,7 +137,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
 
       });
 
-      toast.success(`Ingredient ${data.product} created successfully 🎉`, {
+      toast.success(`Product ${data.product} created successfully 🎉`, {
         id: "create-product",
       });
 
@@ -160,7 +160,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
 
   const onSubmit = useCallback(
     (values: CreateProductSchemaType) => {
-      toast.loading("Creating ingredient...", {
+      toast.loading("Creating product...", {
         id: "create-product",
       });
       mutate(values);
@@ -196,10 +196,10 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
           <DialogTitle>
             Create
             <span className={cn("m-1", "text-emerald-500")}></span>
-            new Ingredient
+            new Product
           </DialogTitle>
           <DialogDescription>
-            Name a new Ingredient and assign a brand and unit
+            Name a new Product and assign a brand and unit
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -212,10 +212,10 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 <FormItem>
                   <FormLabel className="block">Name (required)</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ingredient" {...field} />
+                    <Input placeholder="Product" {...field} />
                   </FormControl>
                   {/* <FormDescription>
-                    This is how your ingredient will appear in the app (required)
+                    This is how your product will appear in the app (required)
                   </FormDescription> */}
                 </FormItem>
               )}
@@ -230,7 +230,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                     <BrandPicker brandName="" onChange={handleBrandChange} />
                   </FormControl>
                   {/* <FormDescription>
-                    Select a brand for this Ingredient (required)
+                    Select a brand for this Product (required)
                   </FormDescription> */}
                 </FormItem>
               )}
@@ -267,7 +267,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
           <UnitPicker unitName="" onChange={handleUnitChange} />
         </FormControl>
         {/* <FormDescription>
-          Select a unit for this Ingredient
+          Select a unit for this Product
         </FormDescription> */}
       </FormItem>
     )}
@@ -317,6 +317,88 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 );
               }}
             />
+
+  <FormField
+    control={form.control}
+    name="selling_price_per_unit"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Selling Price/Unit</FormLabel>
+        <FormControl>
+          <Input
+            {...field}
+            type="number"
+            placeholder="Selling price per unit"
+            min={0}
+            step="0.01"
+          />
+        </FormControl>
+      </FormItem>
+    )}
+  />
+  <FormField
+    control={form.control}
+    name="min_stock"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Min Stock</FormLabel>
+        <FormControl>
+          <Input
+            {...field}
+            type="number"
+            placeholder="Minimum stock"
+            min={0}
+            step="0.01"
+          />
+        </FormControl>
+      </FormItem>
+    )}
+  />
+</div>
+<div className="flex space-x-4">
+  <FormField
+    control={form.control}
+    name="expiry_date"
+    render={({ field }) => (
+      <FormItem className="flex flex-col">
+        <FormLabel>Expiry Date</FormLabel>
+        <Popover>
+          <PopoverTrigger asChild>
+            <FormControl>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[200px] pl-3 text-left font-normal",
+                  !field.value && "text-muted-foreground"
+                )}
+              >
+                {field.value ? (
+                  format(field.value, "PPP")
+                ) : (
+                  <span>Pick a date</span>
+                )}
+                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+              </Button>
+            </FormControl>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={field.value}
+              onSelect={(value) => {
+                if (!value) return;
+                field.onChange(value);
+              }}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+        <FormDescription>Optional expiry date</FormDescription>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+</div>
             <FormField
               control={form.control}
               name="category"
@@ -327,14 +409,12 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                     <CategoryPicker categoryName="" onChange={handleCategoryChange} />
                   </FormControl>
                   <FormDescription>
-                    Select a category for this Ingredient
+                    Select a category for this Product
                   </FormDescription>
                 </FormItem>
               )}
             />
 
-
-            </div>
                                     <FormField
               control={form.control}
               name="description"
@@ -348,7 +428,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         />
           </FormControl>
                   <FormDescription>
-                    New ingredient description/notes
+                    New product description/notes
                   </FormDescription>
                 </FormItem>
               )}

@@ -6,6 +6,7 @@ import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import React from "react";
 import { useQuery } from '@tanstack/react-query';
+import ProfitLossKPI from "./_components/ProfitLossKPI";
 import SubtractQuantityDropdown from "@/app/(dashboard)/_components/SubtractQuantityDropdown";
 
 async function page() {
@@ -48,6 +49,7 @@ Add Ingredient              </Button>
              <CreateTransactionDialog userSettings={userSettings}
             trigger={
               <SubtractQuantityDropdown userSettings={userSettings} />
+
             }
             type="subtract"
           />
@@ -55,7 +57,7 @@ Add Ingredient              </Button>
         </div>
       </div>
       <Overview userSettings={userSettings} />
-
+      <ProfitLossKPI />
     </div>
   );
 }

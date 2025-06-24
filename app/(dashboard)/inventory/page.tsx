@@ -46,7 +46,7 @@ function InventoryPage() {
             }}
           />
           <CreateProductDialog userSettings={user}
-            trigger={<Button>Create New Ingredient</Button>}
+            trigger={<Button>Create New Product</Button>}
             successCallback={() => {
               // Logic to handle after a product is successfully created
               console.log("Ingredient created successfully");
