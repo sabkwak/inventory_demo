@@ -23,7 +23,7 @@ import {
   CreateTransactionSchema,
   CreateTransactionSchemaType,
 } from "@/schema/transaction";
-import { ReactNode, useCallback, useState } from "react";
+import { ReactNode, useCallback, useState, useEffect } from "react";
 import { useQuery } from '@tanstack/react-query';  // Import the useQuery hook for fetching product data
 
 import React from "react";
@@ -50,7 +50,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateTransaction } from "@/app/(dashboard)/_actions/transactions";
 import { toast } from "sonner";
 import { DateToUTCDate } from "@/lib/helpers";
-import {  useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserSettings } from "@prisma/client";
 
@@ -84,8 +83,9 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
     defaultValues: {
       type,
       date: new Date(),
-      // client: undefined, // Initialize with undefined or null
-      productId: defaultProductId || undefined, // Initialize with undefined or null
+      productId: defaultProductId || undefined,
+      cost: undefined,
+      sellPrice: undefined,
     },
   });
 
@@ -119,6 +119,18 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
     }
   }, [data]);
 
+  // When product changes, set default cost/sellPrice from product
+  useEffect(() => {
+    if (data && data.product) {
+      if (type === "add") {
+        form.setValue("cost", data.product.value ?? undefined);
+      } else if (type === "sold" || type === "subtract") {
+        form.setValue("sellPrice", data.product.selling_price_per_unit ?? undefined);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, type]);
+
   const { mutate, isPending } = useMutation({
     mutationFn: CreateTransaction,
     onSuccess: () => {
@@ -128,7 +140,8 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
 
       form.reset({
         productId: defaultProductId || undefined,
-        price: undefined,
+        cost: undefined,
+        sellPrice: undefined,
         type,
         description: "",
         amount: 0,
@@ -238,7 +251,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
               )}
             >
               {getTypeLabel(type)}
-            </span> Ingredient
+            </span> Product Quantity
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -248,71 +261,51 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
               name="productId"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Ingredient</FormLabel>
+                  <FormLabel>Product</FormLabel>
                   <FormControl>
                   <ProductPicker userSettings={user}
   defaultProductId={defaultProductId}
   onChange={(productId: number) => form.setValue("productId", productId)}
 />
                     </FormControl>
-                  <FormDescription>Select a ingredient for this transaction (required)</FormDescription>
+                  <FormDescription>Select a product for this transaction (required)</FormDescription>
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  {type === "add" ? (
-                    <FormLabel>Production Cost ($)</FormLabel>
-                  ) : type === "sold" ? (
-                    <FormLabel>Selling Price ($)</FormLabel>
-                  ) : type === "waste" ? (
-                    <FormLabel>Value Lost ($)</FormLabel>
-                  ) : (
-                    <FormLabel>Selling Price ($)</FormLabel>
-                  )}
-                  <FormControl>
-                    <Input
-                      {...field}
-                      value={field.value ?? undefined} // Ensure default value is 0
-                      type="number"
-                      placeholder="Enter cost"
-  min={undefined} // Add this line
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <div className="flex space-x-4">
+
+            {(type === "add" || type === "sold" || type === "subtract") && (
+              <FormField
+                control={form.control}
+                name={type === "add" ? "cost" : "sellPrice"}
+                render={({ field }) => (
+                  <FormItem>
+                    {type === "add" ? (
+                      <FormLabel>Production Cost ($)</FormLabel>
+                    ) : (
+                      <FormLabel>Selling Price ($)</FormLabel>
+                    )}
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={field.value !== undefined && field.value !== null ? field.value : ""}
+                        type="number"
+                        placeholder={type === "add" ? "Enter cost" : "Enter selling price"}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
 
 
 
 <FormField
   control={form.control}
-  name="priceType"
-  render={({ field }) => (
-    <FormItem hidden={!form.watch('price')}>
-      <FormLabel>Price Type</FormLabel>
-      <FormControl>
-        <select {...field}>
-          <option value="">Select price type</option>
-          <option value="unit">Unit price</option>
-          <option value="total">Total price</option>
-        </select>
-      </FormControl>
-      <FormMessage>Please specify price-type</FormMessage>
-    </FormItem>
-  )}
-/>
-  {/* Amount field with dynamic unit */}
-     
-  <FormField
-  control={form.control}
   name="amount"
   render={({ field }) => (
     <FormItem>
-      <FormLabel>Amount <UnitRetriever
+      <FormLabel>Quantity <UnitRetriever
   defaultProductId={defaultProductId}
   onChange={(unitName) => console.log("Selected unit:", unitName)}
 /></FormLabel>
@@ -324,6 +317,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
     </FormItem>
   )}
 />
+</div>
             <FormField
               control={form.control}
               name="description"

@@ -130,7 +130,7 @@ setValue({
           {selectedProduct ? (
             <ProductRow product={selectedProduct} brands={brands} units={units} />
           ) : (
-            "Select ingredient"
+            "Select product"
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -140,7 +140,7 @@ setValue({
           <CommandInput placeholder="Search product..." />
           <CreateProductDialog userSettings={user} successCallback={successCallback} trigger={undefined} />
           <CommandEmpty>
-            <p>Ingredient not found</p>
+            <p>Product not found</p>
             <p className="text-xs text-muted-foreground">Tip: Create a new ingredient</p>
           </CommandEmpty>
           <CommandGroup>

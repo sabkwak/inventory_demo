@@ -20,7 +20,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   }
   const userIdUserSettings = user.emailAddresses[0]?.emailAddress || user.phoneNumbers[0]?.phoneNumber;
 
-  const { productId, price, priceType, amount, date, description, type } = parsedBody.data;
+  const { productId, cost, sellPrice, priceType, amount, date, description, type } = parsedBody.data;
 
   // Fetch the product based on the productId
   const productRow = await prisma.product.findUnique({
@@ -46,17 +46,27 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     return;
   }
 
+  // Prepare transaction data
+  const transactionData: any = {
+    amount: amount,
+    description: description || "",
+    date: date,
+    type: type,
+    product: {
+      connect: { id: productRow.id },
+    },
+  };
+
+  // Set cost or sellPrice based on transaction type
+  if (type === "add") {
+    transactionData.cost = cost;
+  } else if (type === "sold" || type === "subtract") {
+    transactionData.sellPrice = sellPrice;
+  }
+
   // Proceed with transaction creation if inventory is valid
   await prisma.transaction.create({
-    data: {
-      amount: amount,
-    price: priceType === "total" && price ? price / amount : price,
-      description: description || "", // Set to empty string if not prosvided
-      date: date,
-      type: type,
-      product: {
-        connect: { id: productRow.id },    // Connect to an existing brand by ID
-      },        },
+    data: transactionData,
   });
 
   // Update the product quantity
@@ -64,8 +74,11 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     where: { id: productRow.id },
     data: {
       quantity: {
-        increment: isSubtractType ? -amount : amount, // Decrement for subtract types, increment for add
+        increment: isSubtractType ? -amount : amount,
       },
+      // Update value or selling_price_per_unit if changed
+      ...(type === "add" && cost !== undefined && cost !== null && cost !== productRow.value ? { value: cost } : {}),
+      ...((type === "sold" || type === "subtract") && sellPrice !== undefined && sellPrice !== null && sellPrice !== productRow.selling_price_per_unit ? { selling_price_per_unit: sellPrice } : {}),
     },
   });
 

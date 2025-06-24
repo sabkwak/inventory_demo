@@ -59,9 +59,9 @@ model Product {
   category    Category?  @relation(fields: [categoryId], references: [id])
   transactions Transaction[]  // No @relation attribute needed here
   quantity    Int       @default(0)
-  value    Int?       
+  value    Int?       //cost to produce, updated to reflect most recent transaction's cost
   description String?
-  selling_price_per_unit Decimal?
+  selling_price_per_unit Decimal? //updated to reflect most recent Transaction's sell_price
   expiry_date DateTime?
   min_stock Decimal? @default(0)
 
@@ -78,8 +78,8 @@ model Transaction {
   type        String   @default("subtract") // Can be "add", "subtract", "sold", or "waste"
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId   Int
-   price    Int?     
-
+  sellPrice   Decimal? // New: selling price for "sold"/"subtract" transactions
+  cost        Decimal? // New: cost for "add" transactions
 }
 
 
