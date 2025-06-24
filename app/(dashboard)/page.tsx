@@ -6,6 +6,7 @@ import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import React from "react";
 import { useQuery } from '@tanstack/react-query';
+import ProfitLossKPI from "./_components/ProfitLossKPI";
 
 async function page() {
   const user = await currentUser();
@@ -59,7 +60,7 @@ Subtract Ingredient                </Button>
         </div>
       </div>
       <Overview userSettings={userSettings} />
-
+      <ProfitLossKPI />
     </div>
   );
 }

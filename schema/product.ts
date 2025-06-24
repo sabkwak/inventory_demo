@@ -16,7 +16,6 @@ export const CreateProductSchema = z.object({
   description: z.string().nullable().optional(),
   category: z.string().nullable().optional(), 
   unit: z.string().nullable().optional(),
-
   brand: z.string(),
   selling_price_per_unit: z.preprocess((value) => {
     if (value === "" || value === undefined) return undefined;
@@ -59,6 +58,20 @@ export const EditProductSchema = z.object({
     category: z.string().nullable().optional(), // Make category optional
     unit: z.string().nullable().optional(), // Make unit optional
   brand: z.string(),
+  selling_price_per_unit: z.preprocess((value) => {
+    if (value === "" || value === undefined) return undefined;
+    return Number(value);
+  }, z.number().optional()),
+  expiry_date: z.preprocess((value) => {
+    if (value === "" || value === undefined || value === null) return undefined;
+    if (value instanceof Date) return value;
+    if (typeof value === 'string' || typeof value === 'number') return new Date(value);
+    return undefined;
+  }, z.date().optional()),
+  min_stock: z.preprocess((value) => {
+    if (value === "" || value === undefined) return 0;
+    return Number(value);
+  }, z.number().optional()),
 });
 
 export type EditProductSchemaType = z.infer<typeof EditProductSchema>;
