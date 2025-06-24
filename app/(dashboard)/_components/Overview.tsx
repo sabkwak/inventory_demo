@@ -60,7 +60,7 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
       <p className="text-sm text-gray-400 italic">(Psst! Hello! Thanks for checking out my demo for Project 85 :) I recommend you use this on a desktop and try out the "View QR Code" action on the Inventory page and scanning the QR code with your phone. Please let me know what features you'd like to see next!</p>
 <h2 className="text-3xl font-bold">Sabrina's To Do List</h2>
 <p className="text-sm text-gray-400">
--Add optional "minimum quantity" field to "Create New Ingredient" window so when the user "Subtracts" an Ingredient and the quantity falls below the minimum, it shows up on this dashboard. The user will also be able to opt in for notifications</p>
+-Add optional "minimum quantity" field to "Create New Product" window so when the user "Subtracts" an Ingredient and the quantity falls below the minimum, it shows up on this dashboard. The user will also be able to opt in for notifications</p>
 <p className="text-sm text-gray-400">
 -Create new user tutorial
 </p>
