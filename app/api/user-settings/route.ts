@@ -40,8 +40,6 @@ export async function GET(request: Request) {
 
   // Revalidate the home page that uses the user settings
   revalidatePath("/");
-  return new Response(JSON.stringify(userSettings), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+  return Response.json(userId);
+
 }

@@ -1,4 +1,5 @@
 "use client";
+import { useWatch } from 'react-hook-form';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -130,8 +131,6 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         description: "",
         value: undefined,
         quantity: 0,
-        // icon: "",
-        // ingredient: undefined,
         brand: undefined,
         category: undefined,        
         unit: undefined,
@@ -273,26 +272,51 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
       </FormItem>
     )}
   />
-              <FormField
+
+</div>
+<div className="flex space-x-4">
+                <FormField
               control={form.control}
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="block">Purchase Price ($)</FormLabel>
+                  <FormLabel className="block">Cost of Production ($)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      value={field.value ?? undefined} // Ensure default value is 0
+                      value={field.value ?? undefined} 
                       type="number"
-                      placeholder="Enter ingredient price"
-                      min={0} // Prevent negative values
+                      placeholder="Enter cost price"
+  min={undefined} // Add this line
                     />
                   </FormControl>
                 </FormItem>
               )}
             />
-</div>
-<div className="flex space-x-4">
+            <FormField
+              control={form.control}
+              name="priceType"
+              render={({ field }) => {
+                const priceValue = useWatch({
+                  control: form.control,
+                  name: 'value',
+                });
+            
+                return (
+                  <FormItem hidden={!priceValue}>
+                    <FormLabel>Price Type</FormLabel>
+                    <FormControl>
+                      <select {...field}>
+                        <option value="">Select price type</option>
+                        <option value="unit">Unit price</option>
+                        <option value="total">Total price</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage>Please specify price-type</FormMessage>
+                  </FormItem>
+                );
+              }}
+            />
             <FormField
               control={form.control}
               name="category"
@@ -309,7 +333,9 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
               )}
             />
 
-                        <FormField
+
+            </div>
+                                    <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
@@ -327,7 +353,6 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
-            </div>
               <FormField
                 control={form.control}
                 name="createdAt"

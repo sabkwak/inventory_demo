@@ -21,7 +21,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     redirect("/sign-in");
   }
 
-  const { product, quantity, value, category, brand, createdAt, description , unit} = parsedBody.data;
+  const { product, quantity, priceType, value, category, brand, createdAt, description , unit} = parsedBody.data;
 
   // const productRow = await prisma.product.findFirst({
   //   where: {
@@ -82,7 +82,7 @@ if (!brandRow) {
   const productRow = await prisma.product.create({
     data: {
       quantity,
-      value: value || undefined,
+value: priceType === "total" && quantity !== 0 && value !== undefined ? value / quantity : value,
       product,
       description: description || "", // Set to empty string if not provided
       // icon: icon ?? "",  // Default to an empty string if icon is null

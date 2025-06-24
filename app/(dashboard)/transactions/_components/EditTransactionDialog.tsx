@@ -268,8 +268,10 @@ transaction: {
           style={{ minWidth: '100%' }} // Ensure the select box does not overflow
         >
           <option value="">Select Type</option>
+          <option value="add">Add</option>
           <option value="subtract">Subtract</option>
-          <option value="add">Addition</option>
+          <option value="sold">Sold</option>
+          <option value="waste">Waste</option>
         </select>
       </FormControl>
       <FormMessage />

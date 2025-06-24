@@ -30,9 +30,11 @@ export async function DeleteTransaction(id: string) {
   // }
 
   // Determine how the product's quantity should be updated
+  // "sold" and "waste" are treated the same as "subtract" for inventory purposes
+  const isSubtractType = transaction.type === "subtract" || transaction.type === "sold" || transaction.type === "waste";
   const productQuantityUpdate = {
     ...(transaction.type === "add" && { quantity: { decrement: transaction.amount } }),
-    ...(transaction.type === "subtract" && { quantity: { increment: transaction.amount } }),
+    ...(isSubtractType && { quantity: { increment: transaction.amount } }),
   };
 
   await prisma.$transaction([
@@ -58,10 +60,10 @@ export async function DeleteTransaction(id: string) {
       },
       data: {
         ...(transaction.type === "add" && {
-          returns: { decrement: transaction.amount },
+          add: { decrement: transaction.amount },
         }),
-        ...(transaction.type === "subtract" && {
-          order: { decrement: transaction.amount },
+        ...(isSubtractType && {
+          subtract: { decrement: transaction.amount },
         }),
       },
     }),
@@ -75,10 +77,10 @@ export async function DeleteTransaction(id: string) {
       },
       data: {
         ...(transaction.type === "add" && {
-          returns: { decrement: transaction.amount },
+          add: { decrement: transaction.amount },
         }),
-        ...(transaction.type === "subtract" && {
-          order: { decrement: transaction.amount },
+        ...(isSubtractType && {
+          subtract: { decrement: transaction.amount },
         }),
       },
     }),

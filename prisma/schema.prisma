@@ -53,7 +53,7 @@ model Product {
   product     String    
   brandId    Int
   brand      Brand    @relation(fields: [brandId], references: [id])
-   unitId    Int?
+  unitId    Int?
   unit      Unit?    @relation(fields: [unitId], references: [id])
   categoryId  Int?
   category    Category?  @relation(fields: [categoryId], references: [id])
@@ -72,7 +72,7 @@ model Transaction {
   amount      Float
   description String?
   date        DateTime
-  type        String   @default("subtract")
+  type        String   @default("subtract") // Can be "add", "subtract", "sold", or "waste"
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId   Int
    price    Int?     

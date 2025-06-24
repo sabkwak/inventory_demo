@@ -71,25 +71,7 @@ const emptyData: any[] = [];
 type ProductHistoryRow = GetProductHistoryResponseType[0];
 
 const columns: ColumnDef<ProductHistoryRow>[] = [
-  {
-    accessorKey: "quantity",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Quantity" />
-    ),
-    cell: ({ row }) => (
-      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.quantity} {row.original.unitName ? row.original.unitName : ''}
-      </p>
-    ),
-    enableHiding: false, // Amount is visible by default
-    sortingFn: (rowA, rowB) => {
-      const amountA = rowA.original.quantity;
-      const amountB = rowB.original.quantity;
-      return amountA - amountB;
-    },
-  },
-
-  {
+    {
     accessorKey: "product",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Ingredient" />
@@ -122,6 +104,25 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     enableHiding: false, // Amount is visible by default
 
   },
+  {
+    accessorKey: "quantity",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Quantity" />
+    ),
+    cell: ({ row }) => (
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        {row.original.quantity} {row.original.unitName ? row.original.unitName : ''}
+      </p>
+    ),
+    enableHiding: false, // Amount is visible by default
+    sortingFn: (rowA, rowB) => {
+      const amountA = rowA.original.quantity;
+      const amountB = rowB.original.quantity;
+      return amountA - amountB;
+    },
+  },
+
+
   {
     accessorKey: "unit",
     header: ({ column }) => (

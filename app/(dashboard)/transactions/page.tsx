@@ -7,6 +7,7 @@ import { differenceInDays, startOfMonth, startOfQuarter, addDays } from "date-fn
 import React, { useState } from "react";
 import { toast } from "sonner";
 import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
+import SubtractQuantityDropdown from "@/app/(dashboard)/_components/SubtractQuantityDropdown";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 
@@ -25,7 +26,7 @@ function TransactionsPage() {
       <div className="border-b bg-card">
         <div className="container flex flex-wrap items-center justify-between gap-6 py-8">
           <div>
-            <p className="text-3xl font-bold">Transactions history</p>
+            <p className="text-3xl font-bold">Inventory Adjustments History</p>
           </div>
           <DateRangePicker
             initialDateFrom={dateRange.from}
@@ -53,23 +54,13 @@ function TransactionsPage() {
                   variant={"outline"}
                   className="bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
                 >
-                  Add Ingredient
+                  Add Quantity
                 </Button>
               }
               type="add"
             />
 
-            <CreateTransactionDialog userSettings={user}
-              trigger={
-                <Button
-                  variant={"outline"}
-                  className="bg-gradient-to-r from-red-800 to-red-900 text-white hover:from-red-700 hover:to-red-800 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 ease-in-out"
-                >
-                 Subtract Ingredient
-                </Button>
-              }
-              type="subtract"
-            />
+            <SubtractQuantityDropdown userSettings={user} />
           </div>
         </div>
       </div>

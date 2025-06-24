@@ -7,6 +7,7 @@ export const CreateProductSchema = z.object({
     if (value === "" || value === undefined) return undefined;
     return Number(value);
   }, z.number().optional()),
+  priceType: z.string().optional(),
   quantity: z.preprocess((quantity) => {
     if (quantity === "" || quantity === undefined) return 0; // Default to 0 if empty
     return Number(quantity);

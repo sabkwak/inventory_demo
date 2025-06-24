@@ -58,20 +58,7 @@ const emptyData: any[] = [];
 type TransactionHistoryRow = GetTransactionHistoryResponseType[0];
 
 const columns: ColumnDef<TransactionHistoryRow>[] = [
-  {
-    accessorKey: "amount",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Amount" />
-    ),
-    cell: ({ row }) => (
-      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.amount} {row.original.unitName ? row.original.unitName : ''}
-      </p>
-    ),
-    enableHiding: false, // Amount is visible by default
-  },
-
-  {
+    {
     accessorKey: "product",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Ingredient" />
@@ -103,6 +90,20 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     ),
     enableHiding: false, // Brand is visible by default
   },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Amount" />
+    ),
+    cell: ({ row }) => (
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        {row.original.amount} {row.original.unitName ? row.original.unitName : ''}
+      </p>
+    ),
+    enableHiding: false, // Amount is visible by default
+  },
+
+
   {
   accessorKey: "totalCost",
   header: ({ column }) => (
@@ -195,17 +196,48 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       const typeName = row.original.type;
       return value.includes(typeName);
     },
-    cell: ({ row }) => (
-      <div
-        className={cn(
-          "capitalize rounded-lg text-center p-2",
-          row.original.type === "subtract" && "bg-red-400/10 text-red-500",
-          row.original.type === "add" && "bg-emerald-400/10 text-emerald-500"
-        )}
-      >
-        {row.original.type === "subtract" ? "add" : "subtract"}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const getTypeLabel = (type: string) => {
+        switch (type) {
+          case "add":
+            return "Add";
+          case "subtract":
+            return "Subtract";
+          case "sold":
+            return "Sold";
+          case "waste":
+            return "Waste";
+          default:
+            return type;
+        }
+      };
+
+      const getTypeStyle = (type: string) => {
+        switch (type) {
+          case "add":
+            return "bg-emerald-400/10 text-emerald-500";
+          case "subtract":
+            return "bg-red-400/10 text-red-500";
+          case "sold":
+            return "bg-blue-400/10 text-blue-500";
+          case "waste":
+            return "bg-orange-400/10 text-orange-500";
+          default:
+            return "bg-gray-400/10 text-gray-500";
+        }
+      };
+
+      return (
+        <div
+          className={cn(
+            "capitalize rounded-lg text-center p-2",
+            getTypeStyle(row.original.type)
+          )}
+        >
+          {getTypeLabel(row.original.type)}
+        </div>
+      );
+    },
     enableHiding: true, // Type is hidden by default
   },
   {
@@ -395,8 +427,10 @@ useEffect(() => {
               title="Type"
               column={table.getColumn("type")}
               options={[
-                { label: "subtract", value: "subtract" },
-                { label: "add", value: "add" },
+                { label: "Add", value: "add" },
+                { label: "Subtract", value: "subtract" },
+                { label: "Sold", value: "sold" },
+                { label: "Waste", value: "waste" },
               ]}
             />
           )}
