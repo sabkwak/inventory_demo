@@ -54,7 +54,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       date: date,
       type: type,
       cost: type === "add" ? cost : undefined,
-      sellPrice: (type === "sold" || type === "subtract") ? sellPrice : undefined,
+      sellPrice: (type === "sold" || type === "subtract" || type === "waste") ? sellPrice : undefined,
       product: {
         connect: { id: productRow.id },    // Connect to an existing brand by ID
       },

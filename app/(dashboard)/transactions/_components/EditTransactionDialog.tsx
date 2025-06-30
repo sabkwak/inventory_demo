@@ -174,7 +174,7 @@ transaction: {
     <Form {...form}>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex space-x-4">
-          {(form.getValues('type') === "add" || form.getValues('type') === "sold" || form.getValues('type') === "subtract") && (
+          {(form.getValues('type') === "add" || form.getValues('type') === "sold" || form.getValues('type') === "subtract" || form.getValues('type') === "waste") && (
             <FormField
               control={form.control}
               name={form.getValues('type') === "add" ? "cost" : "sellPrice"}

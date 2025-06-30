@@ -30,12 +30,12 @@ export const CreateTransactionSchema = z.object({
   if (data.type === "add" && (data.cost === undefined || data.cost === null)) {
     return false;
   }
-  if ((data.type === "sold" || data.type === "subtract") && (data.sellPrice === undefined || data.sellPrice === null)) {
+  if ((data.type === "sold" || data.type === "subtract" || data.type === "waste") && (data.sellPrice === undefined || data.sellPrice === null)) {
     return false;
   }
   return true;
 }, {
-  message: "Please enter cost for 'add' or sell price for 'sold'/'subtract' transactions.",
+  message: "Please enter cost for 'add' or sell price for 'sold'/'subtract'/'waste' transactions.",
 });
 
 export type CreateTransactionSchemaType = z.infer<

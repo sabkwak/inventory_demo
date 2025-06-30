@@ -276,7 +276,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
                 )}
               />
             )}
-            {(type === "sold" || type === "subtract") && (
+            {(type === "sold" || type === "subtract" || type === "waste") && (
               <FormField
                 control={form.control}
                 name="sellPrice"

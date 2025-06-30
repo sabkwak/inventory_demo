@@ -124,7 +124,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
     if (data && data.product) {
       if (type === "add") {
         form.setValue("cost", data.product.value ?? undefined);
-      } else if (type === "sold" || type === "subtract") {
+      } else if (type === "sold" || type === "subtract" || type === "waste") {
         form.setValue("sellPrice", data.product.selling_price_per_unit ?? undefined);
       }
     }
@@ -274,7 +274,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
             />
             <div className="flex space-x-4">
 
-            {(type === "add" || type === "sold" || type === "subtract") && (
+            {(type === "add" || type === "sold" || type === "subtract" || type === "waste") && (
               <FormField
                 control={form.control}
                 name={type === "add" ? "cost" : "sellPrice"}
