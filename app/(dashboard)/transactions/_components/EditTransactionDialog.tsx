@@ -173,22 +173,6 @@ transaction: {
     </DialogHeader>
     <Form {...form}>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="productId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Product</FormLabel>
-              <FormControl>
-                <ProductPicker userSettings={undefined} // You may want to pass userSettings if available
-                  defaultProductId={transaction.id}
-                  onChange={(productId: number) => form.setValue("productId", productId)}
-                />
-              </FormControl>
-              <FormDescription>Select a product for this transaction (required)</FormDescription>
-            </FormItem>
-          )}
-        />
         <div className="flex space-x-4">
           {(form.getValues('type') === "add" || form.getValues('type') === "sold" || form.getValues('type') === "subtract") && (
             <FormField
