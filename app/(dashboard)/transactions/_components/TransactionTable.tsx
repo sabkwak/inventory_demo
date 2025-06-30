@@ -603,6 +603,12 @@ function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
           setOpen={setShowEditDialog}
           transaction={{
             ...transaction,
+            cost: transaction.cost && typeof transaction.cost === 'object' && 'toNumber' in transaction.cost
+              ? transaction.cost.toNumber()
+              : transaction.cost ?? 0,
+            sellPrice: transaction.sellPrice && typeof transaction.sellPrice === 'object' && 'toNumber' in transaction.sellPrice
+              ? transaction.sellPrice.toNumber()
+              : transaction.sellPrice ?? 0,
           }}
           transactionId={transaction.id}
           trigger={undefined}
