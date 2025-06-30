@@ -185,17 +185,17 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     cell: ({ row }) => (
       <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
         {row.original.value && typeof row.original.value === 'object' && 'toNumber' in row.original.value
-          ? row.original.value.toNumber()
+          ? (row.original.value as any).toNumber()
           : row.original.value ?? 0}
       </p>
     ),
     enableHiding: true, 
     sortingFn: (rowA, rowB) => {
       const amountA = rowA.original.value && typeof rowA.original.value === 'object' && 'toNumber' in rowA.original.value
-        ? rowA.original.value.toNumber()
+        ? (rowA.original.value as any).toNumber()
         : rowA.original.value ?? 0;
       const amountB = rowB.original.value && typeof rowB.original.value === 'object' && 'toNumber' in rowB.original.value
-        ? rowB.original.value.toNumber()
+        ? (rowB.original.value as any).toNumber()
         : rowB.original.value ?? 0;
       return amountA - amountB;
     },
@@ -437,7 +437,7 @@ const [pagination, setPagination] = useState({
                 Description: row.original.description,
                 Date_Dropped: formattedDateTime,
                 Value: row.original.value && typeof row.original.value === 'object' && 'toNumber' in row.original.value
-                  ? row.original.value.toNumber()
+                  ? (row.original.value as any).toNumber()
                   : row.original.value ?? 0,
                 Price: row.original.sellPrice && typeof row.original.sellPrice === 'object' && 'toNumber' in row.original.sellPrice
                   ? row.original.sellPrice.toNumber()
