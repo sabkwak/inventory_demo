@@ -84,6 +84,8 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
       type,
       date: new Date(),
       productId: defaultProductId || undefined,
+      cost: undefined,
+      sellPrice: undefined,
     },
   });
 
