@@ -281,9 +281,9 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
                 render={({ field }) => (
                   <FormItem>
                     {type === "add" ? (
-                      <FormLabel>Production Cost ($)</FormLabel>
+                      <FormLabel>Production Cost/unit ($)</FormLabel>
                     ) : (
-                      <FormLabel>Selling Price ($)</FormLabel>
+                      <FormLabel>Sell Price/unit ($)</FormLabel>
                     )}
                     <FormControl>
                       <Input

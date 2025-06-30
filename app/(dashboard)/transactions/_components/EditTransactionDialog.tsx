@@ -44,6 +44,8 @@ import {
 
 import { cn } from "@/lib/utils";
 import { EditTransaction } from "@/app/(dashboard)/transactions/_actions/editTransaction";
+import ProductPicker from "@/app/(dashboard)/_components/ProductPicker";
+import UnitRetriever from "@/app/(dashboard)/_components/UnitRetriever";
 
 interface Props {
     trigger: ReactNode;
@@ -167,36 +169,63 @@ transaction: {
       <DialogDescription>Update transaction details</DialogDescription>
     </DialogHeader>
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-
-        {/* Price Field */}
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
-          name="price"
+          name="productId"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price ($)</FormLabel>
+            <FormItem className="flex flex-col">
+              <FormLabel>Product</FormLabel>
               <FormControl>
-                <Input {...field} type="number" />
+                <ProductPicker userSettings={undefined} // You may want to pass userSettings if available
+                  defaultProductId={transaction.id}
+                  onChange={(productId: number) => form.setValue("productId", productId)}
+                />
               </FormControl>
+              <FormDescription>Select a product for this transaction (required)</FormDescription>
             </FormItem>
           )}
         />
-        {/* Amount Field */}
-        <FormField
-          control={form.control}
-          name="amount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Amount</FormLabel>
-              <FormControl>
-                <Input {...field} type="number" />
-              </FormControl>
-            </FormItem>
+        <div className="flex space-x-4">
+          {(form.getValues('type') === "add" || form.getValues('type') === "sold" || form.getValues('type') === "subtract") && (
+            <FormField
+              control={form.control}
+              name={form.getValues('type') === "add" ? "cost" : "sellPrice"}
+              render={({ field }) => (
+                <FormItem>
+                  {form.getValues('type') === "add" ? (
+                    <FormLabel>Production Cost ($)</FormLabel>
+                  ) : (
+                    <FormLabel>Selling Price ($)</FormLabel>
+                  )}
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value !== undefined && field.value !== null ? field.value : ""}
+                      type="number"
+                      placeholder={form.getValues('type') === "add" ? "Enter cost" : "Enter selling price"}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           )}
-        />
-
-        {/* Description Field */}
+          <FormField
+            control={form.control}
+            name="amount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity <UnitRetriever
+                  defaultProductId={transaction.id}
+                  onChange={(unitName) => console.log("Selected unit:", unitName)}
+                /></FormLabel>
+                <div className="flex items-center gap-2">
+                  <Input {...field} type="number" placeholder="Enter amount" />
+                </div>
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="description"
@@ -204,23 +233,20 @@ transaction: {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  value={field.value ?? ""}
-                  placeholder="Enter description"
-                />
+                <Input {...field} value={field.value ?? ""} />
               </FormControl>
+              <FormDescription>
+                Transaction description/notes (optional)
+              </FormDescription>
             </FormItem>
           )}
         />
-
-        {/* Date Field */}
         <FormField
           control={form.control}
           name="date"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Date</FormLabel>
+              <FormLabel>Date Added</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -231,9 +257,11 @@ transaction: {
                         !field.value && "text-muted-foreground"
                       )}
                     >
-                      {field.value
-                        ? format(field.value, "PPP")
-                        : "Pick a date"}
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
                   </FormControl>
@@ -242,56 +270,35 @@ transaction: {
                   <Calendar
                     mode="single"
                     selected={field.value}
-                    onSelect={(value) => value && field.onChange(value)}
+                    onSelect={(value) => {
+                      if (!value) return;
+                      field.onChange(value);
+                    }}
                     initialFocus
                   />
                 </PopoverContent>
               </Popover>
-              <FormDescription>Select a date for this item</FormDescription>
+              <FormDescription>Select a date for this</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        {/* Type Dropdown Field */}
-        <FormField 
-  control={form.control}
-  name="type"
-  render={({ field }) => (
-    <FormItem style={{ marginBottom: '20px' }}>
-      <FormLabel>Type</FormLabel>
-      <FormControl>
-        <select
-          {...field}
-          className="border rounded-md p-2
-           w-full"
-          style={{ minWidth: '100%' }} // Ensure the select box does not overflow
-        >
-          <option value="">Select Type</option>
-          <option value="add">Add</option>
-          <option value="subtract">Subtract</option>
-          <option value="sold">Sold</option>
-          <option value="waste">Waste</option>
-        </select>
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-
         <DialogFooter>
+          <DialogClose asChild>
+            <Button
+              type="button"
+              variant={"secondary"}
+              onClick={() => form.reset()}
+            >
+              Cancel
+            </Button>
+          </DialogClose>
           <Button
-            type="button"
-            variant={"secondary"}
-            onClick={() => {
-              form.reset();
-              setOpen(false);
-            }}
+            type="submit"
+            disabled={isPending}
           >
-            Cancel
-          </Button>
-          <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
-            {!isPending ? "Edit" : <Loader2 className="animate-spin" />}
+            {!isPending && "Save"}
+            {isPending && <Loader2 className="animate-spin" />}
           </Button>
         </DialogFooter>
       </form>

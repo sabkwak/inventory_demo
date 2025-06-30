@@ -200,159 +200,222 @@ value: 0,
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-              control={form.control}
-              name="product"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ingredient Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter ingredient name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-                        <FormField
-              control={form.control}
-              name="value"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Value ($)</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      value={Number(field.value) ?? undefined}
-                      type="value"
-                      placeholder="Enter product value"
-                    />
-                  </FormControl>
-                  <FormDescription>Click to adjust the total item value in the inventory</FormDescription>
-                </FormItem>
-              )}
-            />
+            <div className="flex space-x-4">
+              <FormField
+                control={form.control}
+                name="product"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="block">Name (required)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Product" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="brand"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel className="block">Brand (required)</FormLabel>
+                    <FormControl>
+                      <BrandPicker brandName={brandName} onChange={(value) => { form.setValue("brand", value); setBrandName(value); }} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex space-x-4">
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="block">Quantity</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={field.value ?? 0}
+                        type="number"
+                        placeholder="Enter product quantity"
+                        min={0}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="block">Unit</FormLabel>
+                    <FormControl>
+                      <UnitPicker unitName={unitName} onChange={(value) => { form.setValue("unit", value); setUnitName(value); }} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex space-x-4">
+              <FormField
+                control={form.control}
+                name="value"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="block">Cost of Production ($)</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={field.value ?? undefined}
+                        type="number"
+                        placeholder="Enter cost price"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="priceType"
+                render={({ field }) => {
+                  const priceValue = form.watch('value');
+                  return (
+                    <FormItem hidden={!priceValue}>
+                      <FormLabel>Price Type</FormLabel>
+                      <FormControl>
+                        <select {...field}>
+                          <option value="">Select price type</option>
+                          <option value="unit">Unit price</option>
+                          <option value="total">Total price</option>
+                        </select>
+                      </FormControl>
+                      <FormMessage>Please specify price-type</FormMessage>
+                    </FormItem>
+                  );
+                }}
+              />
+              <FormField
+                control={form.control}
+                name="selling_price_per_unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Selling Price/Unit</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="number"
+                        placeholder="Selling price per unit"
+                        min={0}
+                        step="0.01"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="min_stock"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Min Stock</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="number"
+                        placeholder="Minimum stock"
+                        min={0}
+                        step="0.01"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex space-x-4">
+              <FormField
+                control={form.control}
+                name="expiry_date"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Expiry Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[200px] pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={(value) => {
+                            if (!value) return;
+                            field.onChange(value);
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormDescription>Optional expiry date</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="quantity"
+              name="category"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
+                <FormItem className="flex flex-col">
+                  <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      value={Number(field.value) ?? 0}
-                      type="number"
-                      placeholder="Enter product quantity"
-                    />
+                    <CategoryPicker categoryName={categoryName} onChange={(value) => { form.setValue("category", value); setCategoryName(value); }} />
                   </FormControl>
-                  <FormDescription>Click to adjust the total item quantity in the inventory</FormDescription>
+                  <FormDescription>
+                    Select a category for this Product
+                  </FormDescription>
                 </FormItem>
               )}
             />
-             <FormField
-  control={form.control}
-  name="unit"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel>Unit</FormLabel>
-      <FormControl>
-        {!showUnitPicker ? (
-        <Input
-          {...field} // Connects the input field to react-hook-form
-          value={field.value || unitName} // Displays the fetched brandName
-          onFocus={() => setShowUnitPicker(true)} // Show picker on input focus
-          placeholder="Enter unit name"
-        />
-      ) : (
-        <UnitPicker
-          unitName={unitName} // Pass the current brand name
-          onChange={(value: string) => {
-            field.onChange(value); // Update form value
-            setShowUnitPicker(false); // Hide picker once a value is selected
-          }}
-        />
-      )}
-      </FormControl>
-    </FormItem>
-  )}
-/> 
- <FormField
-  control={form.control}
-  name="category"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel>Category</FormLabel>
-      <FormControl>
-        {!showCategoryPicker ? (
-        <Input
-          {...field} // Connects the input field to react-hook-form
-          value={field.value || categoryName} // Displays the fetched brandName
-          onFocus={() => setShowCategoryPicker(true)} // Show picker on input focus
-          placeholder="Enter category name"
-        />
-      ) : (
-        <CategoryPicker
-          categoryName={categoryName} // Pass the current brand name
-          onChange={(value: string) => {
-            field.onChange(value); // Update form value
-            setShowCategoryPicker(false); // Hide picker once a value is selected
-          }}
-        />
-      )}
-      </FormControl>
-    </FormItem>
-  )}
-/> 
-<FormField
-  control={form.control}
-  name="brand"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel>Brand</FormLabel>
-      <FormControl>
-        {!showPicker ? (
-        <Input
-          {...field} // Connects the input field to react-hook-form
-          value={field.value || brandName} // Displays the fetched brandName
-          onFocus={() => setShowPicker(true)} // Show picker on input focus
-          placeholder="Enter brand name"
-        />
-      ) : (
-        <BrandPicker
-          brandName={brandName} // Pass the current brand name
-          onChange={(value: string) => {
-            field.onChange(value); // Update form value
-            setShowPicker(false); // Hide picker once a value is selected
-          }}
-        />
-      )}
-      </FormControl>
-    </FormItem>
-  )}
-/> 
             <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Description/Notes</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       value={field.value ?? ""}
-                      placeholder="Enter description"
                     />
                   </FormControl>
-                  <FormDescription>(optional)</FormDescription>
+                  <FormDescription>
+                    Product description/notes
+                  </FormDescription>
                 </FormItem>
               )}
             />
-            { <FormField
+            <FormField
               control={form.control}
               name="createdAt"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Date</FormLabel>
+                  <FormLabel>Date Added</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -363,9 +426,11 @@ value: 0,
                             !field.value && "text-muted-foreground"
                           )}
                         >
-                          {field.value
-                            ? format(field.value, "PPP")
-                            : "Pick a date"}
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
@@ -374,31 +439,36 @@ value: 0,
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={(value) => value && field.onChange(value)}
+                        onSelect={(value) => {
+                          if (!value) return;
+                          field.onChange(value);
+                        }}
                         initialFocus
                       />
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>Select a date for this item</FormDescription>
+                  <FormDescription>Date product was added</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
-            /> }
+            />
             <DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant={"secondary"}
+                  onClick={() => form.reset()}
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
               <Button
-                type="button"
-                variant={"secondary"}
-                onClick={() => {
-                  form.reset();
-                  setOpen(false);
-                }}
+                type="submit"
+                disabled={isPending}
               >
-                Cancel
+                {!isPending && "Save"}
+                {isPending && <Loader2 className="animate-spin" />}
               </Button>
-              <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
-              {!isPending && "Edit"}
-            {isPending && <Loader2 className="animate-spin" />}
-             </Button>
             </DialogFooter>
           </form>
         </Form>

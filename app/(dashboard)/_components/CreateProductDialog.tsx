@@ -77,6 +77,11 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
     },
   });
 
+  const priceValue = useWatch({
+    control: form.control,
+    name: 'value',
+  });
+
   const [open, setOpen] = useState(false);
 
   const { data: userSettings, isLoading } = useQuery({
@@ -296,26 +301,19 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
             <FormField
               control={form.control}
               name="priceType"
-              render={({ field }) => {
-                const priceValue = useWatch({
-                  control: form.control,
-                  name: 'value',
-                });
-            
-                return (
-                  <FormItem hidden={!priceValue}>
-                    <FormLabel>Price Type</FormLabel>
-                    <FormControl>
-                      <select {...field}>
-                        <option value="">Select price type</option>
-                        <option value="unit">Unit price</option>
-                        <option value="total">Total price</option>
-                      </select>
-                    </FormControl>
-                    <FormMessage>Please specify price-type</FormMessage>
-                  </FormItem>
-                );
-              }}
+              render={({ field }) => (
+                <FormItem hidden={!priceValue}>
+                  <FormLabel>Price Type</FormLabel>
+                  <FormControl>
+                    <select {...field}>
+                      <option value="">Select price type</option>
+                      <option value="unit">Unit price</option>
+                      <option value="total">Total price</option>
+                    </select>
+                  </FormControl>
+                  <FormMessage>Please specify price-type</FormMessage>
+                </FormItem>
+              )}
             />
 
   <FormField
