@@ -71,7 +71,8 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
 
       form.reset({
         productId: undefined,
-        price: undefined,
+        cost: undefined,
+        sellPrice: undefined,
         type,
         description: "",
         amount: 0,
@@ -202,17 +203,33 @@ function QRCreateTransactionDialog({ trigger, type }: Props) {
             />
             <FormField
               control={form.control}
-              name="price"
+              name="cost"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price ($)</FormLabel>
+                  <FormLabel>Production Cost ($)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      value={field.value ?? undefined} // Ensure default value is 0
                       type="number"
-                      placeholder="Enter transaction price"
-                      min={0} // Prevent negative values
+                      placeholder="Enter production cost"
+                      min={0}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sellPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Selling Price ($)</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      placeholder="Enter selling price"
+                      min={0}
                     />
                   </FormControl>
                 </FormItem>
