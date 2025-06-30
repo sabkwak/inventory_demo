@@ -117,13 +117,13 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
   enableHiding: true, // Total Cost is visible by default
 },
   {
-    accessorKey: "price",
+    accessorKey: (row) => row.type === "add" ? row.cost : row.sellPrice,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Unit Price ($/unit)" />
     ),
     cell: ({ row }) => (
       <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        ${row.original.price}/{row.original.unitName ? row.original.unitName : ''}
+        ${row.original.sellPrice}/{row.original.unitName ? row.original.unitName : ''}
       </p>
     ),
     enableHiding: true, // Amount is visible by default
@@ -468,7 +468,7 @@ useEffect(() => {
                   Category: row.original.categoryName,
                   Description: row.original.description,
                   Date_Ordered_or_Returned: formattedDateTime, // Use the formatted date and time for export
-                 Price: row.original.price,
+                 Price: row.original.sellPrice,
                   Type: row.original.type,                };
               });
               
@@ -574,7 +574,7 @@ function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
           setOpen={setShowEditDialog}
           transaction={{
             ...transaction,
-            price: transaction.price || 0,
+            price: transaction.sellPrice || 0,
           }}
           transactionId={transaction.id}
           trigger={undefined}

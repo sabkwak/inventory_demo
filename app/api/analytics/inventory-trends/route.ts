@@ -77,7 +77,8 @@ async function getInventoryTrends(days: number) {
     const data = dailyData.get(dateStr);
     
     if (data) {
-      const value = (transaction.price || 0) * transaction.amount;
+      const priceValue = transaction.sellPrice ? (typeof transaction.sellPrice === 'object' && 'toNumber' in transaction.sellPrice ? transaction.sellPrice.toNumber() : transaction.sellPrice) : (transaction.cost ? (typeof transaction.cost === 'object' && 'toNumber' in transaction.cost ? transaction.cost.toNumber() : transaction.cost) : 0);
+      const value = priceValue * transaction.amount;
       data.totalValue += value;
       data.totalQuantity += transaction.amount;
       

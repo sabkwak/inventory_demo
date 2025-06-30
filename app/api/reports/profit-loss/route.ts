@@ -13,10 +13,10 @@ export async function GET() {
     const addTransactions = product.transactions.filter(t => t.type === "add");
 
     // Revenue: sum of sold transaction prices
-    const revenue = soldTransactions.reduce((sum, t) => sum + (t.price ?? 0), 0);
+    const revenue = soldTransactions.reduce((sum, t) => sum + (t.sellPrice ? (typeof t.sellPrice === 'object' && 'toNumber' in t.sellPrice ? t.sellPrice.toNumber() : t.sellPrice) : 0), 0);
 
     // Cost: sum of add transaction prices
-    const cost = addTransactions.reduce((sum, t) => sum + (t.price ?? 0), 0);
+    const cost = addTransactions.reduce((sum, t) => sum + (t.cost ? (typeof t.cost === 'object' && 'toNumber' in t.cost ? t.cost.toNumber() : t.cost) : 0), 0);
 
     return {
       id: product.id,

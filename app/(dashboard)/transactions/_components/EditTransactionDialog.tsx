@@ -54,9 +54,9 @@ interface Props {
 transaction: {
     id: number;
     amount: number;
-    price: number;
-
-        date: Date;
+    cost: number;
+    sellPrice: number;
+    date: Date;
     description: string | null;
     type: string;
 }
@@ -77,7 +77,8 @@ transaction: {
         defaultValues: {
             id: transaction.id,
             amount: transaction.amount,
-            price: transaction.price || undefined,
+            cost: transaction.cost || undefined,
+            sellPrice: transaction.sellPrice || undefined,
             description: transaction.description || "",
             date: new Date(),
             type: transaction.type === "subtract" || transaction.type === "add" ? transaction.type : "subtract",
@@ -114,7 +115,8 @@ transaction: {
                 description: "",
         date: new Date(),
         amount: 0,
-        price: undefined,
+        cost: undefined,
+        sellPrice: undefined,
               });
               toast.success(`Transaction ${data.id} edited successfully 🎉`, {
                 id: transactionId,
@@ -140,7 +142,8 @@ transaction: {
             data: {
               id: values.id,
               amount: values.amount,
-              price: values.price,
+              cost: values.cost,
+              sellPrice: values.sellPrice,
               date: values.date,
               description: values.description,
               type: values.type, // Convert category to ID if present
