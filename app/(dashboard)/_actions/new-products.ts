@@ -104,11 +104,10 @@ value: priceType === "total" && quantity !== 0 && value !== undefined ? value / 
     // Create a new transaction for the product creation
   await prisma.transaction.create({
     data: {
-      amount: form.quantity, // Use the initial quantity of the product
-      price: null, // Set price to null since it's not applicable for product creation
+      amount: form.quantity,
       description: `Initial stock of ${form.product}`,
       date: new Date(),
-      type: 'add', // or 'initial' if you want to distinguish it from regular 'add' transactions
+      type: 'add',
       product: {
         connect: { id: productRow.id },
       },
