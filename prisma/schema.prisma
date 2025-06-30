@@ -64,6 +64,7 @@ model Product {
   selling_price_per_unit Decimal? //updated to reflect most recent Transaction's sell_price
   expiry_date DateTime?
   min_stock Decimal? @default(0)
+  priceType String?
 
   @@unique([product, brandId])  // Enforce unique combination of product, brand, and category
 }

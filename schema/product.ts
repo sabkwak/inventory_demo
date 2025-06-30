@@ -55,6 +55,7 @@ export const EditProductSchema = z.object({
     if (value === "" || value === undefined) return undefined;
     return Number(value);
   }, z.number().optional()),
+  priceType: z.string().optional(),
     category: z.string().nullable().optional(), // Make category optional
     unit: z.string().nullable().optional(), // Make unit optional
   brand: z.string(),
