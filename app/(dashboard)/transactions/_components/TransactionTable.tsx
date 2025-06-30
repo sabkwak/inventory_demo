@@ -278,6 +278,10 @@ const csvConfig = mkConfig({
   useKeysAsHeaders: true,
 });
 
+function toNumber(val: any) {
+  return val && typeof val === 'object' && 'toNumber' in val ? val.toNumber() : val ?? 0;
+}
+
 function TransactionTable({ from, to }: Props) {
   // State to track if the component is rendering on the client
   const [isMounted, setIsMounted] = useState(false);
