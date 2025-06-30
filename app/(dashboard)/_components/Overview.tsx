@@ -65,14 +65,13 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
       <div className="container flex flex-wrap items-end justify-between gap-2 py-6">
 
       <div className="flex flex-col gap-1">
-      <p className="text-sm text-gray-400 italic">(Psst! Hello! Thanks for checking out my demo for Project 85 :) I recommend you use this on a desktop and try out the "View QR Code" action on the Inventory page and scanning the QR code with your phone. Please let me know what features you'd like to see next!</p>
       <h2 className="text-3xl font-bold">New Features</h2>
-      <p className="text-sm text-gray-400">-Add different "Subtract Ingredient" types- "Waste" and "Sold". Please record complete "Products" that are ready to be sold instead of individual ingredients for now. </p>
-      <p className="text-sm text-gray-400">-"Create New Product" now has expiry date, min stock, and sell price fields.</p>
+      <p className="text-sm text-gray-400">-Add different &quot;Subtract Ingredient&quot; types- &quot;Waste&quot; and &quot;Sold&quot;. Please record complete &quot;Products&quot; that are ready to be sold instead of individual ingredients for now. </p>
+      <p className="text-sm text-gray-400">-&quot;Create New Product&quot; now has expiry date, min stock, and sell price fields.</p>
 <h2 className="text-3xl font-bold">To Do List</h2>
 <p className="text-sm text-gray-400">Create relevant P&L KPIs for dashboard</p>
 <p className="text-sm text-gray-400">Create P&L reports tab</p>
-<p className="text-sm text-gray-400">Add "Low in Stock" metric to dashboard</p>
+<p className="text-sm text-gray-400">Add &quot;Low in Stock&quot; metric to dashboard</p>
 <p className="text-sm text-gray-400">Add QR code scanning feature to update inventory quantities upon request</p>
 
 </div>
