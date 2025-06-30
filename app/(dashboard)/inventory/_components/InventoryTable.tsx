@@ -440,10 +440,10 @@ const [pagination, setPagination] = useState({
                   ? (row.original.value as any).toNumber()
                   : row.original.value ?? 0,
                 Price: row.original.sellPrice && typeof row.original.sellPrice === 'object' && 'toNumber' in row.original.sellPrice
-                  ? row.original.sellPrice.toNumber()
+                  ? (row.original.sellPrice as any).toNumber()
                   : row.original.sellPrice ?? 0,
                 Cost: row.original.cost && typeof row.original.cost === 'object' && 'toNumber' in row.original.cost
-                  ? row.original.cost.toNumber()
+                  ? (row.original.cost as any).toNumber()
                   : row.original.cost ?? 0,
               };
               });
