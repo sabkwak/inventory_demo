@@ -124,7 +124,8 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
       });
       form.reset({
         productId: defaultProductId || undefined,
-        price: undefined,
+        cost: undefined,
+        sellPrice: undefined,
         type,
         description: "",
         amount: 0,
@@ -259,18 +260,34 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
 
 
             {/* Other Fields */}
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price ($)</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" placeholder="Enter price" />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            {type === "add" && (
+              <FormField
+                control={form.control}
+                name="cost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Production Cost ($)</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="number" placeholder="Enter production cost" />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
+            {(type === "sold" || type === "subtract") && (
+              <FormField
+                control={form.control}
+                name="sellPrice"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Selling Price ($)</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="number" placeholder="Enter selling price" />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="description"
