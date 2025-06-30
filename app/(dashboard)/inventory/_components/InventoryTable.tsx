@@ -431,7 +431,7 @@ const [pagination, setPagination] = useState({
                 Description: row.original.description,
                 Date_Dropped: formattedDateTime,
                 Value: row.original.value,
-
+                Price: row.original.sellPrice,
               };
               });
               handleExportExcel(data);

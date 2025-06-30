@@ -105,28 +105,51 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
 
 
   {
-  accessorKey: "totalCost",
+  accessorKey: "cost",
   header: ({ column }) => (
-    <DataTableColumnHeader column={column} title="Total Transaction Cost" />
+    <DataTableColumnHeader column={column} title="Production Cost ($/unit)" />
   ),
-  cell: ({ row }) => (
-    <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-      {row.original.price !== null ? `$${row.original.price * row.original.amount}` : "-"}
-    </p>
-  ),
-  enableHiding: true, // Total Cost is visible by default
+  cell: ({ row }) => {
+    const value = row.original.cost && typeof row.original.cost === 'object' && 'toNumber' in row.original.cost ? row.original.cost.toNumber() : row.original.cost;
+    return (
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        {value !== null && value !== undefined ? `$${value}` : "-"}
+      </p>
+    );
+  },
+  enableHiding: true,
 },
   {
-    accessorKey: (row) => row.type === "add" ? row.cost : row.sellPrice,
+    accessorKey: "sellPrice",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Unit Price ($/unit)" />
+      <DataTableColumnHeader column={column} title="Selling Price ($/unit)" />
     ),
-    cell: ({ row }) => (
-      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        ${row.original.sellPrice}/{row.original.unitName ? row.original.unitName : ''}
-      </p>
+    cell: ({ row }) => {
+      const value = row.original.sellPrice && typeof row.original.sellPrice === 'object' && 'toNumber' in row.original.sellPrice ? row.original.sellPrice.toNumber() : row.original.sellPrice;
+      return (
+        <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+          {value !== null && value !== undefined ? `$${value}` : "-"}
+        </p>
+      );
+    },
+    enableHiding: true,
+  },
+  {
+    accessorKey: "totalCost",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Total Transaction Cost" />
     ),
-    enableHiding: true, // Amount is visible by default
+    cell: ({ row }) => {
+      const unitPrice = row.original.type === "add"
+        ? (row.original.cost && typeof row.original.cost === 'object' && 'toNumber' in row.original.cost ? row.original.cost.toNumber() : row.original.cost)
+        : (row.original.sellPrice && typeof row.original.sellPrice === 'object' && 'toNumber' in row.original.sellPrice ? row.original.sellPrice.toNumber() : row.original.sellPrice);
+      return (
+        <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+          {unitPrice !== null && unitPrice !== undefined ? `$${unitPrice * row.original.amount}` : "-"}
+        </p>
+      );
+    },
+    enableHiding: true,
   },
   {
     accessorKey: "description",
@@ -468,7 +491,9 @@ useEffect(() => {
                   Category: row.original.categoryName,
                   Description: row.original.description,
                   Date_Ordered_or_Returned: formattedDateTime, // Use the formatted date and time for export
-                 Price: row.original.sellPrice,
+                 Price: row.original.type === "add"
+                   ? (row.original.cost && typeof row.original.cost === 'object' && 'toNumber' in row.original.cost ? row.original.cost.toNumber() : row.original.cost)
+                   : (row.original.sellPrice && typeof row.original.sellPrice === 'object' && 'toNumber' in row.original.sellPrice ? row.original.sellPrice.toNumber() : row.original.sellPrice),
                   Type: row.original.type,                };
               });
               
@@ -574,7 +599,6 @@ function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
           setOpen={setShowEditDialog}
           transaction={{
             ...transaction,
-            price: transaction.sellPrice || 0,
           }}
           transactionId={transaction.id}
           trigger={undefined}
