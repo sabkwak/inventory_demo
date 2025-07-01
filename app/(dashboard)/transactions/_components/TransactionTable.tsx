@@ -105,7 +105,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
 
 
   {
-  accessorKey: "cost",
+  accessorKey: "Unit cost",
   header: ({ column }) => (
     <DataTableColumnHeader column={column} title="Production Cost ($/unit)" />
   ),
@@ -120,7 +120,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
   enableHiding: true,
 },
   {
-    accessorKey: "sellPrice",
+    accessorKey: "sell price",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Selling Price ($/unit)" />
     ),
@@ -135,7 +135,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     enableHiding: true,
   },
   {
-    accessorKey: "totalCost",
+    accessorKey: "total cost",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Total Transaction Cost" />
     ),
@@ -159,7 +159,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     cell: ({ row }) => (
       <div className="capitalize">{row.original.description}</div>
     ),
-    enableHiding: true, // Description is visible by default
+    enableHiding: false, // Description is visible by default
   },
   
   {
@@ -191,7 +191,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       })}`;
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
-    enableHiding: true, // Date is hidden by default
+    enableHiding: false, // Date is visible by default
   },
 
   {
@@ -261,7 +261,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         </div>
       );
     },
-    enableHiding: true, // Type is hidden by default
+    enableHiding: false, // Type is visible by default
   },
   {
     id: "actions",
@@ -331,19 +331,17 @@ const [pagination, setPagination] = useState({
     if (typeof window !== "undefined") {
       const savedVisibility = localStorage.getItem('transactionTableVisibility');
       return savedVisibility ? JSON.parse(savedVisibility) : {
-        description: false, // Initially hidden
-        date: false, // Initially hidden
-        price: false,
-        category: false,
-        type: false,
+        cost: false, // Initially hidden
+        sellPrice: false, // Initially hidden
+        totalCost: false, // Initially hidden
+        category: false, // Initially hidden
       };
     }
     return {
-      description: false, // Initially hidden
-      date: false, // Initially hidden
-      price: false,
-      category: false,
-      type: false,
+      cost: false, // Initially hidden
+      sellPrice: false, // Initially hidden
+      totalCost: false, // Initially hidden
+      category: false, // Initially hidden
     };
   });
 

@@ -153,7 +153,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date Dropped" />
+      <DataTableColumnHeader column={column} title="Date Added" />
     ),
     filterFn: (row, id, value) => {
       const date = row.original.createdAt;
@@ -169,7 +169,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       });
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
-    enableHiding: true, // Description is visible by default
+    enableHiding: false, // Date is visible by default
 
     sortingFn: (rowA, rowB) => {
       const dateA = new Date(rowA.original.createdAt).getTime();
