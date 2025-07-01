@@ -88,7 +88,7 @@ function ProductsCard({
     <Card className="h-80 w-full col-span-6">
       <CardHeader>
         <CardTitle className="grid grid-flow-row justify-between gap-2 text-muted-foreground md:grid-flow-col">
-          {getTypeLabel(type)} by brand
+          {getTypeLabel(type)} by product
         </CardTitle>
       </CardHeader>
 
@@ -127,7 +127,7 @@ function ProductsCard({
                     <Progress
                       value={percentage}
                       indicator={
-                        isSubtractType ? "bg-emerald-500" : "bg-red-500"
+                        isSubtractType ? "bg-red-500" : "bg-emerald-500" 
                       }
                     />
                   </div>
