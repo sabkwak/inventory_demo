@@ -114,7 +114,7 @@ function ProductsCard({
                   <div key={item.productId} className="flex flex-col gap-2">
                     <div className="flex items-center justify-between">
                       <span className="flex items-center text-gray-400">
-                       {item.productId}
+                       {item.productName || `Product ${item.productId}`}
                         <span className="ml-2 text-xs text-muted-foreground">
                           ({percentage.toFixed(0)}%)
                         </span>

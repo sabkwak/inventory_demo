@@ -51,5 +51,28 @@ async function getProductsStats(userId: string, from: Date, to: Date) {
     },
   });
 
-  return stats;
+  // Fetch product details for each productId
+  const productIds = Array.from(new Set(stats.map(stat => stat.productId)));
+  const products = await prisma.product.findMany({
+    where: {
+      id: {
+        in: productIds,
+      },
+    },
+    select: {
+      id: true,
+      product: true,
+    },
+  });
+
+  // Create a map of productId to product name
+  const productMap = new Map(products.map(product => [product.id, product.product]));
+
+  // Add product names to the stats
+  const statsWithProductNames = stats.map(stat => ({
+    ...stat,
+    productName: productMap.get(stat.productId) || `Product ${stat.productId}`,
+  }));
+
+  return statsWithProductNames;
 }
