@@ -143,14 +143,65 @@ function CreateTransactionDialog({ trigger, type, defaultProductId }: Props) {
     },
   });
 
+  const fetchInventory = async (productId: number): Promise<{ quantity: number; productName: string }> => {
+    try {
+      const response = await fetch(`/api/product/${productId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch product inventory");
+      }
+      const data = await response.json();
+      return {
+        quantity: data.quantity || 0,
+        productName: data.product || "Unknown Product"
+      };
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+      throw new Error("Failed to fetch product inventory");
+    }
+  };
+
   const handleSubmit = useCallback(
     async (values: CreateTransactionSchemaType) => {
-      mutate({
-        ...values,
-        date: DateToUTCDate(values.date),
-      });
+      try {
+        // Only check inventory for subtract-type transactions (sold, subtract, waste)
+        const isSubtractType = type === "subtract" || type === "sold" || type === "waste";
+        
+        if (isSubtractType) {
+          // Fetch current inventory
+          const inventoryData = await fetchInventory(values.productId);
+  
+          // Check if inventory is sufficient
+          if (inventoryData.quantity <= 0) {
+            toast.error(`Cannot ${type.toLowerCase()} "${inventoryData.productName}" - inventory quantity is 0.`);
+            return;
+          }
+          
+          // Check if trying to subtract more than available
+          if (values.amount > inventoryData.quantity) {
+            toast.error(`Cannot ${type.toLowerCase()} ${values.amount} units of "${inventoryData.productName}" - only ${inventoryData.quantity} units available in inventory.`);
+            return;
+          }
+        }
+  
+        // Show loading toast
+        toast.loading("Creating transaction...", { id: "create-transaction" });
+  
+        // Proceed with transaction creation
+        mutate({
+          ...values,
+          date: DateToUTCDate(values.date),
+        });
+  
+      } catch (error) {
+        // Dismiss the loading toast
+        toast.dismiss("create-transaction");
+  
+        // Show error toast
+        toast.error("An error occurred during the transaction.");
+        console.error("Error submitting transaction:", error);
+      }
     },
-    [mutate]
+    [mutate, type]
   );
 
   const handleBackToInventory = () => {

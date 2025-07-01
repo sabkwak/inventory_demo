@@ -42,8 +42,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
   // Prevent negative inventory for subtract types
   if (newInventory < 0) {
-    throw new Error("Error: Negative inventory not allowed");
-    return;
+    throw new Error(`Cannot ${type.toLowerCase()} ${amount} units of "${productRow.product}" - only ${currentInventory} units available in inventory.`);
   }
 
   // Proceed with transaction creation if inventory is valid

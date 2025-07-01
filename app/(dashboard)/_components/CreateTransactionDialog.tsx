@@ -166,29 +166,48 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
 
 
 
-  const fetchInventory = async (productId: number): Promise<number> => {
-    // Replace with actual API call to fetch inventory
-    // Example:
-    // const response = await fetch(`/api/inventory?productId=${productId}`);
-    // const data = await response.json();
-    // return data.inventory;
-    return 10; // Mocked inventory value for demonstration
+  const fetchInventory = async (productId: number): Promise<{ quantity: number; productName: string }> => {
+    try {
+      const response = await fetch(`/api/product/${productId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch product inventory");
+      }
+      const data = await response.json();
+      return {
+        quantity: data.quantity || 0,
+        productName: data.product || "Unknown Product"
+      };
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+      throw new Error("Failed to fetch product inventory");
+    }
   };
 
   const handleSubmit = useCallback(
     async (values: CreateTransactionSchemaType) => {
       try {
-        // Fetch current inventory
-        const inventory = await fetchInventory(values.productId);
+        // Only check inventory for subtract-type transactions (sold, subtract, waste)
+        const isSubtractType = type === "subtract" || type === "sold" || type === "waste";
+        
+        if (isSubtractType) {
+          // Fetch current inventory
+          const inventoryData = await fetchInventory(values.productId);
   
-        // Check if inventory is sufficient
-        if (inventory <= 0) {
-          toast.error("Too few items in inventory.");
-          return;
+          // Check if inventory is sufficient
+          if (inventoryData.quantity <= 0) {
+            toast.error(`Cannot ${type.toLowerCase()} "${inventoryData.productName}" - inventory quantity is 0.`);
+            return;
+          }
+          
+          // Check if trying to subtract more than available
+          if (values.amount > inventoryData.quantity) {
+            toast.error(`Cannot ${type.toLowerCase()} ${values.amount} units of "${inventoryData.productName}" - only ${inventoryData.quantity} units available in inventory.`);
+            return;
+          }
         }
   
         // Show loading toast
-        const toastId = toast.loading("Creating transaction...", { id: "create-transaction" });
+        toast.loading("Creating transaction...", { id: "create-transaction" });
   
         // Proceed with transaction creation
         mutate({
@@ -205,7 +224,7 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
         console.error("Error submitting transaction:", error);
       }
     },
-    [mutate]
+    [mutate, type]
   );
 
   const getTypeLabel = (type: TransactionType) => {
@@ -269,6 +288,16 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
 />
                     </FormControl>
                   <FormDescription>Select a product for this transaction (required)</FormDescription>
+                  {data && data.product && (
+                    <div className="text-sm text-muted-foreground">
+                      Current inventory: <span className="font-medium">{data.product.quantity || 0}</span> {data.unit || 'units'}
+                      {(type === "subtract" || type === "sold" || type === "waste") && (data.product.quantity || 0) <= 0 && (
+                        <div className="text-red-500 text-xs mt-1">
+                          ⚠️ Cannot {type.toLowerCase()} - inventory is empty
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </FormItem>
               )}
             />
