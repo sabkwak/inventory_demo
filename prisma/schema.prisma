@@ -65,27 +65,8 @@ model Product {
   expiry_date DateTime?
   min_stock Decimal? @default(0)
   priceType String?
-  priceTiers PriceTier[] // New: multiple price tiers
 
   @@unique([product, brandId])  // Enforce unique combination of product, brand, and category
-}
-
-model PriceTier {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  name        String    // e.g., "B2B", "B2C", "Wholesale", "Restaurant", "Promotion"
-  description String?   // Optional description
-  price       Decimal   // The price for this tier
-  isActive    Boolean   @default(true)
-  minQuantity Decimal?  // Minimum quantity for this tier (optional)
-  maxQuantity Decimal?  // Maximum quantity for this tier (optional)
-  startDate   DateTime? // When this tier becomes active
-  endDate     DateTime? // When this tier expires
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId   Int
-
-  @@unique([productId, name]) // Ensure unique tier names per product
 }
 
 model Transaction {
@@ -100,8 +81,6 @@ model Transaction {
   productId   Int
   sellPrice   Decimal? // New: selling price for "sold"/"subtract" transactions
   cost        Decimal? // New: cost for "add" transactions
-  priceTierId Int?     // New: reference to which price tier was used
-  priceTier   PriceTier? @relation(fields: [priceTierId], references: [id])
 }
 
 
