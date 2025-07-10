@@ -58,38 +58,6 @@ const emptyData: any[] = [];
 type TransactionHistoryRow = GetTransactionHistoryResponseType[0];
 
 const columns: ColumnDef<TransactionHistoryRow>[] = [
-  {
-    accessorKey: "date",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date Updated" />
-    ),
-    filterFn: (row, id, value) => {
-      const date = row.original.date;
-      return value.includes(date);
-    },
-    cell: ({ row }) => {
-      // const date = new Date(row.original.date);
-      // const formattedDate = date.toLocaleDateString("default", {
-      //   timeZone: "PST",
-      //   year: "numeric",
-      //   month: "2-digit",
-      //   day: "2-digit",
-      // });
-      const date = new Date(row.original.date);
-      const pstOffset = +4; // For PST without daylight savings, use -8
-      const pstDate = new Date(date.getTime() + pstOffset * 60 * 60 * 1000);
-
-      const formattedDate = `${pstDate.toLocaleDateString("default", {
-        timeZone: "PST",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      })}`;
-      return <div className="text-muted-foreground">{formattedDate}</div>;
-    },
-    enableHiding: false, // Date is visible by default
-  },
-
     {
     accessorKey: "product",
     header: ({ column }) => (
@@ -169,7 +137,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
   {
     accessorKey: "total cost",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Total Cost" />
+      <DataTableColumnHeader column={column} title="Total Transaction Cost" />
     ),
     cell: ({ row }) => {
       const unitPrice = row.original.type === "add"
@@ -194,6 +162,37 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     enableHiding: false, // Description is visible by default
   },
   
+  {
+    accessorKey: "date",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Date Updated" />
+    ),
+    filterFn: (row, id, value) => {
+      const date = row.original.date;
+      return value.includes(date);
+    },
+    cell: ({ row }) => {
+      // const date = new Date(row.original.date);
+      // const formattedDate = date.toLocaleDateString("default", {
+      //   timeZone: "PST",
+      //   year: "numeric",
+      //   month: "2-digit",
+      //   day: "2-digit",
+      // });
+      const date = new Date(row.original.date);
+      const pstOffset = +4; // For PST without daylight savings, use -8
+      const pstDate = new Date(date.getTime() + pstOffset * 60 * 60 * 1000);
+
+      const formattedDate = `${pstDate.toLocaleDateString("default", {
+        timeZone: "PST",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })}`;
+      return <div className="text-muted-foreground">{formattedDate}</div>;
+    },
+    enableHiding: false, // Date is visible by default
+  },
 
   {
     accessorKey: "category",
@@ -224,13 +223,13 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       const getTypeLabel = (type: string) => {
         switch (type) {
           case "add":
-            return "Added";
+            return "Add";
           case "subtract":
-            return "Waste";
+            return "Subtract";
           case "sold":
             return "Sold";
           case "waste":
-            return "Wasted";
+            return "Waste";
           default:
             return type;
         }
@@ -239,12 +238,11 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       const getTypeStyle = (type: string) => {
         switch (type) {
           case "add":
-            return "bg-blue-400/10 text-blue-500";
-
+            return "bg-emerald-400/10 text-emerald-500";
           case "subtract":
             return "bg-red-400/10 text-red-500";
           case "sold":
-            return "bg-emerald-400/10 text-emerald-500";
+            return "bg-blue-400/10 text-blue-500";
           case "waste":
             return "bg-orange-400/10 text-orange-500";
           default:
@@ -263,7 +261,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         </div>
       );
     },
-    enableHiding: true,
+    enableHiding: false, // Type is visible by default
   },
   {
     id: "actions",
