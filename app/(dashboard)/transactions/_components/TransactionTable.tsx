@@ -87,7 +87,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       })}`;
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
-    enableHiding: true, // Date is visible by default
+    enableHiding: false, // Date is visible by default
   },
 
     {
