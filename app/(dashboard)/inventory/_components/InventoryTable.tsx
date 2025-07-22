@@ -107,7 +107,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
   {
     accessorKey: "quantity",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Quantity" />
+      <DataTableColumnHeader column={column} title="Weight Quantity" />
     ),
     cell: ({ row }) => (
       <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
@@ -126,7 +126,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
   {
     accessorKey: "unit",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Unit" />
+      <DataTableColumnHeader column={column} title="Weight Type" />
     ),
     filterFn: (row, id, value) => {
       const unitName = row.original.unitName;
@@ -134,11 +134,28 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     },
     cell: ({ row }) => (
       <div className="flex gap-2">
-        {row.original.unitName || "No Unit"}
+        {row.original.unitName || "No Weight Type"}
       </div>
     ),
     enableHiding: true,
 
+  },
+  {
+    accessorKey: "unitQuantity",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Unit Quantity" />
+    ),
+    cell: ({ row }) => (
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        {row.original.unitQuantity} 
+      </p>
+    ),
+    enableHiding: false, // Amount is visible by default
+    sortingFn: (rowA, rowB) => {
+      const amountA = rowA.original.quantity;
+      const amountB = rowB.original.quantity;
+      return amountA - amountB;
+    },
   },
   {
     accessorKey: "description",

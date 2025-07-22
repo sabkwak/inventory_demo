@@ -58,24 +58,27 @@ async function getProductsHistory(
     orderBy: {
       createdAt: "desc",
     },
-    include: {
-      category: {
-        select: {
-          name: true,
-        },
-      },
-      unit: {
-        select: {
-          name: true,
-        },
-      },
-      brand: {
-        select: {
-          name: true,
-        },
-      },
+    select: {
+      id: true,
+      product: true,
+      createdAt: true,
+      updatedAt: true,
+      quantity: true,
+      value: true,
+      description: true,
+      selling_price_per_unit: true,
+      expiry_date: true,
+      min_stock: true,
+      priceType: true,
+      unitQuantity: true,
+      brandId: true,
+      categoryId: true,
+      unitId: true,
+      brand: { select: { name: true } },
+      unit: { select: { name: true } },
+      category: { select: { name: true } },
     },
-     });
+  });
 
   return products.map((product) => ({
     ...product,
@@ -83,7 +86,7 @@ async function getProductsHistory(
     brandName: product.brand?.name || "---",
     categoryName: product.category?.name || "---",
     unitName: product.unit?.name || "",
-
+    unitQuantity: product.unitQuantity ?? 0,
     // date: product.createdAt,
   }));
 }

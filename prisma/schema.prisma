@@ -58,7 +58,8 @@ model Product {
   categoryId  Int?
   category    Category?  @relation(fields: [categoryId], references: [id])
   transactions Transaction[]  // No @relation attribute needed here
-  quantity    Int       @default(0)
+  quantity    Int       @default(0) //weight
+  unitQuantity Int @default(1) // Number of 'add' minus 'subtract' transactions for this product
   value    Int?       //cost to produce, updated to reflect most recent transaction's cost
   description String?
   selling_price_per_unit Decimal? //updated to reflect most recent Transaction's sell_price

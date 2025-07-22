@@ -35,6 +35,8 @@ export async function DeleteTransaction(id: string) {
   const productQuantityUpdate = {
     ...(transaction.type === "add" && { quantity: { decrement: transaction.amount } }),
     ...(isSubtractType && { quantity: { increment: transaction.amount } }),
+    ...(transaction.type === "add" && { unitQuantity: { decrement: 1 } }),
+    ...(isSubtractType && { unitQuantity: { increment: 1 } }),
   };
 
   await prisma.$transaction([

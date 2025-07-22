@@ -60,6 +60,11 @@ export async function EditTransaction({
   // Log the client and category connections before the update
   console.log("Type connect:", typeConnect);
 
+  // Fetch the old transaction
+  const oldTransaction = await prisma.transaction.findUnique({
+    where: { id: parsedId },
+  });
+
   // Update the transaction in the database
   try {
     const updatedTransaction = await prisma.transaction.update({
@@ -75,6 +80,29 @@ export async function EditTransaction({
         type
       },
     });
+
+    // Adjust unitQuantity if type changed
+    if (oldTransaction && oldTransaction.type !== type) {
+      const wasAdd = oldTransaction.type === "add";
+      const wasSubtract = ["subtract", "sold", "waste"].includes(oldTransaction.type);
+      const isAdd = type === "add";
+      const isSubtract = ["subtract", "sold", "waste"].includes(type);
+      let unitQuantityChange = 0;
+      if (wasAdd && isSubtract) unitQuantityChange = -2; // -1 for removing add, -1 for adding subtract
+      else if (wasSubtract && isAdd) unitQuantityChange = 2; // +1 for removing subtract, +1 for adding add
+      else if (wasAdd && !isAdd) unitQuantityChange = -1;
+      else if (wasSubtract && !isSubtract) unitQuantityChange = 1;
+      else if (!wasAdd && isAdd) unitQuantityChange = 1;
+      else if (!wasSubtract && isSubtract) unitQuantityChange = -1;
+      if (unitQuantityChange !== 0) {
+        await prisma.product.update({
+          where: { id: oldTransaction.productId },
+          data: {
+            unitQuantity: { increment: unitQuantityChange },
+          },
+        });
+      }
+    }
 
     return updatedTransaction;
   } catch (error) {

@@ -122,16 +122,16 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
 
   // When product changes, set default cost/sellPrice from product
   useEffect(() => {
-    if (data && data.product) {
-      if (type === "add") {
-        form.setValue("cost", data.product.value ?? undefined);
-      } else if (type === "sold" || type === "subtract" || type === "waste") {
-        form.setValue("sellPrice", data.product.selling_price_per_unit ?? undefined);
-      }
+  if (data && data.product) {
+    const currentCost = form.getValues("cost");
+    const currentSellPrice = form.getValues("sellPrice");
+    if (type === "add" && currentCost !== data.product.value) {
+      form.setValue("cost", data.product.value ?? undefined);
+    } else if ((type === "sold" || type === "subtract" || type === "waste") && currentSellPrice !== data.product.selling_price_per_unit) {
+      form.setValue("sellPrice", data.product.selling_price_per_unit ?? undefined);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, type]);
-
+  }
+}, [data, type]);
   const { mutate, isPending } = useMutation({
     mutationFn: CreateTransaction,
     onSuccess: () => {
@@ -262,11 +262,11 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
     selectedBatches.map(batch => ({ ...batch, removeQty: batch.remaining }))
   );
   useEffect(() => {
-      if (selectedBatches && selectedBatches.length > 0) {
+  if (selectedBatches && selectedBatches.length > 0) {
 
     setBatchQuantities(selectedBatches.map(batch => ({ ...batch, removeQty: batch.remaining })));
   }
- }, [selectedBatches]);
+  }, [selectedBatches]);
 
   const handleBatchQtyChange = (batchId: number, value: number) => {
     setBatchQuantities(prev => prev.map(b => b.id === batchId ? { ...b, removeQty: value } : b));

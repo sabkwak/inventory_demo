@@ -60,12 +60,15 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     },
   });
 
-  // Update the product quantity
+  // Update the product quantity and unitQuantity
   await prisma.product.update({
     where: { id: productRow.id },
     data: {
       quantity: {
         increment: isSubtractType ? -amount : amount, // Decrement for subtract types, increment for add
+      },
+      unitQuantity: {
+        increment: type === "add" ? 1 : (isSubtractType ? -1 : 0), // Increment for add, decrement for subtract/sold/waste
       },
     },
   });
