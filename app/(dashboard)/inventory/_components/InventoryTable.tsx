@@ -16,7 +16,6 @@ import {
 } from "@tanstack/react-table";
 import { GetProductHistoryResponseType } from "@/app/api/products-history/route";
 import { useEffect } from "react";
-
 import {
   Table,
   TableBody,
@@ -49,7 +48,7 @@ import * as XLSX from "xlsx";
 import { QRCodeSVG, QRCodeCanvas } from 'qrcode.react';
 import Modal from 'react-modal';
 import NextImage from "next/image";
-
+import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
 interface Props {
   from: Date;
   to: Date;
@@ -332,7 +331,41 @@ const [pagination, setPagination] = useState({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const [selectedProduct, setSelectedProduct] = useState<ProductHistoryRow | null>(null);
+  const [addTransactions, setAddTransactions] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loadingAddTx, setLoadingAddTx] = useState(false);
+  const [selectedBatches, setSelectedBatches] = useState<any[]>([]);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
 
+  // Handler to open modal and fetch add transactions
+  const handleRowClick = async (product: ProductHistoryRow) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+    setLoadingAddTx(true);
+    try {
+      const res = await fetch(`/api/transactions/add-transactions?productId=${product.id}`);
+      const data = await res.json();
+      setAddTransactions(data);
+    } catch (e) {
+      setAddTransactions([]);
+    }
+    setLoadingAddTx(false);
+  };
+
+  // Handler to select a batch for sale/waste
+  const handleSelectBatch = (batch: any) => {
+    setSelectedBatches((prev) => {
+      if (prev.find((b) => b.id === batch.id)) return prev; // Prevent duplicates
+      return [...prev, batch];
+    });
+  };
+
+  // Handler to open CreateTransactionDialog with selected batches
+  const handleOpenCreateDialog = () => {
+    setShowCreateDialog(true);
+    setIsModalOpen(false);
+  };
   const handleExportExcel = (data: any[]) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -342,7 +375,7 @@ const [pagination, setPagination] = useState({
   const categoriesOptions = useMemo(() => {
     const categoriesMap = new Map<string, { value: string; label: string }>();
     history.data?.forEach((product) => {
-      const categoryName = product.category?.name || "No Category";
+      const categoryName = product.categoryName || "No Category";
       categoriesMap.set(categoryName, {
         value: categoryName,
         label: `${categoryName}`,
@@ -353,7 +386,7 @@ const [pagination, setPagination] = useState({
   const unitsOptions = useMemo(() => {
     const unitsMap = new Map<string, { value: string; label: string }>();
     history.data?.forEach((product) => {
-      const unitName = product.unit?.name || "No Unit";
+      const unitName = product.unitName || "No Unit";
       unitsMap.set(unitName, {
         value: unitName,
         label: `${unitName}`,
@@ -388,6 +421,65 @@ const [pagination, setPagination] = useState({
   }
   return (
     <div className="w-full">
+      {/* Modal for Add Transactions */}
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
+          <div className="p-4 text-black">
+            <h2 className="font-black text-lg font-semibold mb-4 ">
+              {selectedProduct ? `Available Batches for ${selectedProduct.productName}` : "Available Batches"}
+            </h2>
+            {loadingAddTx ? (
+              <div>Loading...</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr>
+                      <th>Date Added</th>
+                      <th>Original Qty</th>
+                      <th>Remaining Qty</th>
+                      <th>Cost/Unit</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {addTransactions.map((tx) => (
+                      <tr key={tx.id}>
+                        <td>{new Date(tx.date).toLocaleDateString()}</td>
+                        <td>{tx.amount}</td>
+                        <td>{tx.remaining}</td>
+                        <td>{tx.cost ?? '-'}</td>
+                        <td>
+                          <Button size="sm" onClick={() => handleSelectBatch(tx)} disabled={selectedBatches.some(b => b.id === tx.id)}>
+                            {selectedBatches.some(b => b.id === tx.id) ? 'Selected' : 'Select for sale/waste'}
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {selectedBatches.length > 0 && (
+                  <div className="mt-4 flex justify-end">
+                    <Button onClick={handleOpenCreateDialog}>Proceed to Sale/Waste</Button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </Modal>
+      )}
+      {/* CreateTransactionDialog for selected batches */}
+      {showCreateDialog && selectedProduct && (
+        <CreateTransactionDialog
+          open={showCreateDialog}
+          setOpen={setShowCreateDialog}
+          type={"sold"} // or "waste", or let user choose
+          defaultProductId={selectedProduct.id}
+          userSettings={{} as any} // Pass actual userSettings if available
+          selectedBatches={selectedBatches}
+          trigger={<span />} // Dummy trigger to satisfy required prop
+        />
+      )}
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">
         <div className="flex gap-2">
           {table.getColumn("category") && (
@@ -492,7 +584,7 @@ const [pagination, setPagination] = useState({
             <TableBody>
               {table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
+                  <TableRow key={row.id} onClick={() => handleRowClick(row.original)} className="cursor-pointer hover:bg-gray-100">
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -524,6 +616,7 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const qrRef = useRef(null);
+  const [isProductTableModalOpen, setIsProductTableModalOpen] = useState(false);
 
   const downloadQRCode = () => {
     const canvas = document.querySelector('canvas');
@@ -543,8 +636,7 @@ const qrCodeUrl = generateQrCodeUrl(product.id);
     <>
       {/* Render the EditProductDialog conditionally */}
       {showEditDialog && (
-        <EditProductDialog
-          open={showEditDialog}
+        <EditProductDialog open={showEditDialog}
           setOpen={setShowEditDialog}
           product={{
             ...product,
@@ -556,7 +648,8 @@ const qrCodeUrl = generateQrCodeUrl(product.id);
             console.log("Ingredient edited successfully");
           }}
         />
-      )}
+      )
+  }
       <DeleteProductDialog
         open={showDeleteDialog}
         setOpen={setShowDeleteDialog}
@@ -640,6 +733,7 @@ const qrCodeUrl = generateQrCodeUrl(product.id);
 </div>
 
 </Modal>
+
     </>
   );
 }
