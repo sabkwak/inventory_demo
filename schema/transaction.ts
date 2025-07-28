@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+export const BatchRemovalSchema = z.object({
+  id: z.number(),
+  amount: z.number().optional(),
+  date: z.string().optional(),
+  remaining: z.number().optional(),
+  cost: z.number().optional(),
+  removeQty: z.number(), // <-- add this line
+});
+
 export const CreateTransactionSchema = z.object({
   amount: z.coerce.number().positive().multipleOf(0.01),
   cost: z.preprocess((cost) => {
@@ -13,6 +22,8 @@ export const CreateTransactionSchema = z.object({
   productId: z.number(),  // Use productId as it's unique
   description: z.string().nullable().optional(), // Make description optional
   date: z.coerce.date(),
+  batchRemovals: z.array(BatchRemovalSchema).optional(), // <-- add this line
+
   // client: z.string().nullable().optional(),
   // categoryIcon: z.string().optional(),
   // category: z.string(),

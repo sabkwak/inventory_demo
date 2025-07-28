@@ -27,7 +27,7 @@ import { ReactNode, useCallback, useState, useEffect } from "react";
 import { useQuery } from '@tanstack/react-query';  // Import the useQuery hook for fetching product data
 
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -87,9 +87,15 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
       productId: defaultProductId || undefined,
       cost: undefined,
       sellPrice: undefined,
+      amount: 0,
     },
   });
+  const { control, setValue, watch } = form;
 
+  const { fields, update } = useFieldArray({
+    control,
+    name: "batchRemovals", // this will be an array of { id, removeQty, ... }
+  });
 
   const router = useRouter();
 
@@ -259,15 +265,24 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
   };
 
   const [batchQuantities, setBatchQuantities] = useState<any[]>(() =>
-    selectedBatches.map(batch => ({ ...batch, removeQty: batch.remaining }))
+    selectedBatches.map(batch => ({
+      ...batch,
+      removeQty: typeof batch.remaining === 'number' ? batch.remaining : 0
+    }))
   );
+
   useEffect(() => {
-      if (selectedBatches && selectedBatches.length > 0) {
-
-    setBatchQuantities(selectedBatches.map(batch => ({ ...batch, removeQty: batch.remaining })));
-  }
- }, [selectedBatches]);
-
+    if (selectedBatches.length > 0) {
+      setValue(
+        "batchRemovals",
+        selectedBatches.map(batch => ({
+          id: batch.id,
+          removeQty: batch.remaining,
+          ...batch,
+        }))
+      );
+    }
+  }, [selectedBatches, setValue]);
   const handleBatchQtyChange = (batchId: number, value: number) => {
     setBatchQuantities(prev => prev.map(b => b.id === batchId ? { ...b, removeQty: value } : b));
   };
@@ -298,7 +313,9 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
             </span> Product Quantity
           </DialogTitle>
         </DialogHeader>
-        {selectedBatches.length > 0 && (type === 'sold' || type === 'waste') ? (
+        {/* selected batches modal from Inventory Page */}
+        <>
+        {fields.length > 0 && (type === 'sold' || type === 'waste') && (
           <div className="mb-4">
             <div className="font-semibold mb-2">Selected Batches</div>
             <table className="min-w-full text-sm border">
@@ -312,56 +329,40 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
                 </tr>
               </thead>
               <tbody>
-                {batchQuantities.map(batch => (
-                  <tr key={batch.id}>
-                    <td>{new Date(batch.date).toLocaleDateString()}</td>
-                    <td>{batch.amount}</td>
-                    <td>{batch.remaining}</td>
-                    <td>
-                      <Input
-                        type="number"
-                        min={0}
-                        max={batch.remaining}
-                        value={batch.removeQty}
-                        onChange={e => handleBatchQtyChange(batch.id, Math.max(0, Math.min(batch.remaining, Number(e.target.value))))}
-                        className="w-20"
-                      />
-                    </td>
-                    <td>{batch.cost ?? '-'}</td>
-                  </tr>
-                ))}
+              {fields.map((batch, idx) => (
+          <tr key={batch.id}>
+           <td>
+  {batch.date
+    ? new Date(batch.date).toLocaleDateString()
+    : ""}
+</td>
+            <td>{batch.amount}</td>
+            <td>{batch.remaining}</td>
+            <td>
+              <FormField
+                control={control}
+                name={`batchRemovals.${idx}.removeQty`}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    min={0}
+                    max={batch.remaining}
+                    className="w-20"
+                  />
+                )}
+              />
+            </td>
+            <td>{batch.cost ?? '-'}</td>
+          </tr>
+        ))}
               </tbody>
             </table>
           </div>
-        ) : null}
+        )}
         <Form {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
-            <FormField
-              control={form.control}
-              name="productId"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Product</FormLabel>
-                  <FormControl>
-                  <ProductPicker userSettings={user}
-  defaultProductId={defaultProductId}
-  onChange={(productId: number) => form.setValue("productId", productId)}
-/>
-                    </FormControl>
-                  <FormDescription>Select a product for this transaction (required)</FormDescription>
-                  {data && data.product && (
-                    <div className="text-sm text-muted-foreground">
-                      Current inventory: <span className="font-medium">{data.product.quantity || 0}</span> {data.unit || 'units'}
-                      {(type === "subtract" || type === "sold" || type === "waste") && (data.product.quantity || 0) <= 0 && (
-                        <div className="text-red-500 text-xs mt-1">
-                          ⚠️ Cannot {type.toLowerCase()} - inventory is empty
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </FormItem>
-              )}
-            />
+
             <div className="flex space-x-4">
 
             {(type === "add" || type === "sold" || type === "subtract" || type === "waste") && (
@@ -390,23 +391,6 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
 
 
 
-<FormField
-  control={form.control}
-  name="amount"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Quantity <UnitRetriever
-  defaultProductId={defaultProductId}
-  onChange={(unitName) => console.log("Selected unit:", unitName)}
-/></FormLabel>
-      <div className="flex items-center gap-2">
-        <Input {...field} type="number" placeholder="Enter amount" />
-     
-
-      </div>
-    </FormItem>
-  )}
-/>
 </div>
             <FormField
               control={form.control}
@@ -466,7 +450,8 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
                 )}
               />
           </form>
-        </Form>
+          </Form>
+        </>
         <DialogFooter>
           <DialogClose asChild>
             <Button

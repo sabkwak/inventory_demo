@@ -40,7 +40,8 @@ function ProductPicker({ onChange, defaultProductId }: Props) {
     queryKey: ["products"],
     queryFn: () => fetch(`/api/products`).then((res) => res.json()),
   });
-  const products = productsQuery.data;
+  const prod = productsQuery.data;
+  const products = Array.isArray(prod) ? prod : [];
 
   const userProducts = products;
 
