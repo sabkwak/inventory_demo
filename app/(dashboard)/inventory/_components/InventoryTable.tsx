@@ -48,7 +48,7 @@ import * as XLSX from "xlsx";
 import { QRCodeSVG, QRCodeCanvas } from 'qrcode.react';
 import Modal from 'react-modal';
 import NextImage from "next/image";
-import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
+import CreateTransactionDialog from "@/app/(dashboard)/inventory/_components/CreateTransactionDialogForSelectedProduct";
 interface Props {
   from: Date;
   to: Date;

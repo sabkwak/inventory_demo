@@ -27,7 +27,7 @@ import { ReactNode, useCallback, useState, useEffect } from "react";
 import { useQuery } from '@tanstack/react-query';  // Import the useQuery hook for fetching product data
 
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -60,13 +60,14 @@ interface Props {
   userSettings: UserSettings;
   open?: boolean;
   setOpen?: (open: boolean) => void;
+  selectedBatches?: any[]; // New prop for batch selection
 }
 async function fetchUserSettings() {
   const res = await fetch("/api/user-settings"); // Call your API route
   if (!res.ok) throw new Error("Failed to fetch user settings");
   return res.json();
 }
-function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpen }: Props) {
+function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpen, selectedBatches = [] }: Props) {
   const [internalOpenDialog, setInternalOpenDialog] = useState(false);
   const openDialog = open !== undefined ? open : internalOpenDialog;
   const setOpenDialog = setOpen || setInternalOpenDialog;
@@ -86,9 +87,15 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
       productId: defaultProductId || undefined,
       cost: undefined,
       sellPrice: undefined,
+      amount: 0,
     },
   });
+  const { control, setValue, watch } = form;
 
+  const { fields, update } = useFieldArray({
+    control,
+    name: "batchRemovals", // this will be an array of { id, removeQty, ... }
+  });
 
   const router = useRouter();
 
@@ -257,6 +264,39 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
     }
   };
 
+  const [batchQuantities, setBatchQuantities] = useState<any[]>(() =>
+    selectedBatches.map(batch => ({
+      ...batch,
+      removeQty: typeof batch.remaining === 'number' ? batch.remaining : 0
+    }))
+  );
+
+  useEffect(() => {
+    if (selectedBatches.length > 0) {
+      setValue(
+        "batchRemovals",
+        selectedBatches.map(batch => ({
+          id: batch.id,
+          removeQty: batch.remaining,
+          ...batch,
+        }))
+      );
+    }
+  }, [selectedBatches, setValue]);
+  const handleBatchQtyChange = (batchId: number, value: number) => {
+    setBatchQuantities(prev => prev.map(b => b.id === batchId ? { ...b, removeQty: value } : b));
+  };
+
+  const handleSubmitBatches = async () => {
+    // For now, just log the batch breakdown
+    // In production, send this to the backend as part of the transaction
+    // e.g., { productId, type, batches: batchQuantities.filter(b => b.removeQty > 0) }
+    // You may want to call a new backend action for batch transactions
+    console.log('Submitting batch sale/waste:', batchQuantities.filter(b => b.removeQty > 0));
+    setOpenDialog(false);
+    toast.success('Batch sale/waste submitted!');
+  };
+
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -273,34 +313,56 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
             </span> Product Quantity
           </DialogTitle>
         </DialogHeader>
+        {/* selected batches modal from Inventory Page */}
+        <>
+        {fields.length > 0 && (type === 'sold' || type === 'waste') && (
+          <div className="mb-4">
+            <div className="font-semibold mb-2">Selected Batches</div>
+            <table className="min-w-full text-sm border">
+              <thead>
+                <tr>
+                  <th>Date Added</th>
+                  <th>Original Qty</th>
+                  <th>Remaining Qty</th>
+                  <th>Remove Qty</th>
+                  <th>Cost/Unit</th>
+                </tr>
+              </thead>
+              <tbody>
+              {fields.map((batch, idx) => (
+          <tr key={batch.id}>
+           <td>
+  {batch.date
+    ? new Date(batch.date).toLocaleDateString()
+    : ""}
+</td>
+            <td>{batch.amount}</td>
+            <td>{batch.remaining}</td>
+            <td>
+              <FormField
+                control={control}
+                name={`batchRemovals.${idx}.removeQty`}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    min={0}
+                    max={batch.remaining}
+                    className="w-20"
+                  />
+                )}
+              />
+            </td>
+            <td>{batch.cost ?? '-'}</td>
+          </tr>
+        ))}
+              </tbody>
+            </table>
+          </div>
+        )}
         <Form {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
-            <FormField
-              control={form.control}
-              name="productId"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Product</FormLabel>
-                  <FormControl>
-                  <ProductPicker userSettings={user}
-  defaultProductId={defaultProductId}
-  onChange={(productId: number) => form.setValue("productId", productId)}
-/>
-                    </FormControl>
-                  <FormDescription>Select a product for this transaction (required)</FormDescription>
-                  {data && data.product && (
-                    <div className="text-sm text-muted-foreground">
-                      Current inventory: <span className="font-medium">{data.product.quantity || 0}</span> {data.unit || 'units'}
-                      {(type === "subtract" || type === "sold" || type === "waste") && (data.product.quantity || 0) <= 0 && (
-                        <div className="text-red-500 text-xs mt-1">
-                          ⚠️ Cannot {type.toLowerCase()} - inventory is empty
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </FormItem>
-              )}
-            />
+
             <div className="flex space-x-4">
 
             {(type === "add" || type === "sold" || type === "subtract" || type === "waste") && (
@@ -329,23 +391,6 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
 
 
 
-<FormField
-  control={form.control}
-  name="amount"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Quantity <UnitRetriever
-  defaultProductId={defaultProductId}
-  onChange={(unitName) => console.log("Selected unit:", unitName)}
-/></FormLabel>
-      <div className="flex items-center gap-2">
-        <Input {...field} type="number" placeholder="Enter amount" />
-     
-
-      </div>
-    </FormItem>
-  )}
-/>
 </div>
             <FormField
               control={form.control}
@@ -405,7 +450,8 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
                 )}
               />
           </form>
-        </Form>
+          </Form>
+        </>
         <DialogFooter>
           <DialogClose asChild>
             <Button
@@ -416,13 +462,19 @@ function CreateTransactionDialog({ trigger, type, defaultProductId, open, setOpe
               Cancel
             </Button>
           </DialogClose>
-          <Button
-            onClick={form.handleSubmit(handleSubmit)}
-            disabled={isPending}
-          >
-            {!isPending && "Create"}
-            {isPending && <Loader2 className="animate-spin" />}
-          </Button>
+          {selectedBatches.length > 0 && (type === 'sold' || type === 'waste') ? (
+            <Button onClick={handleSubmitBatches}>
+              Submit Batch Sale/Waste
+            </Button>
+          ) : (
+            <Button
+              onClick={form.handleSubmit(handleSubmit)}
+              disabled={isPending}
+            >
+              {!isPending && "Create"}
+              {isPending && <Loader2 className="animate-spin" />}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
