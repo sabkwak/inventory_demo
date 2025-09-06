@@ -53,7 +53,7 @@ function CreateUnitDialog({  successCallback, trigger }: Props) {
   const form = useForm<CreateUnitSchemaType>({
     resolver: zodResolver(CreateUnitSchema),
     defaultValues: {
-    
+    unitType: "Weight",
     },
   });
 
@@ -65,7 +65,7 @@ function CreateUnitDialog({  successCallback, trigger }: Props) {
     onSuccess: async (data: Unit) => {
       form.reset({
         name: "",
-        // icon: "",
+    unitType: "Weight",
       
       });
 
@@ -155,8 +155,8 @@ function CreateUnitDialog({  successCallback, trigger }: Props) {
       <FormItem>
         <FormLabel className="block">Unit Type</FormLabel>
         <FormControl>
-          <select {...field}>
-            <option value="Weight">Weight</option>
+          <select {...field} value={field.value}>
+            <option value="Weight">Weight/Volume</option>
             <option value="Piece">Piece</option>
           </select>
         </FormControl>

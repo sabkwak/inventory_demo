@@ -21,11 +21,11 @@ export async function CreateUnit(form: CreateUnitSchemaType) {
     redirect("/sign-in");
   }
 
-  const { name } = parsedBody.data;
+  const { name, unitType } = parsedBody.data;
   return await prisma.unit.create({
     data: {
       name,
-      // icon,
+      unitType
     },
   });
 }
