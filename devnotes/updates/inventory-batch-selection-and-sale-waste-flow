@@ -81,7 +81,10 @@ More complex to implement, but better UX for batch operations.
 Performance
 Single modal for all batches: Slightly more initial rendering if many batches, but React and modern browsers handle tables/lists of dozens or even hundreds of items very efficiently. Unless you expect users to select hundreds/thousands of batches at once, the performance difference is negligible.
 ## Summary of Updates
-
+9/6/25
+-Replaced transaction dialog within Inventory tab for a selected product when clicked with its own window for that selected batch
+If user records product with a unit of "piece" type, the New Product window will populate with fields for each unit quantity to record its weight
+7/11/25
 1. **Inventory Table Modal for Batch Selection**
    - Clicking a product row in the inventory table opens a modal displaying all available 'add' transaction batches for that product (with date, original qty, remaining qty, cost/unit).
    - Each batch row includes a 'Select for sale/waste' button. Selected batches are tracked in state.

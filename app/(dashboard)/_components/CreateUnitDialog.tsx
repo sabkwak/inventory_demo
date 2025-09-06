@@ -150,36 +150,20 @@ function CreateUnitDialog({  successCallback, trigger }: Props) {
 <div className="flex space-x-4">
   <FormField
     control={form.control}
-    name="quantity"
+    name="unitType"
     render={({ field }) => (
       <FormItem>
-        <FormLabel className="block">Quantity</FormLabel>
+        <FormLabel className="block">Unit Type</FormLabel>
         <FormControl>
-          <Input
-            {...field}
-            value={field.value ?? 0} // Ensure default value is 0
-            type="number"
-            placeholder="Enter product quantity"
-            min={0} // Prevent negative values
-          />
+          <select {...field}>
+            <option value="Weight">Weight</option>
+            <option value="Piece">Piece</option>
+          </select>
         </FormControl>
       </FormItem>
     )}
   />
-  <FormField
-    control={form.control}
-    name="unit"
-    render={({ field }) => (
-      <FormItem>
-        <FormLabel className="block">Unit</FormLabel>
-        <FormControl>
-        </FormControl>
-        {/* <FormDescription>
-          Select a unit for this Product
-        </FormDescription> */}
-      </FormItem>
-    )}
-  />
+
 
 </div>
             {/* <FormField

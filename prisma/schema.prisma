@@ -31,9 +31,10 @@ model Category {
 }
 
 model Unit {
-   id        Int       @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
   name      String    @unique
+  unitType  String    @default("weight") // added unitType field
   products  Product[] 
 
 }
@@ -66,10 +67,11 @@ model Product {
   expiry_date DateTime?
   min_stock Decimal? @default(0)
   priceType String?
+  weight    Decimal? // added optional weight field
+  weightUnit String? @default("g") // added optional weightUnit field
 
   @@unique([product, brandId])  // Enforce unique combination of product, brand, and category
 }
-
 model Transaction {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
